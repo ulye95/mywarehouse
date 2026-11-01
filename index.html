@@ -81,6 +81,7 @@
     .smallBtn { padding:8px 10px; min-height:36px; font-size:13px; }
     .userActionBtn { min-width:110px; margin:0; padding:8px; min-height:36px; font-size:12px; }
     .userForm { max-width:720px; }
+    .manualDetailGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.manualDetailGrid div{display:flex;flex-direction:column;gap:4px;min-width:0}.manualDetailGrid span{font-size:12px;color:var(--muted)}.manualDetailGrid strong{overflow-wrap:anywhere}#qrHistoryPanel .productTableWrap{height:auto;max-height:380px}@media(max-width:520px){.manualDetailGrid{grid-template-columns:1fr}}
 
     :root{--bg:#f3f1ea;--surface:#fff;--surface2:#f7f8f5;--text:#25332e;--muted:#718078;--line:#e1e7e1;--primary:#263b36;--primary2:#54766a;--accent:#c5a77a;--danger:#a65d58;--shadow:0 8px 28px rgba(31,49,42,.06)}
     body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .2s,color .2s}
@@ -302,6 +303,12 @@
         </div>
         <div id="reportMessage" class="catatan" style="margin:14px 0">Pilih filter lalu tekan Tampilkan.</div>
         <div class="productTableWrap"><table><thead id="reportHead"></thead><tbody id="reportRows"></tbody></table></div>
+        <section class="card" id="qrHistoryPanel" style="margin-top:18px">
+          <div class="pageTitle"><h2>Riwayat Generate QR</h2><button type="button" id="btnRefreshQrHistory" class="secondary smallBtn">↻ Refresh</button></div>
+          <p class="catatan">Arsip ZIP berisi gambar QR JPG tersedia sampai hari ke-14. Pada hari ke-15, file ZIP dan catatan riwayat dihapus otomatis. Penghapusan arsip tidak menghapus unit QR pada stok.</p>
+          <div id="qrHistoryMessage" class="catatan" style="margin:12px 0">Memuat riwayat generate QR...</div>
+          <div class="productTableWrap"><table><thead><tr><th>Tanggal Generate</th><th>Produk</th><th>Jumlah QR</th><th>Dibuat Oleh</th><th>Batas Unduh</th><th>Arsip</th></tr></thead><tbody id="qrHistoryRows"></tbody></table></div>
+        </section>
       </section>
       <section class="card" id="productsPage" style="display:none">
         <div class="pageTitle"><h2>Manajemen Barang</h2><button id="btnBackProducts" type="button">← Menu</button></div>
@@ -404,11 +411,17 @@
           <label for="kategori">Channel Barang Keluar</label>
           <select id="kategori">
             <option value="MARKETPLACE">Marketplace</option>
-            <option value="OFFLINE">Offline</option>
+            <option value="OFFLINE">Offline</option><option value="DAMAGED">Rusak</option>
           </select>
         </div>
       </section>
 
+      <section class="card" id="transactionMethodCard">
+        <h2>Metode Transaksi</h2>
+        <label for="metodeTransaksi">Pilih metode input</label>
+        <select id="metodeTransaksi"><option value="SCAN">Scan QR (otomatis)</option><option value="MANUAL">Input kode unit manual</option></select>
+        <p class="catatan">Scan QR langsung menyimpan transaksi setelah kode terbaca. Input manual menampilkan rincian unit terlebih dahulu dan memerlukan konfirmasi Simpan Transaksi.</p>
+      </section>
       <section class="card" id="scannerCard">
         <h2>Scan QR Barang</h2>
         <div id="reader"></div>
@@ -416,6 +429,28 @@
         <div id="pesan" role="status" aria-live="polite"></div>
         <p class="catatan">Satu QR mewakili satu unit barang. Transaksi dikirim langsung setelah QR terbaca. Pastikan jenis transaksi benar sebelum memindai.</p>
       </section>
+      <section class="card" id="manualTransactionCard" style="display:none">
+        <h2>Input Kode Unit Manual</h2>
+        <form id="manualUnitForm">
+          <label for="manualUnitCode">Kode Unit / Nomor QR</label>
+          <input id="manualUnitCode" maxlength="500" placeholder="Contoh: BRG001-000025" autocomplete="off" required>
+          <button id="btnPreviewManual" type="submit">TAMPILKAN RINCIAN UNIT</button>
+        </form>
+        <div id="manualPreviewMessage" class="catatan" role="status" style="margin-top:12px"></div>
+        <div id="manualUnitPreview" class="card" style="display:none;background:var(--surface2);margin-top:12px">
+          <h3>Konfirmasi Rincian Unit</h3>
+          <div class="manualDetailGrid">
+            <div><span>Kode Barang</span><strong id="manualProductCode">-</strong></div>
+            <div><span>Nama Barang</span><strong id="manualProductName">-</strong></div>
+            <div><span>Kode Unit / QR</span><strong id="manualSerialNumber">-</strong></div>
+            <div><span>Nomor Urut Unit</span><strong id="manualUnitNumber">-</strong></div>
+            <div><span>Status Saat Ini</span><strong id="manualUnitStatus">-</strong></div>
+            <div><span>HPP</span><strong id="manualUnitHpp">-</strong></div>
+            <div><span>Harga Jual</span><strong id="manualUnitPrice">-</strong></div>
+          </div>
+          <button type="button" id="btnSaveManualTransaction">SIMPAN TRANSAKSI</button>
+        </div>
+        <div id="manualTransactionMessage" role="status" class="catatan" style="margin-top:12px"></div>
       </section>
 
     </section>
@@ -434,6 +469,7 @@
     let waktuTerakhir = 0;
     let audioContext = null;
     let sessionData = null;
+    let manualUnitPreviewData = null;
 
     function tampilPesan(id, teks, jenis = 'info') {
       const el = document.getElementById(id);
@@ -570,7 +606,7 @@
       if (halaman === 'monitoring') muatDashboard();
       if (halaman === 'transaksi') toggleKategori();
       if (halaman === 'produk') muatProduk();
-      if (halaman === 'laporan') muatLaporan();
+      if (halaman === 'laporan') { muatLaporan(); muatRiwayatQr(); }
     }
 
     async function kembaliKeMenu() {
@@ -633,6 +669,10 @@
     document.getElementById('btnThemeToggle').addEventListener('click', () => { document.body.classList.toggle('dark'); const dark=document.body.classList.contains('dark'); document.getElementById('btnThemeToggle').lastElementChild.textContent=dark?'Mode terang':'Mode gelap'; try{localStorage.setItem('mwTheme',dark?'dark':'light')}catch(e){} });
     try { if(localStorage.getItem('mwTheme')==='dark') document.body.classList.add('dark'); } catch(e){}
     document.getElementById('btnLoadReport').addEventListener('click', muatLaporan);
+    document.getElementById('btnRefreshQrHistory').addEventListener('click', muatRiwayatQr);
+    document.getElementById('jenisTransaksi').addEventListener('change', function(){ toggleKategori(); manualUnitPreviewData=null; document.getElementById('manualUnitPreview').style.display='none'; document.getElementById('manualPreviewMessage').textContent=''; });
+    document.getElementById('kategori').addEventListener('change', function(){ manualUnitPreviewData=null; document.getElementById('manualUnitPreview').style.display='none'; document.getElementById('manualPreviewMessage').textContent='Kategori berubah. Periksa ulang kode unit sebelum menyimpan.'; });
+    document.getElementById('metodeTransaksi').addEventListener('change', async function(){ if (kameraAktif) await berhentiScan(); toggleKategori(); });
     document.getElementById('btnExportExcel').addEventListener('click', eksporLaporanCSV);
     document.getElementById('btnExportPdf').addEventListener('click', () => window.print());
 
@@ -984,6 +1024,25 @@
         (result.products||[]).forEach(x=>{if(!known.has(x.productCode)){const op=document.createElement('option');op.value=x.productCode;op.textContent=x.productCode+' — '+x.productName;prod.appendChild(op)}});prod.value=old;
       } catch(err){message.textContent='Laporan gagal dimuat: '+pesanErrorJaringan(err);}
     }
+    async function muatRiwayatQr() {
+      const message=document.getElementById('qrHistoryMessage');
+      const body=document.getElementById('qrHistoryRows');
+      message.textContent='Memuat riwayat generate QR...'; body.replaceChildren();
+      try {
+        const result=await kirimKeBackend({action:'qr_history_list',token:sessionData.token});
+        if(!result || !result.success) throw new Error(result && result.message || 'Riwayat QR gagal dimuat.');
+        const items=result.history||[];
+        items.forEach(item=>{
+          const tr=document.createElement('tr');
+          [item.generatedAt,item.productCode+' — '+item.productName,angka(item.quantity),item.generatedBy,item.expiresOn].forEach(value=>{const td=document.createElement('td');td.textContent=value||'-';tr.appendChild(td);});
+          const td=document.createElement('td');
+          if(item.downloadUrl){const a=document.createElement('a');a.href=item.downloadUrl;a.target='_blank';a.rel='noopener';a.textContent='Unduh ZIP';a.style.cssText='display:inline-block;padding:8px 10px;background:var(--primary2);color:#fff;border-radius:8px;text-decoration:none';td.appendChild(a);}else{td.textContent='File tidak tersedia';}
+          tr.appendChild(td);body.appendChild(tr);
+        });
+        message.textContent=items.length?'Menampilkan '+angka(items.length)+' arsip QR yang masih tersedia.':'Belum ada riwayat generate QR yang tersedia.';
+      }catch(err){message.textContent='Riwayat QR gagal dimuat: '+pesanErrorJaringan(err);}
+    }
+
     function eksporLaporanCSV(){
       if(!reportRowsData.length){alert('Belum ada data laporan untuk diunduh.');return;}
       const esc=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
@@ -1101,6 +1160,8 @@
         });
         if (!result || !result.success) throw new Error((result && result.message) || 'QR gagal dibuat.');
         document.getElementById('qrBatchTitle').textContent = result.productCode + ' — ' + result.productName + ' (' + angka(result.quantity) + ' QR)';
+        const previousZipLink=document.getElementById('qrZipDownloadLink'); if(previousZipLink) previousZipLink.remove();
+        if(result.downloadUrl){const a=document.createElement('a');a.id='qrZipDownloadLink';a.href=result.downloadUrl;a.target='_blank';a.rel='noopener';a.textContent='Unduh Arsip ZIP (JPG)';a.style.cssText='display:inline-block;margin:10px 0;padding:10px 14px;background:var(--primary2);color:#fff;border-radius:9px;text-decoration:none';document.getElementById('qrBatchTitle').parentElement.appendChild(a);}
         (result.qrPayloads || []).forEach((payload, index) => {
           const item = document.createElement('div'); item.className = 'qrItem';
           const title = document.createElement('strong'); title.textContent = result.productCode + ' #' + (index + 1); item.appendChild(title);
@@ -1113,6 +1174,7 @@
         message.className = 'catatan sukses';
         document.getElementById('btnPrintQr').style.display = (result.qrPayloads || []).length ? 'block' : 'none';
         await muatProduk();
+        await muatRiwayatQr();
       } catch(err) {
         message.textContent = 'Gagal membuat QR: ' + pesanErrorJaringan(err);
         message.className = 'catatan error';
@@ -1218,6 +1280,13 @@
     function toggleKategori() {
       const keluar = document.getElementById('jenisTransaksi').value === 'KELUAR';
       document.getElementById('kategoriContainer').style.display = keluar ? 'block' : 'none';
+      const manual = document.getElementById('metodeTransaksi').value === 'MANUAL';
+      document.getElementById('scannerCard').style.display = manual ? 'none' : 'block';
+      document.getElementById('manualTransactionCard').style.display = manual ? 'block' : 'none';
+      if (!manual) {
+        manualUnitPreviewData = null;
+        document.getElementById('manualUnitPreview').style.display = 'none';
+      }
     }
     document.getElementById('jenisTransaksi').addEventListener('change', toggleKategori);
 
@@ -1240,6 +1309,40 @@
         });
       } catch (err) { /* Bunyi tidak boleh menghentikan transaksi. */ }
     }
+
+    document.getElementById('manualUnitForm').addEventListener('submit', async function(event){
+      event.preventDefault();
+      const code=document.getElementById('manualUnitCode').value.trim();
+      const message=document.getElementById('manualPreviewMessage');
+      const btn=document.getElementById('btnPreviewManual');
+      manualUnitPreviewData=null;document.getElementById('manualUnitPreview').style.display='none';
+      if(!code){message.textContent='Masukkan kode unit terlebih dahulu.';return;}
+      btn.disabled=true;btn.textContent='MEMERIKSA KODE...';message.textContent='';
+      try{
+        const type=document.getElementById('jenisTransaksi').value;
+        const channel=type==='KELUAR'?document.getElementById('kategori').value:'';
+        const result=await kirimKeBackend({action:'scan_preview',token:sessionData.token,qrPayload:code,transactionType:type,channel:channel});
+        if(!result||!result.success)throw new Error(result&&result.message||'Kode unit tidak dapat diverifikasi.');
+        manualUnitPreviewData={code:code,transactionType:type,channel:channel};
+        const u=result.unit;
+        [['manualProductCode',u.productCode],['manualProductName',u.productName],['manualSerialNumber',u.serialNumber],['manualUnitNumber',u.unitNumber==null?'-':angka(u.unitNumber)],['manualUnitStatus',u.status],['manualUnitHpp',rupiah(u.hpp)],['manualUnitPrice',rupiah(u.sellingPrice)]].forEach(pair=>document.getElementById(pair[0]).textContent=pair[1]);
+        document.getElementById('manualUnitPreview').style.display='block';
+        message.textContent='Unit ditemukan. Periksa rincian sebelum menyimpan transaksi.';message.className='catatan sukses';
+      }catch(err){message.textContent='Kode unit tidak valid: '+pesanErrorJaringan(err);message.className='catatan error';}
+      finally{btn.disabled=false;btn.textContent='TAMPILKAN RINCIAN UNIT';}
+    });
+    document.getElementById('btnSaveManualTransaction').addEventListener('click',async function(){
+      if(!manualUnitPreviewData||memproses)return;
+      const btn=this,data=manualUnitPreviewData,message=document.getElementById('manualTransactionMessage');
+      btn.disabled=true;btn.textContent='MENYIMPAN...';memproses=true;
+      try{
+        const result=await kirimKeBackend({action:'scan',token:sessionData.token,qrPayload:data.code,transactionType:data.transactionType,channel:data.channel,inputMethod:'MANUAL'});
+        if(!result||!result.success)throw new Error(result&&result.message||'Transaksi ditolak backend.');
+        message.textContent=result.message||'Transaksi manual berhasil disimpan.';message.className='catatan sukses';
+        document.getElementById('manualUnitPreview').style.display='none';document.getElementById('manualUnitCode').value='';document.getElementById('manualPreviewMessage').textContent='';manualUnitPreviewData=null;
+      }catch(err){message.textContent='Transaksi manual gagal: '+pesanErrorJaringan(err)+'. Periksa status unit sebelum mencoba kembali.';message.className='catatan error';}
+      finally{memproses=false;btn.disabled=false;btn.textContent='SIMPAN TRANSAKSI';}
+    });
 
     document.getElementById('btnScan').addEventListener('click', mulaiScan);
 
@@ -1286,7 +1389,8 @@
           token: sessionData.token,
           qrPayload: qrText,
           transactionType: jenis,
-          channel: channel
+          channel: channel,
+          inputMethod: 'SCAN'
         });
         if (!result || !result.success) {
           if (result && result.code === 'SESSION_INVALID') {
