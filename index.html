@@ -94,14 +94,24 @@
     button{background:var(--primary2);color:#fff;border-radius:10px;min-height:46px;transition:filter .15s,transform .15s}
     button:hover{filter:brightness(1.06)}button:active{transform:translateY(1px)}
     .secondary,.topline button,.pageTitle button{background:#718078;color:white}
-    #appView{position:relative;padding-left:250px;min-height:calc(100vh - 100px)}
-    .sideNav{position:fixed;left:0;top:100px;bottom:0;width:232px;background:var(--surface);border-right:1px solid var(--line);padding:18px 12px;z-index:20;display:flex;flex-direction:column;gap:6px;overflow:auto}
-    .sideNav .navCaption{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:800;padding:14px 12px 6px}
-    .sideNav button{width:100%;margin:0;text-align:left;display:flex;align-items:center;gap:11px;background:transparent;color:var(--muted);padding:11px 13px;min-height:46px;font-weight:650}
+    #appView{position:relative;padding-left:250px;min-height:calc(100vh - 100px);transition:padding-left .22s ease}
+    .sideNav{position:fixed;left:0;top:100px;bottom:0;width:232px;background:var(--surface);border-right:1px solid var(--line);padding:18px 12px;z-index:40;display:flex;flex-direction:column;gap:6px;overflow:auto;transition:width .22s ease,transform .22s ease}
+    .sideNav .navCaption{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:800;padding:14px 12px 6px;white-space:nowrap}
+    .sideNav button{width:100%;margin:0;text-align:left;display:flex;align-items:center;gap:11px;background:transparent;color:var(--muted);padding:11px 13px;min-height:46px;font-weight:650;white-space:nowrap;overflow:hidden}
     .sideNav button:hover,.sideNav button.active{background:var(--surface2);color:var(--primary2)}
     .sideNav button.active{box-shadow:inset 3px 0 var(--primary2)}
+    .sideNav .navIcon{width:22px;min-width:22px;text-align:center;font-size:19px}
     .sideNav .navBottom{margin-top:auto;border-top:1px solid var(--line);padding-top:10px}
     #appView>section{margin:18px 22px;max-width:1600px}
+    .navToggle{position:fixed;left:246px;top:112px;z-index:55;width:42px;height:42px;min-height:42px;padding:0;margin:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--primary);box-shadow:var(--shadow);font-size:21px;display:flex;align-items:center;justify-content:center;transition:left .22s ease}
+    .navBackdrop{display:none}
+    #appView.nav-collapsed{padding-left:88px}
+    #appView.nav-collapsed .sideNav{width:76px;padding-left:10px;padding-right:10px}
+    #appView.nav-collapsed .sideNav .navCaption,#appView.nav-collapsed .sideNav button .navLabel{display:none}
+    #appView.nav-collapsed .sideNav button{justify-content:center;padding:10px 6px}
+    #appView.nav-collapsed .sideNav button .navIcon{margin:0}
+    #appView.nav-collapsed .navToggle{left:90px}
+    #appView.nav-collapsed .appFooter{margin-left:108px}
     #homeMenu{display:none!important}
     #dashboardView{display:block}
     .pageTitle h2{font-size:22px;color:var(--primary);letter-spacing:-.4px}
@@ -122,13 +132,19 @@
     .reportToolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end}
     .reportToolbar button{margin:0}
     @media(max-width:760px){
-      #appView{padding-left:0;padding-bottom:72px}.sideNav{top:auto;bottom:0;left:0;right:0;width:100%;height:66px;padding:5px 4px;display:flex;flex-direction:row;justify-content:space-around;gap:2px;border-right:0;border-top:1px solid var(--line);overflow-x:auto}
-      .sideNav .navCaption,.sideNav .navBottom{display:none}.sideNav button{min-width:58px;width:auto;flex:1;flex-direction:column;justify-content:center;gap:2px;padding:5px 3px;font-size:10px;white-space:nowrap;min-height:54px;text-align:center}.sideNav button .navIcon{font-size:18px}
-      #appView>section{margin:12px 10px}.appFooter{margin:14px 10px 82px;text-align:center}.insightGrid{grid-template-columns:1fr}.reportToolbar{grid-template-columns:1fr 1fr}
-      header.brandHeader{padding:13px 16px}.brandMain{font-size:27px}.brandSub{font-size:13px}
+      #appView,#appView.nav-collapsed{padding-left:0;padding-bottom:12px}
+      .sideNav,#appView.nav-collapsed .sideNav{top:0;bottom:0;left:0;right:auto;width:min(84vw,310px);max-width:310px;height:100dvh;padding:18px 14px;display:flex;flex-direction:column;justify-content:flex-start;gap:7px;border-right:1px solid var(--line);border-top:0;overflow-y:auto;transform:translateX(-105%);box-shadow:var(--shadow);z-index:80}
+      #appView.mobile-nav-open .sideNav{transform:translateX(0)}
+      .sideNav .navCaption{display:block}.sideNav .navBottom{display:block}.sideNav button,#appView.nav-collapsed .sideNav button{width:100%;min-width:0;flex:none;flex-direction:row;justify-content:flex-start;gap:12px;padding:12px 13px;font-size:15px;min-height:50px;text-align:left}
+      .sideNav button .navIcon{font-size:20px}.sideNav button .navLabel{display:inline!important}
+      .navToggle,#appView.nav-collapsed .navToggle{position:fixed;left:12px;top:112px;width:44px;height:44px;min-height:44px;z-index:90}
+      .navBackdrop{display:block;position:fixed;inset:0;background:rgba(12,20,16,.42);z-index:70;opacity:0;visibility:hidden;transition:opacity .2s;}
+      #appView.mobile-nav-open .navBackdrop{opacity:1;visibility:visible}
+      #appView>section{margin:12px 10px}.appFooter,#appView.nav-collapsed .appFooter{margin:14px 10px;text-align:center}.insightGrid{grid-template-columns:1fr}.reportToolbar{grid-template-columns:1fr 1fr}
+      header.brandHeader{padding:13px 16px 13px 66px}.brandMain{font-size:27px}.brandSub{font-size:13px}
       .pageTitle h2{font-size:19px}.card{padding:14px}
     }
-    @media(max-width:420px){.sideNav button{font-size:9px}.sideNav button .navIcon{font-size:17px}.reportToolbar{grid-template-columns:1fr}}
+    @media(max-width:420px){.reportToolbar{grid-template-columns:1fr}}
     @media print{.sideNav,.brandHeader,.appFooter,.noPrint{display:none!important}#appView{padding:0!important}#appView>section{margin:0!important;box-shadow:none!important}}
 
     @media print {
@@ -160,16 +176,18 @@
     </section>
 
     <section id="appView">
-      <nav class="sideNav" aria-label="Navigasi utama">
+      <button type="button" id="btnNavToggle" class="navToggle noPrint" aria-label="Buka atau tutup menu" aria-expanded="true" title="Buka atau tutup menu">☰</button>
+      <div id="navBackdrop" class="navBackdrop" aria-hidden="true"></div>
+      <nav class="sideNav" id="mainSideNav" aria-label="Navigasi utama">
         <div class="navCaption">Workspace</div>
-        <button type="button" id="navDashboard" class="active"><span class="navIcon">▦</span><span>Dashboard</span></button>
-        <button type="button" id="navProducts"><span class="navIcon">▤</span><span>Manajemen Produk</span></button>
-        <button type="button" id="navTransactions"><span class="navIcon">⇄</span><span>Transaksi</span></button>
-        <button type="button" id="navReports"><span class="navIcon">▥</span><span>Laporan</span></button>
-        <button type="button" id="navUsers"><span class="navIcon">♙</span><span>Kelola User</span></button>
-        <button type="button" id="navPassword"><span class="navIcon">⌑</span><span>Ganti Sandi</span></button>
-        <button type="button" id="navSubscription"><span class="navIcon">◷</span><span>Langganan</span></button>
-        <div class="navBottom"><button type="button" id="btnThemeToggle" class="themeToggle"><span class="navIcon">◐</span><span>Mode gelap</span></button><button type="button" id="navLogout"><span class="navIcon">↪</span><span>Keluar</span></button></div>
+        <button type="button" id="navDashboard" class="active"><span class="navIcon">▦</span><span class="navLabel">Dashboard</span></button>
+        <button type="button" id="navProducts"><span class="navIcon">▤</span><span class="navLabel">Manajemen Produk</span></button>
+        <button type="button" id="navTransactions"><span class="navIcon">⇄</span><span class="navLabel">Transaksi</span></button>
+        <button type="button" id="navReports"><span class="navIcon">▥</span><span class="navLabel">Laporan</span></button>
+        <button type="button" id="navUsers"><span class="navIcon">♙</span><span class="navLabel">Kelola User</span></button>
+        <button type="button" id="navPassword"><span class="navIcon">⌑</span><span class="navLabel">Ganti Sandi</span></button>
+        <button type="button" id="navSubscription"><span class="navIcon">◷</span><span class="navLabel">Langganan</span></button>
+        <div class="navBottom"><button type="button" id="btnThemeToggle" class="themeToggle"><span class="navIcon">◐</span><span class="navLabel">Mode gelap</span></button><button type="button" id="navLogout"><span class="navIcon">↪</span><span class="navLabel">Keluar</span></button></div>
       </nav>
       <section class="card" id="identityCard"><div class="topline"><div><h2 style="margin:0">Selamat datang di MY WAREHOUSE</h2><p id="identitas" class="catatan"></p></div><button id="btnLogout" type="button" class="secondary smallBtn noPrint">Keluar</button></div></section>
 
@@ -560,6 +578,41 @@
       document.getElementById('dashboardView').style.display = akses.monitoring ? 'block' : 'none';
       if (akses.monitoring) muatDashboard();
     }
+
+    const appShell = document.getElementById('appView');
+    const navToggleButton = document.getElementById('btnNavToggle');
+    function isMobileNav() { return window.matchMedia('(max-width: 760px)').matches; }
+    function setNavState(open) {
+      if (isMobileNav()) {
+        appShell.classList.toggle('mobile-nav-open', !!open);
+        navToggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+        navToggleButton.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+        navToggleButton.textContent = open ? '×' : '☰';
+      } else {
+        appShell.classList.toggle('nav-collapsed', !open);
+        navToggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+        navToggleButton.setAttribute('aria-label', open ? 'Ciutkan menu' : 'Perluas menu');
+        navToggleButton.textContent = open ? '☰' : '☰';
+        try { localStorage.setItem('mwNavCollapsed', open ? '0' : '1'); } catch(e) {}
+      }
+    }
+    navToggleButton.addEventListener('click', () => {
+      if (isMobileNav()) setNavState(!appShell.classList.contains('mobile-nav-open'));
+      else setNavState(appShell.classList.contains('nav-collapsed'));
+    });
+    document.getElementById('navBackdrop').addEventListener('click', () => setNavState(false));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && appShell.classList.contains('mobile-nav-open')) setNavState(false); });
+    document.querySelectorAll('.sideNav button[id^="nav"]').forEach(btn => btn.addEventListener('click', () => { if (isMobileNav()) setNavState(false); }));
+    function syncNavForViewport() {
+      if (isMobileNav()) { appShell.classList.remove('nav-collapsed'); setNavState(false); }
+      else {
+        appShell.classList.remove('mobile-nav-open');
+        let collapsed = false; try { collapsed = localStorage.getItem('mwNavCollapsed') === '1'; } catch(e) {}
+        setNavState(!collapsed);
+      }
+    }
+    window.addEventListener('resize', syncNavForViewport);
+    syncNavForViewport();
 
     document.getElementById('btnOpenMonitoring').addEventListener('click', () => bukaHalaman('monitoring'));
     document.getElementById('navDashboard').addEventListener('click', () => bukaHalaman('monitoring'));
