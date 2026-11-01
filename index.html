@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SISTEM GUDANG</title>
+  <title>MY WAREHOUSE | by CIPTA DUA PUTRA</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
@@ -81,6 +81,56 @@
     .smallBtn { padding:8px 10px; min-height:36px; font-size:13px; }
     .userActionBtn { min-width:110px; margin:0; padding:8px; min-height:36px; font-size:12px; }
     .userForm { max-width:720px; }
+
+    :root{--bg:#f3f1ea;--surface:#fff;--surface2:#f7f8f5;--text:#25332e;--muted:#718078;--line:#e1e7e1;--primary:#263b36;--primary2:#54766a;--accent:#c5a77a;--danger:#a65d58;--shadow:0 8px 28px rgba(31,49,42,.06)}
+    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .2s,color .2s}
+    header.brandHeader{background:var(--surface);color:var(--primary);text-align:left;padding:16px clamp(18px,3vw,42px);border-bottom:1px solid var(--line);font-size:inherit;letter-spacing:-1.8px}
+    .brandMain{font-weight:900;font-size:clamp(25px,3.3vw,43px);line-height:1;letter-spacing:-1.5px}
+    .brandSub{text-align:right;font-weight:600;font-size:clamp(12px,1.4vw,19px);letter-spacing:.2px;margin-top:3px}
+    body.dark{--bg:#151e1b;--surface:#202c27;--surface2:#26352e;--text:#e6eee8;--muted:#aab9af;--line:#35453d;--primary:#dce9df;--primary2:#91b2a0;--accent:#c5a77a;--shadow:0 8px 28px rgba(0,0,0,.18)}
+    body.dark header.brandHeader{background:var(--surface);color:var(--primary)}
+    .card{background:var(--surface);color:var(--text);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:16px}
+    input,select{background:var(--surface);color:var(--text);border:1px solid var(--line);min-height:48px}
+    button{background:var(--primary2);color:#fff;border-radius:10px;min-height:46px;transition:filter .15s,transform .15s}
+    button:hover{filter:brightness(1.06)}button:active{transform:translateY(1px)}
+    .secondary,.topline button,.pageTitle button{background:#718078;color:white}
+    #appView{position:relative;padding-left:250px;min-height:calc(100vh - 100px)}
+    .sideNav{position:fixed;left:0;top:100px;bottom:0;width:232px;background:var(--surface);border-right:1px solid var(--line);padding:18px 12px;z-index:20;display:flex;flex-direction:column;gap:6px;overflow:auto}
+    .sideNav .navCaption{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:800;padding:14px 12px 6px}
+    .sideNav button{width:100%;margin:0;text-align:left;display:flex;align-items:center;gap:11px;background:transparent;color:var(--muted);padding:11px 13px;min-height:46px;font-weight:650}
+    .sideNav button:hover,.sideNav button.active{background:var(--surface2);color:var(--primary2)}
+    .sideNav button.active{box-shadow:inset 3px 0 var(--primary2)}
+    .sideNav .navBottom{margin-top:auto;border-top:1px solid var(--line);padding-top:10px}
+    #appView>section{margin:18px 22px;max-width:1600px}
+    #homeMenu{display:none!important}
+    #dashboardView{display:block}
+    .pageTitle h2{font-size:22px;color:var(--primary);letter-spacing:-.4px}
+    h2,h3{color:var(--primary)}
+    .catatan,.stat .label{color:var(--muted)}
+    .stat{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:16px}
+    .stat .value{font-size:clamp(18px,1.7vw,25px);color:var(--primary)}
+    th{background:var(--surface2);color:var(--muted)}td,th{border-bottom:1px solid var(--line)}
+    .monitorTableWrap,.productTableWrap{height: min(470px, 58vh);max-height:470px;border-color:var(--line);border-radius:12px}
+    .monitorTableWrap thead th,.productTableWrap thead th{background:var(--surface2)}
+    .appFooter{margin:24px 22px 16px 272px;color:var(--muted);font-size:12px;text-align:center;padding:14px;border-top:1px solid var(--line)}
+    .themeToggle{margin-top:8px!important;border:1px solid var(--line)!important}
+    .insightGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+    .insightCard{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
+    .insightCard h3{margin:0 0 10px;font-size:15px}
+    .insightCard table{min-width:420px}
+    #reportPage{display:none}
+    .reportToolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end}
+    .reportToolbar button{margin:0}
+    @media(max-width:760px){
+      #appView{padding-left:0;padding-bottom:72px}.sideNav{top:auto;bottom:0;left:0;right:0;width:100%;height:66px;padding:5px 4px;display:flex;flex-direction:row;justify-content:space-around;gap:2px;border-right:0;border-top:1px solid var(--line);overflow-x:auto}
+      .sideNav .navCaption,.sideNav .navBottom{display:none}.sideNav button{min-width:58px;width:auto;flex:1;flex-direction:column;justify-content:center;gap:2px;padding:5px 3px;font-size:10px;white-space:nowrap;min-height:54px;text-align:center}.sideNav button .navIcon{font-size:18px}
+      #appView>section{margin:12px 10px}.appFooter{margin:14px 10px 82px;text-align:center}.insightGrid{grid-template-columns:1fr}.reportToolbar{grid-template-columns:1fr 1fr}
+      header.brandHeader{padding:13px 16px}.brandMain{font-size:27px}.brandSub{font-size:13px}
+      .pageTitle h2{font-size:19px}.card{padding:14px}
+    }
+    @media(max-width:420px){.sideNav button{font-size:9px}.sideNav button .navIcon{font-size:17px}.reportToolbar{grid-template-columns:1fr}}
+    @media print{.sideNav,.brandHeader,.appFooter,.noPrint{display:none!important}#appView{padding:0!important}#appView>section{margin:0!important;box-shadow:none!important}}
+
     @media print {
       body * { visibility:hidden !important; }
       #qrPrintArea, #qrPrintArea * { visibility:visible !important; }
@@ -94,7 +144,7 @@
   </style>
 </head>
 <body>
-  <header>SISTEM GUDANG</header>
+  <header class="brandHeader"><div class="brandMain">MY WAREHOUSE</div><div class="brandSub">by CIPTA DUA PUTRA</div></header>
   <main>
     <section class="card" id="loginView">
       <h2>Login Pengguna</h2>
@@ -110,14 +160,18 @@
     </section>
 
     <section id="appView">
-      <section class="card">
-        <div class="topline"><h2 style="margin:0">Akses Pengguna</h2><button id="btnLogout" type="button">Keluar</button></div>
-        <p id="identitas"></p>
-        <section class="card" id="dashboardSubscriptionCard" style="margin:12px 0;padding:14px;background:#f8fafc;border:1px solid #dbe3ec">
-          <div class="topline"><strong>📅 Status Langganan Saat Ini</strong><button id="btnDashboardSubscriptionRefresh" type="button" class="secondary smallBtn">↻ Perbarui</button></div>
-          <div id="dashboardSubscriptionStatus" class="catatan" aria-live="polite">Memuat status langganan...</div>
-        </section>
-      </section>
+      <nav class="sideNav" aria-label="Navigasi utama">
+        <div class="navCaption">Workspace</div>
+        <button type="button" id="navDashboard" class="active"><span class="navIcon">▦</span><span>Dashboard</span></button>
+        <button type="button" id="navProducts"><span class="navIcon">▤</span><span>Manajemen Produk</span></button>
+        <button type="button" id="navTransactions"><span class="navIcon">⇄</span><span>Transaksi</span></button>
+        <button type="button" id="navReports"><span class="navIcon">▥</span><span>Laporan</span></button>
+        <button type="button" id="navUsers"><span class="navIcon">♙</span><span>Kelola User</span></button>
+        <button type="button" id="navPassword"><span class="navIcon">⌑</span><span>Ganti Sandi</span></button>
+        <button type="button" id="navSubscription"><span class="navIcon">◷</span><span>Langganan</span></button>
+        <div class="navBottom"><button type="button" id="btnThemeToggle" class="themeToggle"><span class="navIcon">◐</span><span>Mode gelap</span></button><button type="button" id="navLogout"><span class="navIcon">↪</span><span>Keluar</span></button></div>
+      </nav>
+      <section class="card" id="identityCard"><div class="topline"><div><h2 style="margin:0">Selamat datang di MY WAREHOUSE</h2><p id="identitas" class="catatan"></p></div><button id="btnLogout" type="button" class="secondary smallBtn noPrint">Keluar</button></div></section>
 
       <section class="card" id="homeMenu">
         <h2>Pilih Menu</h2>
@@ -178,7 +232,7 @@
       </section>
 
       <section class="card" id="dashboardView">
-        <div class="pageTitle"><h2>Monitoring Gudang</h2><button id="btnBackMonitoring" type="button">← Menu</button></div>
+        <div class="pageTitle"><h2>Dashboard</h2><button id="btnBackMonitoring" type="button">← Menu</button></div>
         <p id="dashboardCompany" class="catatan"></p>
         <div class="topline" style="margin:14px 0 8px"><strong>Ringkasan Gudang</strong><button id="btnRefreshDashboard" type="button" class="secondary">↻ Refresh</button></div>
         <div class="filters">
@@ -194,8 +248,12 @@
           <div class="stat"><div class="label">Total Penjualan (periode)</div><div class="value" id="totalPenjualan">-</div></div>
           <div class="stat"><div class="label">Laba Kotor (periode)</div><div class="value" id="labaKotor">-</div></div>
         </div>
+        <div class="insightGrid">
+          <section class="insightCard"><h3>🔥 Produk Terlaris · 3 Hari Terakhir</h3><div id="hotProductsMessage" class="catatan">Memuat analisis penjualan...</div><div class="tableWrap"><table><thead><tr><th>Produk</th><th>Unit Keluar</th></tr></thead><tbody id="hotProductsRows"></tbody></table></div></section>
+          <section class="insightCard"><h3>◷ Tidak Ada Transaksi · 30 Hari</h3><div id="dormantProductsMessage" class="catatan">Memuat produk tanpa transaksi...</div><div class="tableWrap"><table><thead><tr><th>Produk</th><th>Transaksi Terakhir</th></tr></thead><tbody id="dormantProductsRows"></tbody></table></div></section>
+        </div>
         <h2 class="monitorSectionTitle">Data Barang</h2>
-        <p class="catatan">Seluruh produk perusahaan beserta HPP dan harga jual per pcs. Daftar menampilkan 8 baris sekaligus; gulir untuk melihat produk lainnya.</p>
+        <p class="catatan">Seluruh produk perusahaan beserta HPP dan harga jual per pcs. Daftar menampilkan maksimal 10 baris; gulir untuk melihat produk lainnya.</p>
         <div id="monitorProductMessage" class="catatan">Memuat data barang...</div>
         <div class="monitorTableWrap"><table><thead><tr><th>Kode Barang</th><th>Nama Barang</th><th>HPP/Pcs</th><th>Harga Jual/Pcs</th><th>Status</th></tr></thead><tbody id="monitorProductRows"></tbody></table></div>
         <h2 class="monitorSectionTitle">Monitoring Stok per Produk</h2>
@@ -203,11 +261,24 @@
         <div id="stockMessage" class="catatan">Memuat stok produk...</div>
         <div class="monitorTableWrap"><table><thead><tr><th>Kode</th><th>Nama Produk</th><th>Stok Tersedia</th><th>Nilai Stok (HPP)</th><th>Kondisi</th></tr></thead><tbody id="stockRows"></tbody></table></div>
         <h2 class="monitorSectionTitle">Riwayat Transaksi Terbaru</h2>
-        <p class="catatan">Menampilkan 8 baris sekaligus. Gulir untuk melihat transaksi lainnya yang tersedia.</p>
+        <p class="catatan">Menampilkan maksimal 10 baris; gulir untuk melihat transaksi lainnya.</p>
         <div id="dashboardMessage" class="catatan">Memuat data...</div>
         <div class="monitorTableWrap"><table><thead><tr><th>Waktu</th><th>Barang</th><th>Jenis</th><th>Channel</th><th>Penjualan</th><th>Laba</th></tr></thead><tbody id="recentRows"></tbody></table></div>
       </section>
 
+      <section class="card" id="reportPage" style="display:none">
+        <div class="pageTitle"><h2>Laporan</h2></div>
+        <p class="catatan">Filter data perusahaan dan unduh sebagai CSV yang dapat dibuka di Excel, atau cetak/simpan sebagai PDF.</p>
+        <div class="reportToolbar noPrint">
+          <div><label for="reportType">Jenis laporan</label><select id="reportType"><option value="products">Produk</option><option value="units">Unit Barang</option><option value="transactions">Transaksi</option></select></div>
+          <div><label for="reportStart">Dari tanggal</label><input id="reportStart" type="date"></div>
+          <div><label for="reportEnd">Sampai tanggal</label><input id="reportEnd" type="date"></div>
+          <div><label for="reportProduct">Produk</label><select id="reportProduct"><option value="ALL">Semua produk</option></select></div>
+          <button id="btnLoadReport" type="button">Tampilkan</button><button id="btnExportExcel" type="button" class="secondary">Unduh Excel</button><button id="btnExportPdf" type="button" class="secondary">Simpan PDF</button>
+        </div>
+        <div id="reportMessage" class="catatan" style="margin:14px 0">Pilih filter lalu tekan Tampilkan.</div>
+        <div class="productTableWrap"><table><thead id="reportHead"></thead><tbody id="reportRows"></tbody></table></div>
+      </section>
       <section class="card" id="productsPage" style="display:none">
         <div class="pageTitle"><h2>Manajemen Barang</h2><button id="btnBackProducts" type="button">← Menu</button></div>
         <p id="productsCompany" class="catatan"></p>
@@ -324,6 +395,7 @@
       </section>
 
     </section>
+    <footer class="appFooter">MY WAREHOUSE version 1.0.0 | by ciptaduaputra</footer>
   </main>
 
   <script>
@@ -403,7 +475,9 @@
       return message;
     }
 
-    let akses = { monitoring: false, transaksi: false, produk: false };
+    let akses = { monitoring: false, transakasi: false, produk: false, users: false };
+    let reportRowsData = [];
+    let reportHeadersData = [];
 
     function bukaAplikasi() {
       if (!sessionData || !sessionData.user) return tampilLogin();
@@ -419,7 +493,7 @@
         produk: role === 'Admin',
         users: role === 'Admin'
       };
-      document.getElementById('homeMenu').style.display = 'block';
+      document.getElementById('homeMenu').style.display = 'none';
       document.getElementById('btnOpenMonitoring').style.display = akses.monitoring ? 'flex' : 'none';
       document.getElementById('btnOpenTransaksi').style.display = akses.transaksi ? 'flex' : 'none';
       document.getElementById('btnOpenProducts').style.display = akses.produk ? 'flex' : 'none';
@@ -427,18 +501,27 @@
       document.getElementById('btnOpenPassword').style.display = 'flex';
       const visibleMenus = [akses.monitoring, akses.transaksi, akses.produk, akses.users, true, true].filter(Boolean).length;
       document.querySelector('.menuGrid').style.gridTemplateColumns = visibleMenus > 1 ? '1fr 1fr' : '1fr';
-      document.getElementById('dashboardView').style.display = 'none';
+      document.getElementById('dashboardView').style.display = akses.monitoring ? 'block' : 'none';
       document.getElementById('scanPage').style.display = 'none';
       document.getElementById('productsPage').style.display = 'none';
       document.getElementById('usersPage').style.display = 'none';
       document.getElementById('passwordPage').style.display = 'none';
       document.getElementById('subscriptionsPage').style.display = 'none';
+      document.getElementById('reportPage').style.display = 'none';
+      document.getElementById('navDashboard').style.display = akses.monitoring ? 'flex' : 'none';
+      document.getElementById('navProducts').style.display = akses.produk ? 'flex' : 'none';
+      document.getElementById('navTransactions').style.display = akses.transaksi ? 'flex' : 'none';
+      document.getElementById('navReports').style.display = akses.users ? 'flex' : 'none';
+      document.getElementById('navUsers').style.display = akses.users ? 'flex' : 'none';
+      document.getElementById('navPassword').style.display = 'flex';
+      document.getElementById('navSubscription').style.display = 'flex';
+      if (akses.monitoring) muatDashboard();
       if (!akses.transaksi) {
         berhentiScan();
         sembunyikanPesan('pesan');
       }
       toggleKategori();
-      muatStatusLanggananDashboard();
+      // Status langganan hanya ditampilkan pada menu Langganan.
     }
 
     function bukaHalaman(halaman) {
@@ -453,11 +536,16 @@
       document.getElementById('usersPage').style.display = halaman === 'users' ? 'block' : 'none';
       document.getElementById('passwordPage').style.display = halaman === 'password' ? 'block' : 'none';
       document.getElementById('subscriptionsPage').style.display = halaman === 'langganan' ? 'block' : 'none';
+      document.getElementById('reportPage').style.display = halaman === 'laporan' ? 'block' : 'none';
+      document.querySelectorAll('.sideNav button').forEach(b => b.classList.remove('active'));
+      const navMap = {monitoring:'navDashboard', produk:'navProducts', transaksi:'navTransactions', laporan:'navReports', users:'navUsers', password:'navPassword', langganan:'navSubscription'};
+      if (navMap[halaman]) document.getElementById(navMap[halaman]).classList.add('active');
       if (halaman === 'users') muatUsers();
       if (halaman === 'langganan') muatLangganan();
       if (halaman === 'monitoring') muatDashboard();
       if (halaman === 'transaksi') toggleKategori();
       if (halaman === 'produk') muatProduk();
+      if (halaman === 'laporan') muatLaporan();
     }
 
     async function kembaliKeMenu() {
@@ -468,10 +556,26 @@
       document.getElementById('usersPage').style.display = 'none';
       document.getElementById('passwordPage').style.display = 'none';
       document.getElementById('subscriptionsPage').style.display = 'none';
-      document.getElementById('homeMenu').style.display = 'block';
+      document.getElementById('homeMenu').style.display = 'none';
+      document.getElementById('dashboardView').style.display = akses.monitoring ? 'block' : 'none';
+      if (akses.monitoring) muatDashboard();
     }
 
     document.getElementById('btnOpenMonitoring').addEventListener('click', () => bukaHalaman('monitoring'));
+    document.getElementById('navDashboard').addEventListener('click', () => bukaHalaman('monitoring'));
+    document.getElementById('navProducts').addEventListener('click', () => bukaHalaman('produk'));
+    document.getElementById('navTransactions').addEventListener('click', () => bukaHalaman('transaksi'));
+    document.getElementById('navReports').addEventListener('click', () => bukaHalaman('laporan'));
+    document.getElementById('navUsers').addEventListener('click', () => bukaHalaman('users'));
+    document.getElementById('navPassword').addEventListener('click', () => bukaHalaman('password'));
+    document.getElementById('navSubscription').addEventListener('click', () => bukaHalaman('langganan'));
+    document.getElementById('navLogout').addEventListener('click', () => document.getElementById('btnLogout').click());
+    document.getElementById('btnThemeToggle').addEventListener('click', () => { document.body.classList.toggle('dark'); const dark=document.body.classList.contains('dark'); document.getElementById('btnThemeToggle').lastElementChild.textContent=dark?'Mode terang':'Mode gelap'; try{localStorage.setItem('mwTheme',dark?'dark':'light')}catch(e){} });
+    try { if(localStorage.getItem('mwTheme')==='dark') document.body.classList.add('dark'); } catch(e){}
+    document.getElementById('btnLoadReport').addEventListener('click', muatLaporan);
+    document.getElementById('btnExportExcel').addEventListener('click', eksporLaporanCSV);
+    document.getElementById('btnExportPdf').addEventListener('click', () => window.print());
+
     document.getElementById('btnOpenTransaksi').addEventListener('click', () => bukaHalaman('transaksi'));
     document.getElementById('btnOpenProducts').addEventListener('click', () => bukaHalaman('produk'));
     document.getElementById('btnOpenSubscriptions').addEventListener('click', async () => {
@@ -561,7 +665,8 @@
 
     function aturAksesQrPaket(planCode) {
       const code = String(planCode || '').trim().toUpperCase();
-      const bolehGenerateQr = Boolean(code) && !/^BASIC(?:-|$)/.test(code);
+      const sub = sessionData && sessionData.user && sessionData.user.subscription;
+      const bolehGenerateQr = Boolean(code) && Boolean(sub && sub.status === 'ACTIVE' && sub.planCode === code && sub.features && sub.features.generateQR);
       const qrButton = document.querySelector('[data-product-panel="qrPanel"]');
       const qrPanel = document.getElementById('qrPanel');
       if (qrButton) qrButton.style.display = bolehGenerateQr ? '' : 'none';
@@ -596,7 +701,8 @@
           (sub.startDate ? ' · Mulai ' + sub.startDate : '') +
           (sub.endDate ? ' · Berakhir ' + sub.endDate : '') +
           (sub.message ? ' — ' + sub.message : '');
-        aturAksesQrPaket(sub.status === 'ACTIVE' ? sub.planCode : '');
+        if (sessionData && sessionData.user) { sessionData.user.subscription = Object.assign({}, sessionData.user.subscription || {}, sub, { features: result.planFeatures || (sessionData.user.subscription && sessionData.user.subscription.features) || {} }); }
+        aturAksesQrPaket(sub.status === 'ACTIVE' && result.planFeatures && result.planFeatures.generateQR ? sub.planCode : '');
         const plans = Array.isArray(result.plans) ? result.plans : [];
         preview.replaceChildren();
         select.replaceChildren();
@@ -659,7 +765,6 @@
     });
 
     document.getElementById('btnRefreshDashboard').addEventListener('click', muatDashboard);
-    document.getElementById('btnDashboardSubscriptionRefresh').addEventListener('click', muatStatusLanggananDashboard);
     document.getElementById('filterMonth').addEventListener('change', muatDashboard);
     document.getElementById('filterProduct').addEventListener('change', muatDashboard);
 
@@ -789,10 +894,40 @@
           values.forEach(value => { const td = document.createElement('td'); td.textContent = value; tr.appendChild(td); });
           tbody.appendChild(tr);
         });
-        message.textContent = 'Monitoring Gudang diperbarui.';
+        const hot = result.hotProducts3Days || [];
+        const hotBody = document.getElementById('hotProductsRows'); hotBody.replaceChildren();
+        hot.forEach(item => { const tr=document.createElement('tr'); [item.productName + ' (' + item.productCode + ')', angka(item.qtyOut)].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td)});hotBody.appendChild(tr); });
+        document.getElementById('hotProductsMessage').textContent = hot.length ? 'Berdasarkan jumlah unit keluar dalam 3 hari terakhir.' : 'Belum ada barang keluar dalam 3 hari terakhir.';
+        const dormant = result.noTransactions30Days || [];
+        const dormantBody = document.getElementById('dormantProductsRows'); dormantBody.replaceChildren();
+        dormant.forEach(item => { const tr=document.createElement('tr'); [item.productName + ' (' + item.productCode + ')', item.lastTransaction || 'Tidak ada riwayat'].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td)});dormantBody.appendChild(tr); });
+        document.getElementById('dormantProductsMessage').textContent = dormant.length ? 'Produk aktif tanpa transaksi selama 30 hari terakhir.' : 'Semua produk aktif memiliki transaksi dalam 30 hari terakhir.';
+        message.textContent = 'Dashboard berhasil diperbarui.';
       } catch (err) {
         message.textContent = 'Gagal memuat Monitoring Gudang: ' + pesanErrorJaringan(err);
       }
+    }
+
+    async function muatLaporan() {
+      if (!sessionData || !sessionData.token || !akses.users) return;
+      const message=document.getElementById('reportMessage'); message.textContent='Memuat laporan...';
+      try {
+        const result=await kirimKeBackend({action:'report_data',token:sessionData.token,reportType:document.getElementById('reportType').value,startDate:document.getElementById('reportStart').value,endDate:document.getElementById('reportEnd').value,productCode:document.getElementById('reportProduct').value||'ALL'});
+        if(!result.success) throw new Error(result.message||'Laporan gagal dimuat.');
+        reportRowsData=result.rows||[]; reportHeadersData=result.headers||[];
+        const head=document.getElementById('reportHead'); head.replaceChildren(); const hr=document.createElement('tr'); reportHeadersData.forEach(h=>{const th=document.createElement('th');th.textContent=h;hr.appendChild(th)});head.appendChild(hr);
+        const body=document.getElementById('reportRows');body.replaceChildren();
+        reportRowsData.forEach(row=>{const tr=document.createElement('tr');row.forEach(v=>{const td=document.createElement('td');td.textContent=v==null?'':String(v);tr.appendChild(td)});body.appendChild(tr)});
+        message.textContent='Menampilkan '+angka(reportRowsData.length)+' baris. Maksimal 10 baris terlihat sekaligus; gulir untuk melihat lainnya.';
+        const prod=document.getElementById('reportProduct'); const old=prod.value||'ALL'; const known=new Set(Array.from(prod.options).map(o=>o.value));
+        (result.products||[]).forEach(x=>{if(!known.has(x.productCode)){const op=document.createElement('option');op.value=x.productCode;op.textContent=x.productCode+' — '+x.productName;prod.appendChild(op)}});prod.value=old;
+      } catch(err){message.textContent='Laporan gagal dimuat: '+pesanErrorJaringan(err);}
+    }
+    function eksporLaporanCSV(){
+      if(!reportRowsData.length){alert('Belum ada data laporan untuk diunduh.');return;}
+      const esc=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+      const csv='\uFEFF'+[reportHeadersData,...reportRowsData].map(r=>r.map(esc).join(';')).join('\r\n');
+      const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='laporan-my-warehouse-'+document.getElementById('reportType').value+'.csv';a.click();URL.revokeObjectURL(url);
     }
 
     async function muatProduk() {
