@@ -155,7 +155,13 @@
         <div id="subscriptionStatusBox" class="catatan" aria-live="polite">Memuat status langganan...</div>
         <div style="margin-top:18px">
           <h3>Paket tersedia</h3>
-          <div id="subscriptionPlans" class="menuGrid"></div>
+          <label for="subscriptionPlanPreview">Pilih paket untuk melihat detail</label>
+          <select id="subscriptionPlanPreview">
+            <option value="">Memuat paket...</option>
+          </select>
+          <div id="subscriptionPlanDetails" class="card" style="margin-top:12px">
+            Pilih paket untuk melihat harga, durasi, dan batas pengguna/produk.
+          </div>
         </div>
         <section id="subscriptionPaymentFormWrap" style="margin-top:22px">
           <h3>Ajukan Pembayaran</h3>
@@ -507,16 +513,79 @@
     const rupiah = value => new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', maximumFractionDigits:0}).format(Number(value) || 0);
     const angka = value => new Intl.NumberFormat('id-ID').format(Number(value) || 0);
 
+    function formatBatasPaket(value, suffix) {
+      if (value === null || value === undefined || value === '') return 'Tanpa batas';
+      const n = Number(value);
+      if (!Number.isFinite(n)) return 'Tanpa batas';
+      return angka(n) + (suffix || '');
+    }
+
+    function tampilkanDetailPaket(plan) {
+      const box = document.getElementById('subscriptionPlanDetails');
+      if (!box) return;
+      if (!plan) {
+        box.textContent = 'Pilih paket untuk melihat harga, durasi, dan batas pengguna/produk.';
+        return;
+      }
+      const roleLimits = plan.roleLimits || {};
+      const roleText = ['Admin', 'Gudang', 'Viewer'].map(role =>
+        role + ': ' + formatBatasPaket(roleLimits[role], ' akun')
+      ).join(' · ');
+      const duration = Number(plan.durationMonths) === 12
+        ? '1 tahun' : angka(plan.durationMonths) + ' bulan';
+      const lines = [
+        (plan.planName || plan.planCode) + ' (' + plan.planCode + ')',
+        rupiah(plan.price) + ' · ' + duration,
+        'Total pengguna: ' + formatBatasPaket(plan.maxUsers, ' pengguna'),
+        'Batas produk: ' + formatBatasPaket(plan.maxProducts, ' produk'),
+        'Batas per role: ' + roleText
+      ];
+      box.replaceChildren();
+      lines.forEach((line, index) => {
+        const p = document.createElement(index === 0 ? 'strong' : 'p');
+        p.textContent = line;
+        if (index > 0) p.style.margin = '6px 0 0';
+        box.appendChild(p);
+      });
+    }
+
+    function sinkronPaketLangganan(plans, selectedCode) {
+      const preview = document.getElementById('subscriptionPlanPreview');
+      const paymentSelect = document.getElementById('subscriptionPlanCode');
+      const code = String(selectedCode || '').trim();
+      if (preview) preview.value = code;
+      if (paymentSelect) paymentSelect.value = code;
+      const selected = (plans || []).find(item => String(item.planCode) === code);
+      tampilkanDetailPaket(selected || null);
+    }
+
+    function aturAksesQrPaket(planCode) {
+      const code = String(planCode || '').trim().toUpperCase();
+      const bolehGenerateQr = Boolean(code) && !/^BASIC(?:-|$)/.test(code);
+      const qrButton = document.querySelector('[data-product-panel="qrPanel"]');
+      const qrPanel = document.getElementById('qrPanel');
+      if (qrButton) qrButton.style.display = bolehGenerateQr ? '' : 'none';
+      if (qrPanel && !bolehGenerateQr && qrPanel.classList.contains('active')) {
+        document.querySelectorAll('[data-product-panel]').forEach(item =>
+          item.classList.toggle('active', item.dataset.productPanel === 'listPanel'));
+        document.querySelectorAll('.productPanel').forEach(panel =>
+          panel.classList.toggle('active', panel.id === 'listPanel'));
+      }
+      return bolehGenerateQr;
+    }
+
     async function muatLangganan() {
       const statusBox = document.getElementById('subscriptionStatusBox');
-      const plansBox = document.getElementById('subscriptionPlans');
+      const preview = document.getElementById('subscriptionPlanPreview');
       const select = document.getElementById('subscriptionPlanCode');
+      const details = document.getElementById('subscriptionPlanDetails');
       const formWrap = document.getElementById('subscriptionPaymentFormWrap');
       statusBox.textContent = 'Memuat status langganan...';
       statusBox.className = 'catatan';
       statusBox.style.display = 'block';
-      plansBox.replaceChildren();
+      preview.innerHTML = '<option value="">Memuat paket...</option>';
       select.innerHTML = '<option value="">Memuat paket...</option>';
+      tampilkanDetailPaket(null);
       try {
         const result = await kirimKeBackend({ action: 'subscription_info', token: sessionData.token });
         if (!result || !result.success) throw new Error(result && result.message || 'Status langganan gagal dimuat.');
@@ -527,44 +596,28 @@
           (sub.startDate ? ' · Mulai ' + sub.startDate : '') +
           (sub.endDate ? ' · Berakhir ' + sub.endDate : '') +
           (sub.message ? ' — ' + sub.message : '');
+        aturAksesQrPaket(sub.status === 'ACTIVE' ? sub.planCode : '');
         const plans = Array.isArray(result.plans) ? result.plans : [];
-        select.innerHTML = '';
+        preview.replaceChildren();
+        select.replaceChildren();
         if (!plans.length) {
-          select.innerHTML = '<option value="">Belum ada paket aktif</option>';
-          plansBox.textContent = 'Belum ada paket yang tersedia. Silakan hubungi pemilik sistem.';
+          preview.add(new Option('Belum ada paket aktif', ''));
+          select.add(new Option('Belum ada paket aktif', ''));
+          details.textContent = 'Belum ada paket aktif. Pemilik sistem perlu mengaktifkan paket pada sheet Plans.';
         } else {
+          preview.add(new Option('Pilih paket...', ''));
           select.add(new Option('Pilih paket...', ''));
           plans.forEach(plan => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            const title = document.createElement('strong'); title.textContent = (/^(PROFESSIONAL|PRO)(-|$)/.test(String(plan.planCode || '').toUpperCase()) ? 'Pro' : plan.planName) + ' (' + plan.planCode + ')';
-            const durasiLabel = Number(plan.durationMonths) === 12 ? '1 tahun' : plan.durationMonths + ' bulan';
-            const price = document.createElement('p'); price.textContent = rupiah(plan.price) + ' · ' + durasiLabel;
-            const limits = document.createElement('p'); limits.className = 'catatan';
-            const roleLimits = plan.roleLimits || {};
-            const code = String(plan.planCode || '').toUpperCase();
-            let roleText;
-            if (/^(PROFESSIONAL|PRO|ENTERPRISE)(-|$)/.test(code)) {
-              roleText = 'Admin: 2 · Gudang: 10+ · Viewer: 5+';
-            } else {
-              roleText = ['Admin', 'Gudang', 'Viewer'].map(role => role + ': ' + (roleLimits[role] === null || roleLimits[role] === undefined ? 'Tanpa batas' : angka(roleLimits[role]))).join(' · ');
-            }
-            let productLimitText;
-            if (/^(PROFESSIONAL|PRO|ENTERPRISE)(-|$)/.test(code)) {
-              productLimitText = '100+ produk';
-            } else if (/^BASIC(-|$)/.test(code)) {
-              productLimitText = (plan.maxProducts === null ? '25' : angka(plan.maxProducts)) + ' produk';
-            } else if (/^ADVANCED(-|$)/.test(code)) {
-              productLimitText = (plan.maxProducts === null ? '75' : angka(plan.maxProducts)) + ' produk';
-            } else {
-              productLimitText = plan.maxProducts === null ? 'Tanpa batas' : angka(plan.maxProducts) + ' produk';
-            }
-            limits.textContent = roleText + ' · Total user: ' + (plan.maxUsers === null ? 'sesuai kuota role' : angka(plan.maxUsers)) + ' · Produk: ' + productLimitText;
-            const choose = document.createElement('button'); choose.type = 'button'; choose.className = 'secondary'; choose.textContent = 'Pilih paket';
-            choose.addEventListener('click', () => { select.value = plan.planCode; select.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
-            card.append(title, price, limits, choose); plansBox.appendChild(card);
-            select.add(new Option((/^(PROFESSIONAL|PRO)(-|$)/.test(String(plan.planCode || '').toUpperCase()) ? 'Pro' : plan.planName) + ' — ' + rupiah(plan.price) + ' / ' + (Number(plan.durationMonths) === 12 ? '1 tahun' : plan.durationMonths + ' bulan'), plan.planCode));
+            const label = (plan.planName || plan.planCode) + ' — ' + rupiah(plan.price) +
+              ' / ' + (Number(plan.durationMonths) === 12 ? '1 tahun' : angka(plan.durationMonths) + ' bulan');
+            preview.add(new Option(label, plan.planCode));
+            select.add(new Option(label, plan.planCode));
           });
+          const initialCode = plans.some(p => String(p.planCode) === String(select.value))
+            ? select.value : '';
+          sinkronPaketLangganan(plans, initialCode);
+          preview.onchange = () => sinkronPaketLangganan(plans, preview.value);
+          select.onchange = () => sinkronPaketLangganan(plans, select.value);
         }
         const isAdmin = sessionData.user && sessionData.user.role === 'Admin';
         formWrap.style.display = isAdmin && plans.length ? 'block' : 'none';
@@ -574,8 +627,10 @@
           ' Pastikan sheet Plans dan Subscriptions sudah disiapkan, lalu pastikan Apps Script sudah di-deploy dengan versi terbaru.';
         statusBox.className = 'error';
         statusBox.style.display = 'block';
-        plansBox.textContent = 'Paket belum dapat dimuat. Pesan kesalahan ditampilkan di atas.';
+        preview.innerHTML = '<option value="">Paket tidak dapat dimuat</option>';
         select.innerHTML = '<option value="">Paket tidak dapat dimuat</option>';
+        details.textContent = 'Paket belum dapat dimuat. Pesan kesalahan ditampilkan di atas.';
+        aturAksesQrPaket('');
         formWrap.style.display = 'none';
         console.error('Gagal memuat data langganan:', err);
       }
@@ -622,6 +677,7 @@
           throw new Error(result && result.message || 'Status langganan tidak dapat dimuat.');
         }
         const sub = result.subscription || {};
+        aturAksesQrPaket(sub.status === 'ACTIVE' ? sub.planCode : '');
         const plans = Array.isArray(result.plans) ? result.plans : [];
         const plan = plans.find(item => String(item.planCode || '').toUpperCase() === String(sub.planCode || '').toUpperCase());
         const statusLabels = {
