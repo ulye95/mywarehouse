@@ -84,7 +84,8 @@
 
     :root{--bg:#f3f1ea;--surface:#fff;--surface2:#f7f8f5;--text:#25332e;--muted:#718078;--line:#e1e7e1;--primary:#263b36;--primary2:#54766a;--accent:#c5a77a;--danger:#a65d58;--shadow:0 8px 28px rgba(31,49,42,.06)}
     body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .2s,color .2s}
-    header.brandHeader{background:var(--surface);color:var(--primary);text-align:left;padding:16px clamp(18px,3vw,42px);border-bottom:1px solid var(--line);font-size:inherit;letter-spacing:-1.8px}
+    header.brandHeader{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:18px;background:var(--surface);color:var(--primary);text-align:left;padding:12px clamp(18px,3vw,42px);border-bottom:1px solid var(--line);font-size:inherit;letter-spacing:-1.8px;min-height:86px;box-shadow:0 3px 14px rgba(31,49,42,.04)}
+    .brandIdentity{min-width:0;flex:1}
     .brandMain{font-weight:900;font-size:clamp(25px,3.3vw,43px);line-height:1;letter-spacing:-1.5px}
     .brandSub{text-align:right;font-weight:600;font-size:clamp(12px,1.4vw,19px);letter-spacing:.2px;margin-top:3px}
     body.dark{--bg:#151e1b;--surface:#202c27;--surface2:#26352e;--text:#e6eee8;--muted:#aab9af;--line:#35453d;--primary:#dce9df;--primary2:#91b2a0;--accent:#c5a77a;--shadow:0 8px 28px rgba(0,0,0,.18)}
@@ -95,7 +96,7 @@
     button:hover{filter:brightness(1.06)}button:active{transform:translateY(1px)}
     .secondary,.topline button,.pageTitle button{background:#718078;color:white}
     #appView{position:relative;padding-left:250px;min-height:calc(100vh - 100px);transition:padding-left .22s ease}
-    .sideNav{position:fixed;left:0;top:100px;bottom:0;width:232px;background:var(--surface);border-right:1px solid var(--line);padding:18px 12px;z-index:40;display:flex;flex-direction:column;gap:6px;overflow:auto;transition:width .22s ease,transform .22s ease}
+    .sideNav{position:fixed;left:0;top:86px;bottom:0;width:232px;background:var(--surface);border-right:1px solid var(--line);padding:18px 12px;z-index:40;display:flex;flex-direction:column;gap:6px;overflow:auto;transition:width .22s ease,transform .22s ease}
     .sideNav .navCaption{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:800;padding:14px 12px 6px;white-space:nowrap}
     .sideNav button{width:100%;margin:0;text-align:left;display:flex;align-items:center;gap:11px;background:transparent;color:var(--muted);padding:11px 13px;min-height:46px;font-weight:650;white-space:nowrap;overflow:hidden}
     .sideNav button:hover,.sideNav button.active{background:var(--surface2);color:var(--primary2)}
@@ -103,7 +104,10 @@
     .sideNav .navIcon{width:22px;min-width:22px;text-align:center;font-size:19px}
     .sideNav .navBottom{margin-top:auto;border-top:1px solid var(--line);padding-top:10px}
     #appView>section{margin:18px 22px;max-width:1600px}
-    .navToggle{position:fixed;left:246px;top:112px;z-index:55;width:42px;height:42px;min-height:42px;padding:0;margin:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--primary);box-shadow:var(--shadow);font-size:21px;display:flex;align-items:center;justify-content:center;transition:left .22s ease}
+    .navToggle{position:relative;left:auto;top:auto;z-index:101;flex:0 0 42px;width:42px;height:42px;min-height:42px;padding:0;margin:0;border:1px solid var(--line);border-radius:10px;background:var(--surface2);color:var(--primary);box-shadow:none;font-size:21px;display:none;align-items:center;justify-content:center;transition:background .18s,border-color .18s}
+    #appView.nav-collapsed .navToggle{left:auto}
+    body.nav-active .navToggle{display:flex}
+    .navToggle:hover{background:var(--line);filter:none}
     .navBackdrop{display:none}
     #appView.nav-collapsed{padding-left:88px}
     #appView.nav-collapsed .sideNav{width:76px;padding-left:10px;padding-right:10px}
@@ -137,11 +141,11 @@
       #appView.mobile-nav-open .sideNav{transform:translateX(0)}
       .sideNav .navCaption{display:block}.sideNav .navBottom{display:block}.sideNav button,#appView.nav-collapsed .sideNav button{width:100%;min-width:0;flex:none;flex-direction:row;justify-content:flex-start;gap:12px;padding:12px 13px;font-size:15px;min-height:50px;text-align:left}
       .sideNav button .navIcon{font-size:20px}.sideNav button .navLabel{display:inline!important}
-      .navToggle,#appView.nav-collapsed .navToggle{position:fixed;left:12px;top:112px;width:44px;height:44px;min-height:44px;z-index:90}
+      .navToggle,#appView.nav-collapsed .navToggle{position:relative;left:auto;top:auto;width:42px;height:42px;min-height:42px;z-index:101;flex-basis:42px}
       .navBackdrop{display:block;position:fixed;inset:0;background:rgba(12,20,16,.42);z-index:70;opacity:0;visibility:hidden;transition:opacity .2s;}
       #appView.mobile-nav-open .navBackdrop{opacity:1;visibility:visible}
       #appView>section{margin:12px 10px}.appFooter,#appView.nav-collapsed .appFooter{margin:14px 10px;text-align:center}.insightGrid{grid-template-columns:1fr}.reportToolbar{grid-template-columns:1fr 1fr}
-      header.brandHeader{padding:13px 16px 13px 66px}.brandMain{font-size:27px}.brandSub{font-size:13px}
+      header.brandHeader{padding:10px 14px;min-height:72px;gap:12px}.brandMain{font-size:25px}.brandSub{font-size:12px}
       .pageTitle h2{font-size:19px}.card{padding:14px}
     }
     @media(max-width:420px){.reportToolbar{grid-template-columns:1fr}}
@@ -160,7 +164,10 @@
   </style>
 </head>
 <body>
-  <header class="brandHeader"><div class="brandMain">MY WAREHOUSE</div><div class="brandSub">by CIPTA DUA PUTRA</div></header>
+  <header class="brandHeader">
+    <button type="button" id="btnNavToggle" class="navToggle noPrint" aria-label="Buka atau tutup menu" aria-expanded="true" title="Buka atau tutup menu">☰</button>
+    <div class="brandIdentity"><div class="brandMain">MY WAREHOUSE</div><div class="brandSub">by CIPTA DUA PUTRA</div></div>
+  </header>
   <main>
     <section class="card" id="loginView">
       <h2>Login Pengguna</h2>
@@ -176,7 +183,6 @@
     </section>
 
     <section id="appView">
-      <button type="button" id="btnNavToggle" class="navToggle noPrint" aria-label="Buka atau tutup menu" aria-expanded="true" title="Buka atau tutup menu">☰</button>
       <div id="navBackdrop" class="navBackdrop" aria-hidden="true"></div>
       <nav class="sideNav" id="mainSideNav" aria-label="Navigasi utama">
         <div class="navCaption">Workspace</div>
@@ -503,6 +509,7 @@
       const role = String(user.role || '');
       document.getElementById('loginView').style.display = 'none';
       document.getElementById('appView').style.display = 'block';
+      document.body.classList.add('nav-active');
       document.getElementById('identitas').textContent = (user.fullName || user.userId || 'Pengguna') + ' · ' + role;
       const permissions = Array.isArray(user.permissions) ? user.permissions : [];
       akses = {
@@ -663,6 +670,7 @@
     function tampilLogin() {
       document.getElementById('loginView').style.display = 'block';
       document.getElementById('appView').style.display = 'none';
+      document.body.classList.remove('nav-active');
       document.getElementById('email').value = '';
       document.getElementById('password').value = '';
     }
