@@ -230,30 +230,35 @@
       </section>
 
       <section class="card" id="subscriptionsPage" style="display:none">
-        <div class="pageTitle"><h2>Langganan Sistem Gudang</h2><button id="btnBackSubscriptions" type="button">← Menu</button></div>
+        <div class="pageTitle"><h2>Langganan MY WAREHOUSE</h2><button id="btnBackSubscriptions" type="button">← Menu</button></div>
         <div id="subscriptionStatusBox" class="catatan" aria-live="polite">Memuat status langganan...</div>
-        <div style="margin-top:18px">
-          <h3>Paket tersedia</h3>
-          <label for="subscriptionPlanPreview">Pilih paket untuk melihat detail</label>
-          <select id="subscriptionPlanPreview">
-            <option value="">Memuat paket...</option>
-          </select>
-          <div id="subscriptionPlanDetails" class="card" style="margin-top:12px">
-            Pilih paket untuk melihat harga, durasi, dan batas pengguna/produk.
+
+        <div id="subscriptionCatalogView" style="margin-top:18px">
+          <h3>Paket yang sesuai untuk usaha Anda</h3>
+          <div id="subscriptionCheapestHighlight" class="card" style="margin:12px 0;border:2px solid #26965b;display:none"></div>
+          <div style="margin-top:18px">
+            <label for="subscriptionPlanPreview">Lihat paket lainnya</label>
+            <select id="subscriptionPlanPreview"><option value="">Memuat paket...</option></select>
+            <button id="btnOpenSubscriptionDetail" type="button" style="width:100%;margin-top:10px" disabled>LIHAT DETAIL PAKET</button>
           </div>
+          <p class="catatan" style="margin-top:16px">Jika langganan kedaluwarsa, login dan Dashboard tetap tersedia, tetapi transaksi barang masuk/keluar akan ditolak sampai langganan aktif kembali.</p>
         </div>
-        <section id="subscriptionPaymentFormWrap" style="margin-top:22px">
-          <h3>Ajukan Pembayaran</h3>
-          <p class="catatan">Pembayaran dilakukan manual melalui Transfer Bank atau QRIS. Tempelkan tautan bukti pembayaran yang dapat diperiksa pemilik. Langganan aktif setelah pembayaran diverifikasi.</p>
-          <form id="subscriptionPaymentForm">
-            <label for="subscriptionPlanCode">Pilih Paket</label><select id="subscriptionPlanCode" required><option value="">Memuat paket...</option></select>
-            <label for="subscriptionPaymentMethod">Metode Pembayaran</label><select id="subscriptionPaymentMethod" required><option value="TRANSFER">Transfer Bank</option><option value="QRIS">QRIS</option></select>
-            <label for="subscriptionProofURL">Tautan Bukti Pembayaran (HTTPS)</label><input id="subscriptionProofURL" type="url" inputmode="url" placeholder="https://..." required>
-            <button id="btnSubmitSubscriptionPayment" type="submit">KIRIM PENGAJUAN</button>
-          </form>
-          <div id="subscriptionPaymentMessage" class="catatan" role="status" aria-live="polite" style="display:none;margin-top:12px"></div>
-        </section>
-        <p class="catatan" style="margin-top:16px">Jika langganan kedaluwarsa, login dan Dashboard tetap tersedia, tetapi transaksi barang masuk/keluar akan ditolak sampai langganan aktif kembali.</p>
+
+        <div id="subscriptionCheckoutView" style="display:none;margin-top:18px">
+          <div class="pageTitle"><h3>Detail Paket</h3><button id="btnBackSubscriptionCatalog" type="button" class="secondary">← Kembali</button></div>
+          <div id="subscriptionPlanDetails" class="card" style="margin-top:12px">Pilih paket untuk melihat detail.</div>
+          <section id="subscriptionPaymentFormWrap" style="margin-top:22px">
+            <h3>Ajukan Pembayaran</h3>
+            <p class="catatan">Periksa masa berlangganan dan total pembayaran. Pembayaran dilakukan manual melalui Transfer Bank atau QRIS. Langganan aktif setelah pembayaran diverifikasi pemilik.</p>
+            <form id="subscriptionPaymentForm">
+              <input id="subscriptionPlanCode" type="hidden" required>
+              <label for="subscriptionPaymentMethod">Metode Pembayaran</label><select id="subscriptionPaymentMethod" required><option value="TRANSFER">Transfer Bank</option><option value="QRIS">QRIS</option></select>
+              <label for="subscriptionProofURL">Tautan Bukti Pembayaran (HTTPS)</label><input id="subscriptionProofURL" type="url" inputmode="url" placeholder="https://..." required>
+              <button id="btnSubmitSubscriptionPayment" type="submit">KIRIM PENGAJUAN</button>
+            </form>
+            <div id="subscriptionPaymentMessage" class="catatan" role="status" aria-live="polite" style="display:none;margin-top:12px"></div>
+          </section>
+        </div>
       </section>
 
       <section class="card" id="dashboardView">
@@ -455,7 +460,7 @@
       </section>
 
     </section>
-    <footer class="appFooter">MY WAREHOUSE version 1.2.1 | by ciptaduaputra</footer>
+    <footer class="appFooter">MY WAREHOUSE version 1.2.2 | by ciptaduaputra</footer>
   </main>
 
   <script>
@@ -728,43 +733,119 @@
       return angka(n) + (suffix || '');
     }
 
+    let subscriptionPlansCache = [];
+    let selectedSubscriptionPlan = null;
+
+    function daftarFiturPaket(plan) {
+      const features = plan && plan.features ? plan.features : {};
+      const list = [
+        'Dashboard monitoring stok dan nilai persediaan',
+        'Pencatatan transaksi barang masuk dan barang keluar',
+        'Input kode unit secara manual',
+        'Riwayat transaksi dan aktivitas gudang',
+        'Monitoring HPP dan estimasi keuntungan'
+      ];
+      if (features.scanQR) list.push('Scan QR menggunakan kamera');
+      if (features.generateQR) list.push('Generate QR Code untuk unit barang');
+      return list;
+    }
+
+    function buatDaftarFiturHTML(plan) {
+      const ul = document.createElement('ul');
+      ul.style.cssText = 'padding-left:20px;margin:10px 0 0;display:grid;gap:7px';
+      daftarFiturPaket(plan).forEach(feature => {
+        const li = document.createElement('li');
+        li.textContent = feature;
+        ul.appendChild(li);
+      });
+      return ul;
+    }
+
+    function tampilkanHighlightPaket(plan) {
+      const box = document.getElementById('subscriptionCheapestHighlight');
+      if (!box) return;
+      box.replaceChildren();
+      if (!plan) { box.style.display = 'none'; return; }
+      box.style.display = 'block';
+      const badge = document.createElement('div');
+      badge.textContent = '★ PALING MURAH';
+      badge.style.cssText = 'display:inline-block;background:#e7f6ec;color:#18733d;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:10px';
+      const name = document.createElement('h3');
+      name.textContent = plan.planName || plan.planCode;
+      name.style.margin = '0 0 6px';
+      const price = document.createElement('div');
+      price.style.cssText = 'font-size:clamp(25px,5vw,34px);font-weight:800;color:#18834b;line-height:1.2';
+      price.textContent = rupiah(plan.effectiveMonthlyPrice != null ? plan.effectiveMonthlyPrice : Math.round(plan.price / plan.durationMonths));
+      const per = document.createElement('span');
+      per.textContent = ' / bulan'; per.style.cssText = 'font-size:14px;font-weight:500;color:var(--muted,#667085)';
+      price.appendChild(per);
+      const featureTitle = document.createElement('strong');
+      featureTitle.textContent = 'Fitur yang didapatkan';
+      featureTitle.style.cssText = 'display:block;margin-top:15px';
+      const button = document.createElement('button');
+      button.type = 'button'; button.textContent = 'LIHAT DETAIL PAKET'; button.style.cssText = 'width:100%;margin-top:16px';
+      button.addEventListener('click', () => bukaDetailPaketLangganan(plan.planCode));
+      box.append(badge, name, price, featureTitle, buatDaftarFiturHTML(plan), button);
+    }
+
     function tampilkanDetailPaket(plan) {
       const box = document.getElementById('subscriptionPlanDetails');
+      const hiddenCode = document.getElementById('subscriptionPlanCode');
       if (!box) return;
+      box.replaceChildren();
       if (!plan) {
-        box.textContent = 'Pilih paket untuk melihat harga, durasi, dan batas pengguna/produk.';
+        box.textContent = 'Paket tidak ditemukan. Silakan kembali dan pilih paket yang tersedia.';
+        if (hiddenCode) hiddenCode.value = '';
         return;
       }
-      const roleLimits = plan.roleLimits || {};
-      const roleText = ['Admin', 'Gudang', 'Viewer'].map(role =>
-        role + ': ' + formatBatasPaket(roleLimits[role], ' akun')
-      ).join(' · ');
-      const duration = Number(plan.durationMonths) === 12
-        ? '1 tahun' : angka(plan.durationMonths) + ' bulan';
-      const lines = [
-        (plan.planName || plan.planCode) + ' (' + plan.planCode + ')',
-        rupiah(plan.price) + ' · ' + duration,
-        'Total pengguna: ' + formatBatasPaket(plan.maxUsers, ' pengguna'),
-        'Batas produk: ' + formatBatasPaket(plan.maxProducts, ' produk'),
-        'Batas per role: ' + roleText
-      ];
-      box.replaceChildren();
-      lines.forEach((line, index) => {
-        const p = document.createElement(index === 0 ? 'strong' : 'p');
-        p.textContent = line;
-        if (index > 0) p.style.margin = '6px 0 0';
-        box.appendChild(p);
-      });
+      if (hiddenCode) hiddenCode.value = plan.planCode;
+      const heading = document.createElement('h3');
+      heading.textContent = plan.planName || plan.planCode;
+      heading.style.margin = '0 0 8px';
+      const featureTitle = document.createElement('strong');
+      featureTitle.textContent = 'Fitur paket';
+      const featureList = buatDaftarFiturHTML(plan);
+      const limits = document.createElement('p');
+      limits.style.cssText = 'margin:12px 0 0;color:var(--muted,#667085)';
+      limits.textContent = 'Batas pengguna: ' + formatBatasPaket(plan.maxUsers, ' pengguna') + ' · Batas produk: ' + formatBatasPaket(plan.maxProducts, ' produk');
+      const duration = Number(plan.durationMonths) === 12 ? '12 bulan' : angka(plan.durationMonths) + ' bulan';
+      const billing = document.createElement('div');
+      billing.style.cssText = 'margin-top:16px;padding:14px;border-radius:12px;background:var(--soft,#f4f6f8)';
+      const durationLine = document.createElement('p');
+      durationLine.style.margin = '0 0 7px';
+      durationLine.textContent = 'Masa berlangganan: ' + duration;
+      const monthlyLine = document.createElement('p');
+      monthlyLine.style.margin = '0 0 7px';
+      monthlyLine.textContent = 'Biaya efektif per bulan: ' + rupiah(Math.round(plan.price / plan.durationMonths));
+      const total = document.createElement('div');
+      total.style.cssText = 'font-size:22px;font-weight:800;margin-top:8px';
+      total.textContent = 'Total pembayaran: ' + rupiah(plan.price);
+      billing.append(durationLine, monthlyLine, total);
+      box.append(heading, featureTitle, featureList, limits, billing);
+    }
+
+    function bukaDetailPaketLangganan(planCode) {
+      const plan = subscriptionPlansCache.find(item => String(item.planCode) === String(planCode));
+      if (!plan) return;
+      selectedSubscriptionPlan = plan;
+      tampilkanDetailPaket(plan);
+      document.getElementById('subscriptionCatalogView').style.display = 'none';
+      document.getElementById('subscriptionCheckoutView').style.display = 'block';
+      document.getElementById('subscriptionPaymentMessage').style.display = 'none';
+      document.getElementById('subscriptionsPage').scrollIntoView({behavior:'smooth',block:'start'});
+    }
+
+    function kembaliKeKatalogLangganan() {
+      document.getElementById('subscriptionCheckoutView').style.display = 'none';
+      document.getElementById('subscriptionCatalogView').style.display = 'block';
     }
 
     function sinkronPaketLangganan(plans, selectedCode) {
-      const preview = document.getElementById('subscriptionPlanPreview');
-      const paymentSelect = document.getElementById('subscriptionPlanCode');
       const code = String(selectedCode || '').trim();
-      if (preview) preview.value = code;
-      if (paymentSelect) paymentSelect.value = code;
       const selected = (plans || []).find(item => String(item.planCode) === code);
-      tampilkanDetailPaket(selected || null);
+      const button = document.getElementById('btnOpenSubscriptionDetail');
+      if (button) button.disabled = !selected;
+      selectedSubscriptionPlan = selected || null;
     }
 
     function aturAksesFiturPaket(planCode) {
@@ -801,51 +882,46 @@
     async function muatLangganan() {
       const statusBox = document.getElementById('subscriptionStatusBox');
       const preview = document.getElementById('subscriptionPlanPreview');
-      const select = document.getElementById('subscriptionPlanCode');
-      const details = document.getElementById('subscriptionPlanDetails');
       const formWrap = document.getElementById('subscriptionPaymentFormWrap');
       statusBox.textContent = 'Memuat status langganan...';
       statusBox.className = 'catatan';
       statusBox.style.display = 'block';
       preview.innerHTML = '<option value="">Memuat paket...</option>';
-      select.innerHTML = '<option value="">Memuat paket...</option>';
-      tampilkanDetailPaket(null);
+      document.getElementById('subscriptionCheapestHighlight').style.display = 'none';
+      document.getElementById('subscriptionCatalogView').style.display = 'block';
+      document.getElementById('subscriptionCheckoutView').style.display = 'none';
+      selectedSubscriptionPlan = null;
       try {
         const result = await kirimKeBackend({ action: 'subscription_info', token: sessionData.token });
         if (!result || !result.success) throw new Error(result && result.message || 'Status langganan gagal dimuat.');
         const sub = result.subscription || {};
         const labels = { ACTIVE: 'Aktif', EXPIRED: 'Kedaluwarsa', UNPAID: 'Menunggu pembayaran', NO_SUBSCRIPTION: 'Belum berlangganan', INACTIVE: 'Belum aktif' };
-        statusBox.textContent = 'Status: ' + (labels[sub.status] || sub.status || 'Tidak diketahui') +
-          (sub.planCode ? ' · Paket ' + sub.planCode : '') +
+        statusBox.textContent = 'Status langganan: ' + (labels[sub.status] || sub.status || 'Tidak diketahui') +
+          (sub.planCode ? ' · Paket aktif ' + sub.planCode : '') +
           (sub.startDate ? ' · Mulai ' + sub.startDate : '') +
           (sub.endDate ? ' · Berakhir ' + sub.endDate : '') +
           (sub.message ? ' — ' + sub.message : '');
         if (sessionData && sessionData.user) { sessionData.user.subscription = Object.assign({}, sessionData.user.subscription || {}, sub, { features: result.planFeatures || (sessionData.user.subscription && sessionData.user.subscription.features) || {} }); }
         aturAksesFiturPaket(sub.status === 'ACTIVE' ? sub.planCode : '');
-        const plans = Array.isArray(result.plans) ? result.plans : [];
+        subscriptionPlansCache = Array.isArray(result.plans) ? result.plans : [];
         preview.replaceChildren();
-        select.replaceChildren();
-        if (!plans.length) {
+        if (!subscriptionPlansCache.length) {
           preview.add(new Option('Belum ada paket aktif', ''));
-          select.add(new Option('Belum ada paket aktif', ''));
-          details.textContent = 'Belum ada paket aktif. Pemilik sistem perlu mengaktifkan paket pada sheet Plans.';
+          document.getElementById('subscriptionCheapestHighlight').textContent = 'Belum ada paket aktif. Pemilik sistem perlu mengaktifkan paket pada sheet Plans.';
+          document.getElementById('subscriptionCheapestHighlight').style.display = 'block';
+          document.getElementById('btnOpenSubscriptionDetail').disabled = true;
         } else {
           preview.add(new Option('Pilih paket...', ''));
-          select.add(new Option('Pilih paket...', ''));
-          plans.forEach(plan => {
-            const label = (plan.planName || plan.planCode) + ' — ' + rupiah(plan.price) +
-              ' / ' + (Number(plan.durationMonths) === 12 ? '1 tahun' : angka(plan.durationMonths) + ' bulan');
+          subscriptionPlansCache.forEach(plan => {
+            const label = (plan.planName || plan.planCode) + ' — ' + rupiah(plan.price) + ' / ' + angka(plan.durationMonths) + ' bulan';
             preview.add(new Option(label, plan.planCode));
-            select.add(new Option(label, plan.planCode));
           });
-          const initialCode = plans.some(p => String(p.planCode) === String(select.value))
-            ? select.value : '';
-          sinkronPaketLangganan(plans, initialCode);
-          preview.onchange = () => sinkronPaketLangganan(plans, preview.value);
-          select.onchange = () => sinkronPaketLangganan(plans, select.value);
+          const cheapest = subscriptionPlansCache.find(plan => plan.isCheapest) || subscriptionPlansCache.reduce((best, plan) => !best || plan.price / plan.durationMonths < best.price / best.durationMonths ? plan : best, null);
+          tampilkanHighlightPaket(cheapest);
+          preview.onchange = () => sinkronPaketLangganan(subscriptionPlansCache, preview.value);
         }
         const isAdmin = sessionData.user && sessionData.user.role === 'Admin';
-        formWrap.style.display = isAdmin && plans.length ? 'block' : 'none';
+        formWrap.style.display = isAdmin && subscriptionPlansCache.length ? 'block' : 'none';
         if (!isAdmin) statusBox.textContent += ' Pengajuan pembayaran hanya dapat dilakukan oleh Admin perusahaan.';
       } catch (err) {
         statusBox.textContent = 'Gagal memuat langganan: ' + pesanErrorJaringan(err) +
@@ -853,13 +929,20 @@
         statusBox.className = 'error';
         statusBox.style.display = 'block';
         preview.innerHTML = '<option value="">Paket tidak dapat dimuat</option>';
-        select.innerHTML = '<option value="">Paket tidak dapat dimuat</option>';
-        details.textContent = 'Paket belum dapat dimuat. Pesan kesalahan ditampilkan di atas.';
+        document.getElementById('subscriptionCheapestHighlight').textContent = 'Paket belum dapat dimuat. Periksa koneksi dan konfigurasi langganan.';
+        document.getElementById('subscriptionCheapestHighlight').style.display = 'block';
+        document.getElementById('btnOpenSubscriptionDetail').disabled = true;
         aturAksesFiturPaket('');
         formWrap.style.display = 'none';
         console.error('Gagal memuat data langganan:', err);
       }
     }
+
+    document.getElementById('btnBackSubscriptionCatalog').addEventListener('click', kembaliKeKatalogLangganan);
+    document.getElementById('btnOpenSubscriptionDetail').addEventListener('click', function() {
+      const code = document.getElementById('subscriptionPlanPreview').value;
+      bukaDetailPaketLangganan(code);
+    });
 
     document.getElementById('subscriptionPaymentForm').addEventListener('submit', async function(event) {
       event.preventDefault();
@@ -867,6 +950,10 @@
       const message = document.getElementById('subscriptionPaymentMessage');
       button.disabled = true; button.textContent = 'MENGIRIM...';
       message.style.display = 'none';
+      if (!document.getElementById('subscriptionPlanCode').value) {
+        tampilPesan('subscriptionPaymentMessage', 'Pilih paket terlebih dahulu.', 'error');
+        button.disabled = false; button.textContent = 'KIRIM PENGAJUAN'; return;
+      }
       try {
         const result = await kirimKeBackend({
           action: 'subscription_payment_submit', token: sessionData.token,
