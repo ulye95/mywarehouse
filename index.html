@@ -418,6 +418,7 @@
 
       <section class="card" id="transactionMethodCard">
         <h2>Metode Transaksi</h2>
+        <p id="scanPlanNotice" class="catatan" style="display:none">Paket Anda tidak mencakup Scan QR. Gunakan Input Kode Unit Manual untuk transaksi.</p>
         <label for="metodeTransaksi">Pilih metode input</label>
         <select id="metodeTransaksi"><option value="SCAN">Scan QR (otomatis)</option><option value="MANUAL">Input kode unit manual</option></select>
         <p class="catatan">Scan QR langsung menyimpan transaksi setelah kode terbaca. Input manual menampilkan rincian unit terlebih dahulu dan memerlukan konfirmasi Simpan Transaksi.</p>
@@ -454,7 +455,7 @@
       </section>
 
     </section>
-    <footer class="appFooter">MY WAREHOUSE version 1.0.0 | by ciptaduaputra</footer>
+    <footer class="appFooter">MY WAREHOUSE version 1.2.1 | by ciptaduaputra</footer>
   </main>
 
   <script>
@@ -582,6 +583,8 @@
         sembunyikanPesan('pesan');
       }
       toggleKategori();
+      // Muat hak fitur paket agar kontrol Generate QR dan Scan QR mengikuti langganan aktif.
+      muatLangganan();
       // Status langganan hanya ditampilkan pada menu Langganan.
     }
 
@@ -672,7 +675,7 @@
     document.getElementById('btnRefreshQrHistory').addEventListener('click', muatRiwayatQr);
     document.getElementById('jenisTransaksi').addEventListener('change', function(){ toggleKategori(); manualUnitPreviewData=null; document.getElementById('manualUnitPreview').style.display='none'; document.getElementById('manualPreviewMessage').textContent=''; });
     document.getElementById('kategori').addEventListener('change', function(){ manualUnitPreviewData=null; document.getElementById('manualUnitPreview').style.display='none'; document.getElementById('manualPreviewMessage').textContent='Kategori berubah. Periksa ulang kode unit sebelum menyimpan.'; });
-    document.getElementById('metodeTransaksi').addEventListener('change', async function(){ if (kameraAktif) await berhentiScan(); toggleKategori(); });
+    document.getElementById('metodeTransaksi').addEventListener('change', async function(){ if (kameraAktif) await berhentiScan(); toggleKategori(); const sub=sessionData&&sessionData.user&&sessionData.user.subscription; aturAksesFiturPaket(sub&&sub.status==='ACTIVE'?sub.planCode:''); });
     document.getElementById('btnExportExcel').addEventListener('click', eksporLaporanCSV);
     document.getElementById('btnExportPdf').addEventListener('click', () => window.print());
 
@@ -764,21 +767,36 @@
       tampilkanDetailPaket(selected || null);
     }
 
-    function aturAksesQrPaket(planCode) {
+    function aturAksesFiturPaket(planCode) {
       const code = String(planCode || '').trim().toUpperCase();
       const sub = sessionData && sessionData.user && sessionData.user.subscription;
-      const bolehGenerateQr = Boolean(code) && Boolean(sub && sub.status === 'ACTIVE' && sub.planCode === code && sub.features && sub.features.generateQR);
+      const active = Boolean(code) && Boolean(sub && sub.status === 'ACTIVE' && String(sub.planCode || '').toUpperCase() === code);
+      const features = active && sub.features ? sub.features : {};
+      const bolehGenerateQr = Boolean(features.generateQR);
+      const bolehScanQr = Boolean(features.scanQR);
       const qrButton = document.querySelector('[data-product-panel="qrPanel"]');
       const qrPanel = document.getElementById('qrPanel');
       if (qrButton) qrButton.style.display = bolehGenerateQr ? '' : 'none';
       if (qrPanel && !bolehGenerateQr && qrPanel.classList.contains('active')) {
-        document.querySelectorAll('[data-product-panel]').forEach(item =>
-          item.classList.toggle('active', item.dataset.productPanel === 'listPanel'));
-        document.querySelectorAll('.productPanel').forEach(panel =>
-          panel.classList.toggle('active', panel.id === 'listPanel'));
+        document.querySelectorAll('[data-product-panel]').forEach(item => item.classList.toggle('active', item.dataset.productPanel === 'listPanel'));
+        document.querySelectorAll('.productPanel').forEach(panel => panel.classList.toggle('active', panel.id === 'listPanel'));
       }
-      return bolehGenerateQr;
+      const methodSelect = document.getElementById('metodeTransaksi');
+      const scanOption = methodSelect && methodSelect.querySelector('option[value="SCAN"]');
+      const scannerCard = document.getElementById('scannerCard');
+      const methodCard = document.getElementById('transactionMethodCard');
+      if (scanOption) scanOption.disabled = !bolehScanQr;
+      if (methodSelect && !bolehScanQr) methodSelect.value = 'MANUAL';
+      if (scannerCard) scannerCard.style.display = bolehScanQr && (!methodSelect || methodSelect.value === 'SCAN') ? '' : 'none';
+      if (methodCard) methodCard.style.display = '';
+      const manualCard = document.getElementById('manualTransactionCard');
+      if (manualCard) manualCard.style.display = methodSelect && methodSelect.value === 'MANUAL' ? '' : 'none';
+      const scanNote = document.getElementById('scanPlanNotice');
+      if (scanNote) scanNote.style.display = bolehScanQr ? 'none' : 'block';
+      return { generateQR: bolehGenerateQr, scanQR: bolehScanQr };
     }
+
+    function aturAksesQrPaket(planCode) { return aturAksesFiturPaket(planCode).generateQR; }
 
     async function muatLangganan() {
       const statusBox = document.getElementById('subscriptionStatusBox');
@@ -803,7 +821,7 @@
           (sub.endDate ? ' · Berakhir ' + sub.endDate : '') +
           (sub.message ? ' — ' + sub.message : '');
         if (sessionData && sessionData.user) { sessionData.user.subscription = Object.assign({}, sessionData.user.subscription || {}, sub, { features: result.planFeatures || (sessionData.user.subscription && sessionData.user.subscription.features) || {} }); }
-        aturAksesQrPaket(sub.status === 'ACTIVE' && result.planFeatures && result.planFeatures.generateQR ? sub.planCode : '');
+        aturAksesFiturPaket(sub.status === 'ACTIVE' ? sub.planCode : '');
         const plans = Array.isArray(result.plans) ? result.plans : [];
         preview.replaceChildren();
         select.replaceChildren();
@@ -837,7 +855,7 @@
         preview.innerHTML = '<option value="">Paket tidak dapat dimuat</option>';
         select.innerHTML = '<option value="">Paket tidak dapat dimuat</option>';
         details.textContent = 'Paket belum dapat dimuat. Pesan kesalahan ditampilkan di atas.';
-        aturAksesQrPaket('');
+        aturAksesFiturPaket('');
         formWrap.style.display = 'none';
         console.error('Gagal memuat data langganan:', err);
       }
@@ -883,7 +901,8 @@
           throw new Error(result && result.message || 'Status langganan tidak dapat dimuat.');
         }
         const sub = result.subscription || {};
-        aturAksesQrPaket(sub.status === 'ACTIVE' ? sub.planCode : '');
+        if (sessionData && sessionData.user) sessionData.user.subscription = Object.assign({}, sessionData.user.subscription || {}, sub, { features: result.planFeatures || {} });
+        aturAksesFiturPaket(sub.status === 'ACTIVE' ? sub.planCode : '');
         const plans = Array.isArray(result.plans) ? result.plans : [];
         const plan = plans.find(item => String(item.planCode || '').toUpperCase() === String(sub.planCode || '').toUpperCase());
         const statusLabels = {
