@@ -769,15 +769,18 @@
 
       // Tampilkan tiga pilihan unggulan: biaya efektif terendah,
       // TUMBUH 12 bulan, dan MAJU 12 bulan.
-      const findAnnualPlan = prefix => subscriptionPlansCache.find(item =>
-        Number(item.durationMonths) === 12 &&
-        new RegExp('^' + prefix + '(?:[_ -]|$)', 'i').test(String(item.planCode || ''))
+      // Kenali tier dari PlanCode maupun PlanName. Ini menghindari kartu
+      // tahunan hilang bila backend mengirim nama paket/kode dengan format berbeda.
+      const identitasPlan = item => (String(item && item.planCode || '') + ' ' + String(item && item.planName || '')).toUpperCase();
+      const adalahTier = (item, kataKunci) => kataKunci.some(k => identitasPlan(item).includes(k));
+      const findAnnualPlan = kataKunci => subscriptionPlansCache.find(item =>
+        Number(item.durationMonths) === 12 && adalahTier(item, kataKunci)
       );
 
       const candidates = [
         { plan: plan, label: '★ PALING MURAH', color: '#e7f6ec', text: '#18733d', border: '#26965b' },
-        { plan: findAnnualPlan('ADVANCED'), label: '✓ PAS & TERJANGKAU', color: '#eaf2ff', text: '#2457a6', border: '#6b9be8' },
-        { plan: findAnnualPlan('PRO'), label: '◆ HEMAT & LENGKAP', color: '#fff3df', text: '#946018', border: '#d6a34c' }
+        { plan: findAnnualPlan(['ADVANCED', 'TUMBUH']), label: '✓ PAS & TERJANGKAU', color: '#eaf2ff', text: '#2457a6', border: '#6b9be8' },
+        { plan: findAnnualPlan(['PRO', 'MAJU']), label: '◆ HEMAT & LENGKAP', color: '#fff3df', text: '#946018', border: '#d6a34c' }
       ];
 
       const unique = [];
@@ -794,18 +797,22 @@
         unique.push({ ...item, labels: [item.label] });
       });
 
+      // Tiga kartu selalu sejajar; pada layar sempit baris dapat digeser.
       box.style.display = 'grid';
-      box.style.gridTemplateColumns = 'repeat(auto-fit,minmax(min(100%,230px),1fr))';
+      box.style.gridTemplateColumns = 'repeat(3,minmax(230px,1fr))';
       box.style.gap = '12px';
+      box.style.overflowX = 'auto';
+      box.style.overscrollBehaviorX = 'contain';
+      box.style.alignItems = 'stretch';
       box.style.border = '0';
-      box.style.padding = '0';
+      box.style.padding = '0 0 8px';
       box.style.background = 'transparent';
 
       unique.forEach(item => {
         const selectedPlan = item.plan;
         const card = document.createElement('div');
         card.className = 'card';
-        card.style.cssText = 'border:2px solid ' + item.border + ';border-radius:14px;padding:16px;min-width:0';
+        card.style.cssText = 'border:2px solid ' + item.border + ';border-radius:14px;padding:16px;min-width:0;display:flex;flex-direction:column';
 
         item.labels.forEach(labelText => {
           const badge = document.createElement('div');
@@ -831,7 +838,7 @@
         const button = document.createElement('button');
         button.type = 'button';
         button.textContent = 'LIHAT DETAIL PAKET';
-        button.style.cssText = 'width:100%;margin-top:16px';
+        button.style.cssText = 'width:100%;margin-top:auto;padding-top:12px';
         button.addEventListener('click', () => bukaDetailPaketLangganan(selectedPlan.planCode));
 
         card.append(name, price, featureTitle, buatDaftarFiturHTML(selectedPlan), button);
