@@ -766,26 +766,77 @@
       if (!box) return;
       box.replaceChildren();
       if (!plan) { box.style.display = 'none'; return; }
-      box.style.display = 'block';
-      const badge = document.createElement('div');
-      badge.textContent = '★ PALING MURAH';
-      badge.style.cssText = 'display:inline-block;background:#e7f6ec;color:#18733d;padding:5px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:10px';
-      const name = document.createElement('h3');
-      name.textContent = plan.planName || plan.planCode;
-      name.style.margin = '0 0 6px';
-      const price = document.createElement('div');
-      price.style.cssText = 'font-size:clamp(25px,5vw,34px);font-weight:800;color:#18834b;line-height:1.2';
-      price.textContent = rupiah(plan.effectiveMonthlyPrice != null ? plan.effectiveMonthlyPrice : Math.round(plan.price / plan.durationMonths));
-      const per = document.createElement('span');
-      per.textContent = ' / bulan'; per.style.cssText = 'font-size:14px;font-weight:500;color:var(--muted,#667085)';
-      price.appendChild(per);
-      const featureTitle = document.createElement('strong');
-      featureTitle.textContent = 'Fitur yang didapatkan';
-      featureTitle.style.cssText = 'display:block;margin-top:15px';
-      const button = document.createElement('button');
-      button.type = 'button'; button.textContent = 'LIHAT DETAIL PAKET'; button.style.cssText = 'width:100%;margin-top:16px';
-      button.addEventListener('click', () => bukaDetailPaketLangganan(plan.planCode));
-      box.append(badge, name, price, featureTitle, buatDaftarFiturHTML(plan), button);
+
+      // Tampilkan tiga pilihan unggulan: biaya efektif terendah,
+      // TUMBUH 12 bulan, dan MAJU 12 bulan.
+      const findAnnualPlan = prefix => subscriptionPlansCache.find(item =>
+        Number(item.durationMonths) === 12 &&
+        new RegExp('^' + prefix + '(?:[_ -]|$)', 'i').test(String(item.planCode || ''))
+      );
+
+      const candidates = [
+        { plan: plan, label: '★ PALING MURAH', color: '#e7f6ec', text: '#18733d', border: '#26965b' },
+        { plan: findAnnualPlan('ADVANCED'), label: '✓ PAS & TERJANGKAU', color: '#eaf2ff', text: '#2457a6', border: '#6b9be8' },
+        { plan: findAnnualPlan('PRO'), label: '◆ HEMAT & LENGKAP', color: '#fff3df', text: '#946018', border: '#d6a34c' }
+      ];
+
+      const unique = [];
+      const seen = new Set();
+      candidates.forEach(item => {
+        if (!item.plan) return;
+        const code = String(item.plan.planCode);
+        if (seen.has(code)) {
+          const existing = unique.find(x => String(x.plan.planCode) === code);
+          if (existing && !existing.labels.includes(item.label)) existing.labels.push(item.label);
+          return;
+        }
+        seen.add(code);
+        unique.push({ ...item, labels: [item.label] });
+      });
+
+      box.style.display = 'grid';
+      box.style.gridTemplateColumns = 'repeat(auto-fit,minmax(min(100%,230px),1fr))';
+      box.style.gap = '12px';
+      box.style.border = '0';
+      box.style.padding = '0';
+      box.style.background = 'transparent';
+
+      unique.forEach(item => {
+        const selectedPlan = item.plan;
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.cssText = 'border:2px solid ' + item.border + ';border-radius:14px;padding:16px;min-width:0';
+
+        item.labels.forEach(labelText => {
+          const badge = document.createElement('div');
+          badge.textContent = labelText;
+          badge.style.cssText = 'display:inline-block;background:' + item.color + ';color:' + item.text + ';padding:5px 10px;border-radius:20px;font-size:11px;font-weight:800;margin:0 5px 9px 0';
+          card.appendChild(badge);
+        });
+
+        const name = document.createElement('h3');
+        name.textContent = selectedPlan.planName || selectedPlan.planCode;
+        name.style.margin = '0 0 6px';
+        const price = document.createElement('div');
+        price.style.cssText = 'font-size:clamp(25px,5vw,32px);font-weight:800;color:var(--success,#18834b);line-height:1.2';
+        price.textContent = rupiah(selectedPlan.effectiveMonthlyPrice != null ? selectedPlan.effectiveMonthlyPrice : Math.round(selectedPlan.price / selectedPlan.durationMonths));
+        const per = document.createElement('span');
+        per.textContent = ' / bulan';
+        per.style.cssText = 'font-size:14px;font-weight:500;color:var(--muted,#667085)';
+        price.appendChild(per);
+
+        const featureTitle = document.createElement('strong');
+        featureTitle.textContent = 'Fitur yang didapatkan';
+        featureTitle.style.cssText = 'display:block;margin-top:14px';
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = 'LIHAT DETAIL PAKET';
+        button.style.cssText = 'width:100%;margin-top:16px';
+        button.addEventListener('click', () => bukaDetailPaketLangganan(selectedPlan.planCode));
+
+        card.append(name, price, featureTitle, buatDaftarFiturHTML(selectedPlan), button);
+        box.appendChild(card);
+      });
     }
 
     function tampilkanDetailPaket(plan) {
