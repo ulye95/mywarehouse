@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MY WAREHOUSE | by CIPTA DUA PUTRA</title>
+  <title>SISTEM GUDANG</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
@@ -51,12 +51,6 @@
     .productTableWrap thead th { position:sticky; top:0; z-index:2; }
     .productTableWrap table { min-width:980px; }
     .productTableWrap tbody tr { height:42px; }
-    .monitorTableWrap { height:370px; max-height:370px; overflow:auto; border:1px solid #e6e6e6; border-radius:10px; -webkit-overflow-scrolling:touch; }
-    .monitorTableWrap table { min-width:720px; }
-    .monitorTableWrap thead th { position:sticky; top:0; z-index:2; box-shadow:0 1px 0 #e6e6e6; }
-    .monitorTableWrap tbody tr { height:42px; }
-    #monitorProductRows tr { height:42px; }
-    .monitorSectionTitle { margin-top:22px; }
     .productSubnav { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:16px 0; }
     .productSubnav button { margin:0; min-height:48px; padding:10px 8px; font-size:14px; }
     .productSubnav button.active { background:#8f1117; outline:2px solid #f3b6b8; }
@@ -81,77 +75,6 @@
     .smallBtn { padding:8px 10px; min-height:36px; font-size:13px; }
     .userActionBtn { min-width:110px; margin:0; padding:8px; min-height:36px; font-size:12px; }
     .userForm { max-width:720px; }
-    .manualDetailGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.manualDetailGrid div{display:flex;flex-direction:column;gap:4px;min-width:0}.manualDetailGrid span{font-size:12px;color:var(--muted)}.manualDetailGrid strong{overflow-wrap:anywhere}#qrHistoryPanel .productTableWrap{height:auto;max-height:380px}@media(max-width:520px){.manualDetailGrid{grid-template-columns:1fr}}
-
-    :root{--bg:#f3f1ea;--surface:#fff;--surface2:#f7f8f5;--text:#25332e;--muted:#718078;--line:#e1e7e1;--primary:#263b36;--primary2:#54766a;--accent:#c5a77a;--danger:#a65d58;--shadow:0 8px 28px rgba(31,49,42,.06)}
-    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .2s,color .2s}
-    header.brandHeader{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:18px;background:var(--surface);color:var(--primary);text-align:left;padding:12px clamp(18px,3vw,42px);border-bottom:1px solid var(--line);font-size:inherit;letter-spacing:-1.8px;min-height:86px;box-shadow:0 3px 14px rgba(31,49,42,.04)}
-    .brandIdentity{min-width:0;flex:1}
-    .brandMain{font-weight:900;font-size:clamp(25px,3.3vw,43px);line-height:1;letter-spacing:-1.5px}
-    .brandSub{text-align:right;font-weight:600;font-size:clamp(12px,1.4vw,19px);letter-spacing:.2px;margin-top:3px}
-    body.dark{--bg:#151e1b;--surface:#202c27;--surface2:#26352e;--text:#e6eee8;--muted:#aab9af;--line:#35453d;--primary:#dce9df;--primary2:#91b2a0;--accent:#c5a77a;--shadow:0 8px 28px rgba(0,0,0,.18)}
-    body.dark header.brandHeader{background:var(--surface);color:var(--primary)}
-    .card{background:var(--surface);color:var(--text);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:16px}
-    input,select{background:var(--surface);color:var(--text);border:1px solid var(--line);min-height:48px}
-    button{background:var(--primary2);color:#fff;border-radius:10px;min-height:46px;transition:filter .15s,transform .15s}
-    button:hover{filter:brightness(1.06)}button:active{transform:translateY(1px)}
-    .secondary,.topline button,.pageTitle button{background:#718078;color:white}
-    #appView{position:relative;padding-left:250px;min-height:calc(100vh - 100px);transition:padding-left .22s ease}
-    .sideNav{position:fixed;left:0;top:86px;bottom:0;width:232px;background:var(--surface);border-right:1px solid var(--line);padding:18px 12px;z-index:40;display:flex;flex-direction:column;gap:6px;overflow:auto;transition:width .22s ease,transform .22s ease}
-    .sideNav .navCaption{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:800;padding:14px 12px 6px;white-space:nowrap}
-    .sideNav button{width:100%;margin:0;text-align:left;display:flex;align-items:center;gap:11px;background:transparent;color:var(--muted);padding:11px 13px;min-height:46px;font-weight:650;white-space:nowrap;overflow:hidden}
-    .sideNav button:hover,.sideNav button.active{background:var(--surface2);color:var(--primary2)}
-    .sideNav button.active{box-shadow:inset 3px 0 var(--primary2)}
-    .sideNav .navIcon{width:22px;min-width:22px;text-align:center;font-size:19px}
-    .sideNav .navBottom{margin-top:auto;border-top:1px solid var(--line);padding-top:10px}
-    #appView>section{margin:18px 22px;max-width:1600px}
-    .navToggle{position:relative;left:auto;top:auto;z-index:101;flex:0 0 42px;width:42px;height:42px;min-height:42px;padding:0;margin:0;border:1px solid var(--line);border-radius:10px;background:var(--surface2);color:var(--primary);box-shadow:none;font-size:21px;display:none;align-items:center;justify-content:center;transition:background .18s,border-color .18s}
-    #appView.nav-collapsed .navToggle{left:auto}
-    body.nav-active .navToggle{display:flex}
-    .navToggle:hover{background:var(--line);filter:none}
-    .navBackdrop{display:none}
-    #appView.nav-collapsed{padding-left:88px}
-    #appView.nav-collapsed .sideNav{width:76px;padding-left:10px;padding-right:10px}
-    #appView.nav-collapsed .sideNav .navCaption,#appView.nav-collapsed .sideNav button .navLabel{display:none}
-    #appView.nav-collapsed .sideNav button{justify-content:center;padding:10px 6px}
-    #appView.nav-collapsed .sideNav button .navIcon{margin:0}
-    #appView.nav-collapsed .navToggle{left:90px}
-    #appView.nav-collapsed .appFooter{margin-left:108px}
-    #homeMenu{display:none!important}
-    #dashboardView{display:block}
-    .pageTitle h2{font-size:22px;color:var(--primary);letter-spacing:-.4px}
-    h2,h3{color:var(--primary)}
-    .catatan,.stat .label{color:var(--muted)}
-    .stat{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:16px}
-    .stat .value{font-size:clamp(18px,1.7vw,25px);color:var(--primary)}
-    th{background:var(--surface2);color:var(--muted)}td,th{border-bottom:1px solid var(--line)}
-    .monitorTableWrap,.productTableWrap{height: min(470px, 58vh);max-height:470px;border-color:var(--line);border-radius:12px}
-    .monitorTableWrap thead th,.productTableWrap thead th{background:var(--surface2)}
-    .appFooter{margin:24px 22px 16px 272px;color:var(--muted);font-size:12px;text-align:center;padding:14px;border-top:1px solid var(--line)}
-    .themeToggle{margin-top:8px!important;border:1px solid var(--line)!important}
-    .insightGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
-    .insightCard{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}
-    .insightCard h3{margin:0 0 10px;font-size:15px}
-    .insightCard table{min-width:420px}
-    #reportPage{display:none}
-    .reportToolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end}
-    .reportToolbar button{margin:0}
-    @media(max-width:760px){
-      #appView,#appView.nav-collapsed{padding-left:0;padding-bottom:12px}
-      .sideNav,#appView.nav-collapsed .sideNav{top:0;bottom:0;left:0;right:auto;width:min(84vw,310px);max-width:310px;height:100dvh;padding:18px 14px;display:flex;flex-direction:column;justify-content:flex-start;gap:7px;border-right:1px solid var(--line);border-top:0;overflow-y:auto;transform:translateX(-105%);box-shadow:var(--shadow);z-index:80}
-      #appView.mobile-nav-open .sideNav{transform:translateX(0)}
-      .sideNav .navCaption{display:block}.sideNav .navBottom{display:block}.sideNav button,#appView.nav-collapsed .sideNav button{width:100%;min-width:0;flex:none;flex-direction:row;justify-content:flex-start;gap:12px;padding:12px 13px;font-size:15px;min-height:50px;text-align:left}
-      .sideNav button .navIcon{font-size:20px}.sideNav button .navLabel{display:inline!important}
-      .navToggle,#appView.nav-collapsed .navToggle{position:relative;left:auto;top:auto;width:42px;height:42px;min-height:42px;z-index:101;flex-basis:42px}
-      .navBackdrop{display:block;position:fixed;inset:0;background:rgba(12,20,16,.42);z-index:70;opacity:0;visibility:hidden;transition:opacity .2s;}
-      #appView.mobile-nav-open .navBackdrop{opacity:1;visibility:visible}
-      #appView>section{margin:12px 10px}.appFooter,#appView.nav-collapsed .appFooter{margin:14px 10px;text-align:center}.insightGrid{grid-template-columns:1fr}.reportToolbar{grid-template-columns:1fr 1fr}
-      header.brandHeader{padding:10px 14px;min-height:72px;gap:12px}.brandMain{font-size:25px}.brandSub{font-size:12px}
-      .pageTitle h2{font-size:19px}.card{padding:14px}
-    }
-    @media(max-width:420px){.reportToolbar{grid-template-columns:1fr}}
-    @media print{.sideNav,.brandHeader,.appFooter,.noPrint{display:none!important}#appView{padding:0!important}#appView>section{margin:0!important;box-shadow:none!important}}
-
     @media print {
       body * { visibility:hidden !important; }
       #qrPrintArea, #qrPrintArea * { visibility:visible !important; }
@@ -165,10 +88,7 @@
   </style>
 </head>
 <body>
-  <header class="brandHeader">
-    <button type="button" id="btnNavToggle" class="navToggle noPrint" aria-label="Buka atau tutup menu" aria-expanded="true" title="Buka atau tutup menu">☰</button>
-    <div class="brandIdentity"><div class="brandMain">MY WAREHOUSE</div><div class="brandSub">by CIPTA DUA PUTRA</div></div>
-  </header>
+  <header>SISTEM GUDANG</header>
   <main>
     <section class="card" id="loginView">
       <h2>Login Pengguna</h2>
@@ -184,19 +104,10 @@
     </section>
 
     <section id="appView">
-      <div id="navBackdrop" class="navBackdrop" aria-hidden="true"></div>
-      <nav class="sideNav" id="mainSideNav" aria-label="Navigasi utama">
-        <div class="navCaption">Workspace</div>
-        <button type="button" id="navDashboard" class="active"><span class="navIcon">▦</span><span class="navLabel">Dashboard</span></button>
-        <button type="button" id="navProducts"><span class="navIcon">▤</span><span class="navLabel">Manajemen Produk</span></button>
-        <button type="button" id="navTransactions"><span class="navIcon">⇄</span><span class="navLabel">Transaksi</span></button>
-        <button type="button" id="navReports"><span class="navIcon">▥</span><span class="navLabel">Laporan</span></button>
-        <button type="button" id="navUsers"><span class="navIcon">♙</span><span class="navLabel">Kelola User</span></button>
-        <button type="button" id="navPassword"><span class="navIcon">⌑</span><span class="navLabel">Ganti Sandi</span></button>
-        <button type="button" id="navSubscription"><span class="navIcon">◷</span><span class="navLabel">Langganan</span></button>
-        <div class="navBottom"><button type="button" id="btnThemeToggle" class="themeToggle"><span class="navIcon">◐</span><span class="navLabel">Mode gelap</span></button><button type="button" id="navLogout"><span class="navIcon">↪</span><span class="navLabel">Keluar</span></button></div>
-      </nav>
-      <section class="card" id="identityCard"><div class="topline"><div><h2 style="margin:0">Selamat datang di MY WAREHOUSE</h2><p id="identitas" class="catatan"></p></div><button id="btnLogout" type="button" class="secondary smallBtn noPrint">Keluar</button></div></section>
+      <section class="card">
+        <div class="topline"><h2 style="margin:0">Akses Pengguna</h2><button id="btnLogout" type="button">Keluar</button></div>
+        <p id="identitas"></p>
+      </section>
 
       <section class="card" id="homeMenu">
         <h2>Pilih Menu</h2>
@@ -230,39 +141,28 @@
       </section>
 
       <section class="card" id="subscriptionsPage" style="display:none">
-        <div class="pageTitle"><h2>Langganan MY WAREHOUSE</h2><button id="btnBackSubscriptions" type="button">← Menu</button></div>
+        <div class="pageTitle"><h2>Langganan Sistem Gudang</h2><button id="btnBackSubscriptions" type="button">← Menu</button></div>
         <div id="subscriptionStatusBox" class="catatan" aria-live="polite">Memuat status langganan...</div>
-
-        <div id="subscriptionCatalogView" style="margin-top:18px">
-          <h3>Paket yang sesuai untuk usaha Anda</h3>
-          <div id="subscriptionCheapestHighlight" class="card" style="margin:12px 0;border:2px solid #26965b;display:none"></div>
-          <div style="margin-top:18px">
-            <label for="subscriptionPlanPreview">Lihat paket lainnya</label>
-            <select id="subscriptionPlanPreview"><option value="">Memuat paket...</option></select>
-            <button id="btnOpenSubscriptionDetail" type="button" style="width:100%;margin-top:10px" disabled>LIHAT DETAIL PAKET</button>
-          </div>
-          <p class="catatan" style="margin-top:16px">Jika langganan kedaluwarsa, login dan Dashboard tetap tersedia, tetapi transaksi barang masuk/keluar akan ditolak sampai langganan aktif kembali.</p>
+        <div style="margin-top:18px">
+          <h3>Paket tersedia</h3>
+          <div id="subscriptionPlans" class="menuGrid"></div>
         </div>
-
-        <div id="subscriptionCheckoutView" style="display:none;margin-top:18px">
-          <div class="pageTitle"><h3>Detail Paket</h3><button id="btnBackSubscriptionCatalog" type="button" class="secondary">← Kembali</button></div>
-          <div id="subscriptionPlanDetails" class="card" style="margin-top:12px">Pilih paket untuk melihat detail.</div>
-          <section id="subscriptionPaymentFormWrap" style="margin-top:22px">
-            <h3>Ajukan Pembayaran</h3>
-            <p class="catatan">Periksa masa berlangganan dan total pembayaran. Pembayaran dilakukan manual melalui Transfer Bank atau QRIS. Langganan aktif setelah pembayaran diverifikasi pemilik.</p>
-            <form id="subscriptionPaymentForm">
-              <input id="subscriptionPlanCode" type="hidden" required>
-              <label for="subscriptionPaymentMethod">Metode Pembayaran</label><select id="subscriptionPaymentMethod" required><option value="TRANSFER">Transfer Bank</option><option value="QRIS">QRIS</option></select>
-              <label for="subscriptionProofURL">Tautan Bukti Pembayaran (HTTPS)</label><input id="subscriptionProofURL" type="url" inputmode="url" placeholder="https://..." required>
-              <button id="btnSubmitSubscriptionPayment" type="submit">KIRIM PENGAJUAN</button>
-            </form>
-            <div id="subscriptionPaymentMessage" class="catatan" role="status" aria-live="polite" style="display:none;margin-top:12px"></div>
-          </section>
-        </div>
+        <section id="subscriptionPaymentFormWrap" style="margin-top:22px">
+          <h3>Ajukan Pembayaran</h3>
+          <p class="catatan">Pembayaran dilakukan manual melalui Transfer Bank atau QRIS. Tempelkan tautan bukti pembayaran yang dapat diperiksa pemilik. Langganan aktif setelah pembayaran diverifikasi.</p>
+          <form id="subscriptionPaymentForm">
+            <label for="subscriptionPlanCode">Pilih Paket</label><select id="subscriptionPlanCode" required><option value="">Memuat paket...</option></select>
+            <label for="subscriptionPaymentMethod">Metode Pembayaran</label><select id="subscriptionPaymentMethod" required><option value="TRANSFER">Transfer Bank</option><option value="QRIS">QRIS</option></select>
+            <label for="subscriptionProofURL">Tautan Bukti Pembayaran (HTTPS)</label><input id="subscriptionProofURL" type="url" inputmode="url" placeholder="https://..." required>
+            <button id="btnSubmitSubscriptionPayment" type="submit">KIRIM PENGAJUAN</button>
+          </form>
+          <div id="subscriptionPaymentMessage" class="catatan" role="status" aria-live="polite" style="display:none;margin-top:12px"></div>
+        </section>
+        <p class="catatan" style="margin-top:16px">Jika langganan kedaluwarsa, login dan Dashboard tetap tersedia, tetapi transaksi barang masuk/keluar akan ditolak sampai langganan aktif kembali.</p>
       </section>
 
       <section class="card" id="dashboardView">
-        <div class="pageTitle"><h2>Dashboard</h2><button id="btnBackMonitoring" type="button">← Menu</button></div>
+        <div class="pageTitle"><h2>Monitoring Gudang</h2><button id="btnBackMonitoring" type="button">← Menu</button></div>
         <p id="dashboardCompany" class="catatan"></p>
         <div class="topline" style="margin:14px 0 8px"><strong>Ringkasan Gudang</strong><button id="btnRefreshDashboard" type="button" class="secondary">↻ Refresh</button></div>
         <div class="filters">
@@ -278,43 +178,15 @@
           <div class="stat"><div class="label">Total Penjualan (periode)</div><div class="value" id="totalPenjualan">-</div></div>
           <div class="stat"><div class="label">Laba Kotor (periode)</div><div class="value" id="labaKotor">-</div></div>
         </div>
-        <div class="insightGrid">
-          <section class="insightCard"><h3>🔥 Produk Terlaris · 3 Hari Terakhir</h3><div id="hotProductsMessage" class="catatan">Memuat analisis penjualan...</div><div class="tableWrap"><table><thead><tr><th>Produk</th><th>Unit Keluar</th></tr></thead><tbody id="hotProductsRows"></tbody></table></div></section>
-          <section class="insightCard"><h3>◷ Tidak Ada Transaksi · 30 Hari</h3><div id="dormantProductsMessage" class="catatan">Memuat produk tanpa transaksi...</div><div class="tableWrap"><table><thead><tr><th>Produk</th><th>Transaksi Terakhir</th></tr></thead><tbody id="dormantProductsRows"></tbody></table></div></section>
-        </div>
-        <h2 class="monitorSectionTitle">Data Barang</h2>
-        <p class="catatan">Seluruh produk perusahaan beserta HPP dan harga jual per pcs. Daftar menampilkan maksimal 10 baris; gulir untuk melihat produk lainnya.</p>
-        <div id="monitorProductMessage" class="catatan">Memuat data barang...</div>
-        <div class="monitorTableWrap"><table><thead><tr><th>Kode Barang</th><th>Nama Barang</th><th>HPP/Pcs</th><th>Harga Jual/Pcs</th><th>Status</th></tr></thead><tbody id="monitorProductRows"></tbody></table></div>
-        <h2 class="monitorSectionTitle">Monitoring Stok per Produk</h2>
-        <p class="catatan">Stok tersedia dihitung dari unit dengan status IN_STOCK. Nilai stok menggunakan HPP produk. Gulir untuk melihat baris lainnya.</p>
+        <h2 style="margin-top:22px">Monitoring Stok per Produk</h2>
+        <p class="catatan">Stok tersedia dihitung dari unit dengan status IN_STOCK. Nilai stok menggunakan HPP produk.</p>
         <div id="stockMessage" class="catatan">Memuat stok produk...</div>
-        <div class="monitorTableWrap"><table><thead><tr><th>Kode</th><th>Nama Produk</th><th>Stok Tersedia</th><th>Nilai Stok (HPP)</th><th>Kondisi</th></tr></thead><tbody id="stockRows"></tbody></table></div>
-        <h2 class="monitorSectionTitle">Riwayat Transaksi Terbaru</h2>
-        <p class="catatan">Menampilkan maksimal 10 baris; gulir untuk melihat transaksi lainnya.</p>
+        <div class="tableWrap"><table><thead><tr><th>Kode</th><th>Nama Produk</th><th>Stok Tersedia</th><th>Nilai Stok (HPP)</th><th>Kondisi</th></tr></thead><tbody id="stockRows"></tbody></table></div>
+        <h2 style="margin-top:22px">Riwayat Transaksi Terbaru</h2>
         <div id="dashboardMessage" class="catatan">Memuat data...</div>
-        <div class="monitorTableWrap"><table><thead><tr><th>Waktu</th><th>Barang</th><th>Jenis</th><th>Channel</th><th>Penjualan</th><th>Laba</th></tr></thead><tbody id="recentRows"></tbody></table></div>
+        <div class="tableWrap"><table><thead><tr><th>Waktu</th><th>Barang</th><th>Jenis</th><th>Channel</th><th>Penjualan</th><th>Laba</th></tr></thead><tbody id="recentRows"></tbody></table></div>
       </section>
 
-      <section class="card" id="reportPage" style="display:none">
-        <div class="pageTitle"><h2>Laporan</h2></div>
-        <p class="catatan">Filter data perusahaan dan unduh sebagai CSV yang dapat dibuka di Excel, atau cetak/simpan sebagai PDF.</p>
-        <div class="reportToolbar noPrint">
-          <div><label for="reportType">Jenis laporan</label><select id="reportType"><option value="products">Produk</option><option value="units">Unit Barang</option><option value="transactions">Transaksi</option></select></div>
-          <div><label for="reportStart">Dari tanggal</label><input id="reportStart" type="date"></div>
-          <div><label for="reportEnd">Sampai tanggal</label><input id="reportEnd" type="date"></div>
-          <div><label for="reportProduct">Produk</label><select id="reportProduct"><option value="ALL">Semua produk</option></select></div>
-          <button id="btnLoadReport" type="button">Tampilkan</button><button id="btnExportExcel" type="button" class="secondary">Unduh Excel</button><button id="btnExportPdf" type="button" class="secondary">Simpan PDF</button>
-        </div>
-        <div id="reportMessage" class="catatan" style="margin:14px 0">Pilih filter lalu tekan Tampilkan.</div>
-        <div class="productTableWrap"><table><thead id="reportHead"></thead><tbody id="reportRows"></tbody></table></div>
-        <section class="card" id="qrHistoryPanel" style="margin-top:18px">
-          <div class="pageTitle"><h2>Riwayat Generate QR</h2><button type="button" id="btnRefreshQrHistory" class="secondary smallBtn">↻ Refresh</button></div>
-          <p class="catatan">Arsip ZIP berisi gambar QR JPG tersedia sampai hari ke-14. Pada hari ke-15, file ZIP dan catatan riwayat dihapus otomatis. Penghapusan arsip tidak menghapus unit QR pada stok.</p>
-          <div id="qrHistoryMessage" class="catatan" style="margin:12px 0">Memuat riwayat generate QR...</div>
-          <div class="productTableWrap"><table><thead><tr><th>Tanggal Generate</th><th>Produk</th><th>Jumlah QR</th><th>Dibuat Oleh</th><th>Batas Unduh</th><th>Arsip</th></tr></thead><tbody id="qrHistoryRows"></tbody></table></div>
-        </section>
-      </section>
       <section class="card" id="productsPage" style="display:none">
         <div class="pageTitle"><h2>Manajemen Barang</h2><button id="btnBackProducts" type="button">← Menu</button></div>
         <p id="productsCompany" class="catatan"></p>
@@ -377,12 +249,12 @@
 
       <section class="card" id="usersPage" style="display:none">
         <div class="pageTitle"><h2>Manajemen User</h2><button id="btnBackUsers" type="button">← Menu</button></div>
-        <p class="catatan">Admin hanya dapat mengelola user Gudang dan Viewer di perusahaannya sendiri. Menonaktifkan user tidak menghapus riwayat transaksi.</p>
+        <p class="catatan">Admin hanya dapat mengelola user Gudang dan Supervisor di perusahaannya sendiri. Menonaktifkan user tidak menghapus riwayat transaksi.</p>
         <h2>Tambah User</h2>
         <form id="userForm" class="userForm">
           <label for="newUserName">Nama lengkap</label><input id="newUserName" maxlength="120" required placeholder="Nama pengguna">
           <label for="newUserEmail">Email login</label><input id="newUserEmail" type="email" maxlength="254" required placeholder="nama@email.com">
-          <label for="newUserRole">Role</label><select id="newUserRole" required><option value="Gudang">Gudang</option><option value="Viewer">Viewer</option></select>
+          <label for="newUserRole">Role</label><select id="newUserRole" required><option value="Gudang">Gudang</option><option value="Supervisor">Supervisor</option></select>
           <label for="newUserPassword">Kata sandi awal</label><input id="newUserPassword" type="password" minlength="8" autocomplete="new-password" required placeholder="Minimal 8 karakter">
           <label for="newUserPasswordConfirm">Ulangi kata sandi awal</label><input id="newUserPasswordConfirm" type="password" minlength="8" autocomplete="new-password" required placeholder="Ulangi kata sandi">
           <button id="btnCreateUser" type="submit">BUAT USER</button>
@@ -416,18 +288,11 @@
           <label for="kategori">Channel Barang Keluar</label>
           <select id="kategori">
             <option value="MARKETPLACE">Marketplace</option>
-            <option value="OFFLINE">Offline</option><option value="DAMAGED">Rusak</option>
+            <option value="OFFLINE">Offline</option>
           </select>
         </div>
       </section>
 
-      <section class="card" id="transactionMethodCard">
-        <h2>Metode Transaksi</h2>
-        <p id="scanPlanNotice" class="catatan" style="display:none">Paket Anda tidak mencakup Scan QR. Gunakan Input Kode Unit Manual untuk transaksi.</p>
-        <label for="metodeTransaksi">Pilih metode input</label>
-        <select id="metodeTransaksi"><option value="SCAN">Scan QR (otomatis)</option><option value="MANUAL">Input kode unit manual</option></select>
-        <p class="catatan">Scan QR langsung menyimpan transaksi setelah kode terbaca. Input manual menampilkan rincian unit terlebih dahulu dan memerlukan konfirmasi Simpan Transaksi.</p>
-      </section>
       <section class="card" id="scannerCard">
         <h2>Scan QR Barang</h2>
         <div id="reader"></div>
@@ -435,32 +300,9 @@
         <div id="pesan" role="status" aria-live="polite"></div>
         <p class="catatan">Satu QR mewakili satu unit barang. Transaksi dikirim langsung setelah QR terbaca. Pastikan jenis transaksi benar sebelum memindai.</p>
       </section>
-      <section class="card" id="manualTransactionCard" style="display:none">
-        <h2>Input Kode Unit Manual</h2>
-        <form id="manualUnitForm">
-          <label for="manualUnitCode">Kode Unit / Nomor QR</label>
-          <input id="manualUnitCode" maxlength="500" placeholder="Contoh: BRG001-000025" autocomplete="off" required>
-          <button id="btnPreviewManual" type="submit">TAMPILKAN RINCIAN UNIT</button>
-        </form>
-        <div id="manualPreviewMessage" class="catatan" role="status" style="margin-top:12px"></div>
-        <div id="manualUnitPreview" class="card" style="display:none;background:var(--surface2);margin-top:12px">
-          <h3>Konfirmasi Rincian Unit</h3>
-          <div class="manualDetailGrid">
-            <div><span>Kode Barang</span><strong id="manualProductCode">-</strong></div>
-            <div><span>Nama Barang</span><strong id="manualProductName">-</strong></div>
-            <div><span>Kode Unit / QR</span><strong id="manualSerialNumber">-</strong></div>
-            <div><span>Nomor Urut Unit</span><strong id="manualUnitNumber">-</strong></div>
-            <div><span>Status Saat Ini</span><strong id="manualUnitStatus">-</strong></div>
-            <div><span>HPP</span><strong id="manualUnitHpp">-</strong></div>
-            <div><span>Harga Jual</span><strong id="manualUnitPrice">-</strong></div>
-          </div>
-          <button type="button" id="btnSaveManualTransaction">SIMPAN TRANSAKSI</button>
-        </div>
-        <div id="manualTransactionMessage" role="status" class="catatan" style="margin-top:12px"></div>
       </section>
 
     </section>
-    <footer class="appFooter">MY WAREHOUSE version 1.2.2 | by ciptaduaputra</footer>
   </main>
 
   <script>
@@ -475,7 +317,6 @@
     let waktuTerakhir = 0;
     let audioContext = null;
     let sessionData = null;
-    let manualUnitPreviewData = null;
 
     function tampilPesan(id, teks, jenis = 'info') {
       const el = document.getElementById(id);
@@ -541,9 +382,7 @@
       return message;
     }
 
-    let akses = { monitoring: false, transakasi: false, produk: false, users: false };
-    let reportRowsData = [];
-    let reportHeadersData = [];
+    let akses = { monitoring: false, transaksi: false, produk: false };
 
     function bukaAplikasi() {
       if (!sessionData || !sessionData.user) return tampilLogin();
@@ -551,16 +390,15 @@
       const role = String(user.role || '');
       document.getElementById('loginView').style.display = 'none';
       document.getElementById('appView').style.display = 'block';
-      document.body.classList.add('nav-active');
       document.getElementById('identitas').textContent = (user.fullName || user.userId || 'Pengguna') + ' · ' + role;
       const permissions = Array.isArray(user.permissions) ? user.permissions : [];
       akses = {
-        monitoring: ['Admin', 'Viewer'].includes(role) && permissions.includes('DASHBOARD'),
-        transaksi: ['Admin', 'Gudang'].includes(role) && permissions.includes('SCAN'),
-        produk: role === 'Admin',
+        monitoring: ['Admin', 'Supervisor'].includes(role) && permissions.includes('DASHBOARD'),
+        transaksi: ['Admin', 'Supervisor', 'Gudang'].includes(role) && permissions.includes('SCAN'),
+        produk: ['Admin', 'Supervisor'].includes(role) && (role === 'Admin' || permissions.includes('PRODUCTS')),
         users: role === 'Admin'
       };
-      document.getElementById('homeMenu').style.display = 'none';
+      document.getElementById('homeMenu').style.display = 'block';
       document.getElementById('btnOpenMonitoring').style.display = akses.monitoring ? 'flex' : 'none';
       document.getElementById('btnOpenTransaksi').style.display = akses.transaksi ? 'flex' : 'none';
       document.getElementById('btnOpenProducts').style.display = akses.produk ? 'flex' : 'none';
@@ -568,29 +406,17 @@
       document.getElementById('btnOpenPassword').style.display = 'flex';
       const visibleMenus = [akses.monitoring, akses.transaksi, akses.produk, akses.users, true, true].filter(Boolean).length;
       document.querySelector('.menuGrid').style.gridTemplateColumns = visibleMenus > 1 ? '1fr 1fr' : '1fr';
-      document.getElementById('dashboardView').style.display = akses.monitoring ? 'block' : 'none';
+      document.getElementById('dashboardView').style.display = 'none';
       document.getElementById('scanPage').style.display = 'none';
       document.getElementById('productsPage').style.display = 'none';
       document.getElementById('usersPage').style.display = 'none';
       document.getElementById('passwordPage').style.display = 'none';
       document.getElementById('subscriptionsPage').style.display = 'none';
-      document.getElementById('reportPage').style.display = 'none';
-      document.getElementById('navDashboard').style.display = akses.monitoring ? 'flex' : 'none';
-      document.getElementById('navProducts').style.display = akses.produk ? 'flex' : 'none';
-      document.getElementById('navTransactions').style.display = akses.transaksi ? 'flex' : 'none';
-      document.getElementById('navReports').style.display = akses.users ? 'flex' : 'none';
-      document.getElementById('navUsers').style.display = akses.users ? 'flex' : 'none';
-      document.getElementById('navPassword').style.display = 'flex';
-      document.getElementById('navSubscription').style.display = 'flex';
-      if (akses.monitoring) muatDashboard();
       if (!akses.transaksi) {
         berhentiScan();
         sembunyikanPesan('pesan');
       }
       toggleKategori();
-      // Muat hak fitur paket agar kontrol Generate QR dan Scan QR mengikuti langganan aktif.
-      muatLangganan();
-      // Status langganan hanya ditampilkan pada menu Langganan.
     }
 
     function bukaHalaman(halaman) {
@@ -605,16 +431,11 @@
       document.getElementById('usersPage').style.display = halaman === 'users' ? 'block' : 'none';
       document.getElementById('passwordPage').style.display = halaman === 'password' ? 'block' : 'none';
       document.getElementById('subscriptionsPage').style.display = halaman === 'langganan' ? 'block' : 'none';
-      document.getElementById('reportPage').style.display = halaman === 'laporan' ? 'block' : 'none';
-      document.querySelectorAll('.sideNav button').forEach(b => b.classList.remove('active'));
-      const navMap = {monitoring:'navDashboard', produk:'navProducts', transaksi:'navTransactions', laporan:'navReports', users:'navUsers', password:'navPassword', langganan:'navSubscription'};
-      if (navMap[halaman]) document.getElementById(navMap[halaman]).classList.add('active');
       if (halaman === 'users') muatUsers();
       if (halaman === 'langganan') muatLangganan();
       if (halaman === 'monitoring') muatDashboard();
       if (halaman === 'transaksi') toggleKategori();
       if (halaman === 'produk') muatProduk();
-      if (halaman === 'laporan') { muatLaporan(); muatRiwayatQr(); }
     }
 
     async function kembaliKeMenu() {
@@ -625,87 +446,13 @@
       document.getElementById('usersPage').style.display = 'none';
       document.getElementById('passwordPage').style.display = 'none';
       document.getElementById('subscriptionsPage').style.display = 'none';
-      document.getElementById('homeMenu').style.display = 'none';
-      document.getElementById('dashboardView').style.display = akses.monitoring ? 'block' : 'none';
-      if (akses.monitoring) muatDashboard();
+      document.getElementById('homeMenu').style.display = 'block';
     }
-
-    const appShell = document.getElementById('appView');
-    const navToggleButton = document.getElementById('btnNavToggle');
-    function isMobileNav() { return window.matchMedia('(max-width: 760px)').matches; }
-    function setNavState(open) {
-      if (isMobileNav()) {
-        appShell.classList.toggle('mobile-nav-open', !!open);
-        navToggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
-        navToggleButton.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
-        navToggleButton.textContent = open ? '×' : '☰';
-      } else {
-        appShell.classList.toggle('nav-collapsed', !open);
-        navToggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
-        navToggleButton.setAttribute('aria-label', open ? 'Ciutkan menu' : 'Perluas menu');
-        navToggleButton.textContent = open ? '☰' : '☰';
-        try { localStorage.setItem('mwNavCollapsed', open ? '0' : '1'); } catch(e) {}
-      }
-    }
-    navToggleButton.addEventListener('click', () => {
-      if (isMobileNav()) setNavState(!appShell.classList.contains('mobile-nav-open'));
-      else setNavState(appShell.classList.contains('nav-collapsed'));
-    });
-    document.getElementById('navBackdrop').addEventListener('click', () => setNavState(false));
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && appShell.classList.contains('mobile-nav-open')) setNavState(false); });
-    document.querySelectorAll('.sideNav button[id^="nav"]').forEach(btn => btn.addEventListener('click', () => { if (isMobileNav()) setNavState(false); }));
-    function syncNavForViewport() {
-      if (isMobileNav()) { appShell.classList.remove('nav-collapsed'); setNavState(false); }
-      else {
-        appShell.classList.remove('mobile-nav-open');
-        let collapsed = false; try { collapsed = localStorage.getItem('mwNavCollapsed') === '1'; } catch(e) {}
-        setNavState(!collapsed);
-      }
-    }
-    window.addEventListener('resize', syncNavForViewport);
-    syncNavForViewport();
 
     document.getElementById('btnOpenMonitoring').addEventListener('click', () => bukaHalaman('monitoring'));
-    document.getElementById('navDashboard').addEventListener('click', () => bukaHalaman('monitoring'));
-    document.getElementById('navProducts').addEventListener('click', () => bukaHalaman('produk'));
-    document.getElementById('navTransactions').addEventListener('click', () => bukaHalaman('transaksi'));
-    document.getElementById('navReports').addEventListener('click', () => bukaHalaman('laporan'));
-    document.getElementById('navUsers').addEventListener('click', () => bukaHalaman('users'));
-    document.getElementById('navPassword').addEventListener('click', () => bukaHalaman('password'));
-    document.getElementById('navSubscription').addEventListener('click', () => bukaHalaman('langganan'));
-    document.getElementById('navLogout').addEventListener('click', () => document.getElementById('btnLogout').click());
-    document.getElementById('btnThemeToggle').addEventListener('click', () => { document.body.classList.toggle('dark'); const dark=document.body.classList.contains('dark'); document.getElementById('btnThemeToggle').lastElementChild.textContent=dark?'Mode terang':'Mode gelap'; try{localStorage.setItem('mwTheme',dark?'dark':'light')}catch(e){} });
-    try { if(localStorage.getItem('mwTheme')==='dark') document.body.classList.add('dark'); } catch(e){}
-    document.getElementById('btnLoadReport').addEventListener('click', muatLaporan);
-    document.getElementById('btnRefreshQrHistory').addEventListener('click', muatRiwayatQr);
-    document.getElementById('jenisTransaksi').addEventListener('change', function(){ toggleKategori(); manualUnitPreviewData=null; document.getElementById('manualUnitPreview').style.display='none'; document.getElementById('manualPreviewMessage').textContent=''; });
-    document.getElementById('kategori').addEventListener('change', function(){ manualUnitPreviewData=null; document.getElementById('manualUnitPreview').style.display='none'; document.getElementById('manualPreviewMessage').textContent='Kategori berubah. Periksa ulang kode unit sebelum menyimpan.'; });
-    document.getElementById('metodeTransaksi').addEventListener('change', async function(){ if (kameraAktif) await berhentiScan(); toggleKategori(); const sub=sessionData&&sessionData.user&&sessionData.user.subscription; aturAksesFiturPaket(sub&&sub.status==='ACTIVE'?sub.planCode:''); });
-    document.getElementById('btnExportExcel').addEventListener('click', eksporLaporanCSV);
-    document.getElementById('btnExportPdf').addEventListener('click', () => window.print());
-
     document.getElementById('btnOpenTransaksi').addEventListener('click', () => bukaHalaman('transaksi'));
     document.getElementById('btnOpenProducts').addEventListener('click', () => bukaHalaman('produk'));
-    document.getElementById('btnOpenSubscriptions').addEventListener('click', async () => {
-      // Tampilkan halaman terlebih dahulu agar klik selalu memberi respons yang terlihat.
-      try {
-        document.getElementById('homeMenu').style.display = 'none';
-        document.getElementById('dashboardView').style.display = 'none';
-        document.getElementById('scanPage').style.display = 'none';
-        document.getElementById('productsPage').style.display = 'none';
-        document.getElementById('usersPage').style.display = 'none';
-        document.getElementById('passwordPage').style.display = 'none';
-        document.getElementById('subscriptionsPage').style.display = 'block';
-        document.getElementById('subscriptionStatusBox').textContent = 'Membuka menu langganan...';
-        await muatLangganan();
-      } catch (err) {
-        const box = document.getElementById('subscriptionStatusBox');
-        box.textContent = 'Menu langganan gagal dibuka: ' + pesanErrorJaringan(err);
-        box.className = 'error';
-        box.style.display = 'block';
-        console.error('Gagal membuka menu langganan:', err);
-      }
-    });
+    document.getElementById('btnOpenSubscriptions').addEventListener('click', () => bukaHalaman('langganan'));
     document.getElementById('btnBackSubscriptions').addEventListener('click', kembaliKeMenu);
     document.getElementById('btnOpenUsers').addEventListener('click', () => bukaHalaman('users'));
     document.getElementById('btnOpenPassword').addEventListener('click', () => bukaHalaman('password'));
@@ -718,7 +465,6 @@
     function tampilLogin() {
       document.getElementById('loginView').style.display = 'block';
       document.getElementById('appView').style.display = 'none';
-      document.body.classList.remove('nav-active');
       document.getElementById('email').value = '';
       document.getElementById('password').value = '';
     }
@@ -726,281 +472,71 @@
     const rupiah = value => new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', maximumFractionDigits:0}).format(Number(value) || 0);
     const angka = value => new Intl.NumberFormat('id-ID').format(Number(value) || 0);
 
-    function formatBatasPaket(value, suffix) {
-      if (value === null || value === undefined || value === '') return 'Tanpa batas';
-      const n = Number(value);
-      if (!Number.isFinite(n)) return 'Tanpa batas';
-      return angka(n) + (suffix || '');
-    }
-
-    let subscriptionPlansCache = [];
-    let selectedSubscriptionPlan = null;
-
-    function daftarFiturPaket(plan) {
-      const features = plan && plan.features ? plan.features : {};
-      const list = [
-        'Dashboard monitoring stok dan nilai persediaan',
-        'Pencatatan transaksi barang masuk dan barang keluar',
-        'Input kode unit secara manual',
-        'Riwayat transaksi dan aktivitas gudang',
-        'Monitoring HPP dan estimasi keuntungan'
-      ];
-      if (features.scanQR) list.push('Scan QR menggunakan kamera');
-      if (features.generateQR) list.push('Generate QR Code untuk unit barang');
-      return list;
-    }
-
-    function buatDaftarFiturHTML(plan) {
-      const ul = document.createElement('ul');
-      ul.style.cssText = 'padding-left:20px;margin:10px 0 0;display:grid;gap:7px';
-      daftarFiturPaket(plan).forEach(feature => {
-        const li = document.createElement('li');
-        li.textContent = feature;
-        ul.appendChild(li);
-      });
-      return ul;
-    }
-
-    function tampilkanHighlightPaket(plan) {
-      const box = document.getElementById('subscriptionCheapestHighlight');
-      if (!box) return;
-      box.replaceChildren();
-      if (!plan) { box.style.display = 'none'; return; }
-
-      // Tampilkan tiga pilihan unggulan: biaya efektif terendah,
-      // TUMBUH 12 bulan, dan MAJU 12 bulan.
-      // Kenali tier dari PlanCode maupun PlanName. Ini menghindari kartu
-      // tahunan hilang bila backend mengirim nama paket/kode dengan format berbeda.
-      const identitasPlan = item => (String(item && item.planCode || '') + ' ' + String(item && item.planName || '')).toUpperCase();
-      const adalahTier = (item, kataKunci) => kataKunci.some(k => identitasPlan(item).includes(k));
-      const findAnnualPlan = kataKunci => subscriptionPlansCache.find(item =>
-        Number(item.durationMonths) === 12 && adalahTier(item, kataKunci)
-      );
-
-      const candidates = [
-        { plan: plan, label: '★ PALING MURAH', color: '#e7f6ec', text: '#18733d', border: '#26965b' },
-        { plan: findAnnualPlan(['ADVANCED', 'TUMBUH']), label: '✓ PAS & TERJANGKAU', color: '#eaf2ff', text: '#2457a6', border: '#6b9be8' },
-        { plan: findAnnualPlan(['PRO', 'MAJU']), label: '◆ HEMAT & LENGKAP', color: '#fff3df', text: '#946018', border: '#d6a34c' }
-      ];
-
-      const unique = [];
-      const seen = new Set();
-      candidates.forEach(item => {
-        if (!item.plan) return;
-        const code = String(item.plan.planCode);
-        if (seen.has(code)) {
-          const existing = unique.find(x => String(x.plan.planCode) === code);
-          if (existing && !existing.labels.includes(item.label)) existing.labels.push(item.label);
-          return;
-        }
-        seen.add(code);
-        unique.push({ ...item, labels: [item.label] });
-      });
-
-      // Tiga kartu selalu sejajar; pada layar sempit baris dapat digeser.
-      box.style.display = 'grid';
-      box.style.gridTemplateColumns = 'repeat(3,minmax(230px,1fr))';
-      box.style.gap = '12px';
-      box.style.overflowX = 'auto';
-      box.style.overscrollBehaviorX = 'contain';
-      box.style.alignItems = 'stretch';
-      box.style.border = '0';
-      box.style.padding = '0 0 8px';
-      box.style.background = 'transparent';
-
-      unique.forEach(item => {
-        const selectedPlan = item.plan;
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.style.cssText = 'border:2px solid ' + item.border + ';border-radius:14px;padding:16px;min-width:0;display:flex;flex-direction:column';
-
-        item.labels.forEach(labelText => {
-          const badge = document.createElement('div');
-          badge.textContent = labelText;
-          badge.style.cssText = 'display:inline-block;background:' + item.color + ';color:' + item.text + ';padding:5px 10px;border-radius:20px;font-size:11px;font-weight:800;margin:0 5px 9px 0';
-          card.appendChild(badge);
-        });
-
-        const name = document.createElement('h3');
-        name.textContent = selectedPlan.planName || selectedPlan.planCode;
-        name.style.margin = '0 0 6px';
-        const price = document.createElement('div');
-        price.style.cssText = 'font-size:clamp(25px,5vw,32px);font-weight:800;color:var(--success,#18834b);line-height:1.2';
-        price.textContent = rupiah(selectedPlan.effectiveMonthlyPrice != null ? selectedPlan.effectiveMonthlyPrice : Math.round(selectedPlan.price / selectedPlan.durationMonths));
-        const per = document.createElement('span');
-        per.textContent = ' / bulan';
-        per.style.cssText = 'font-size:14px;font-weight:500;color:var(--muted,#667085)';
-        price.appendChild(per);
-
-        const featureTitle = document.createElement('strong');
-        featureTitle.textContent = 'Fitur yang didapatkan';
-        featureTitle.style.cssText = 'display:block;margin-top:14px';
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.textContent = 'LIHAT DETAIL PAKET';
-        button.style.cssText = 'width:100%;margin-top:auto;padding-top:12px';
-        button.addEventListener('click', () => bukaDetailPaketLangganan(selectedPlan.planCode));
-
-        card.append(name, price, featureTitle, buatDaftarFiturHTML(selectedPlan), button);
-        box.appendChild(card);
-      });
-    }
-
-    function tampilkanDetailPaket(plan) {
-      const box = document.getElementById('subscriptionPlanDetails');
-      const hiddenCode = document.getElementById('subscriptionPlanCode');
-      if (!box) return;
-      box.replaceChildren();
-      if (!plan) {
-        box.textContent = 'Paket tidak ditemukan. Silakan kembali dan pilih paket yang tersedia.';
-        if (hiddenCode) hiddenCode.value = '';
-        return;
-      }
-      if (hiddenCode) hiddenCode.value = plan.planCode;
-      const heading = document.createElement('h3');
-      heading.textContent = plan.planName || plan.planCode;
-      heading.style.margin = '0 0 8px';
-      const featureTitle = document.createElement('strong');
-      featureTitle.textContent = 'Fitur paket';
-      const featureList = buatDaftarFiturHTML(plan);
-      const limits = document.createElement('p');
-      limits.style.cssText = 'margin:12px 0 0;color:var(--muted,#667085)';
-      limits.textContent = 'Batas pengguna: ' + formatBatasPaket(plan.maxUsers, ' pengguna') + ' · Batas produk: ' + formatBatasPaket(plan.maxProducts, ' produk');
-      const duration = Number(plan.durationMonths) === 12 ? '12 bulan' : angka(plan.durationMonths) + ' bulan';
-      const billing = document.createElement('div');
-      billing.style.cssText = 'margin-top:16px;padding:14px;border-radius:12px;background:var(--soft,#f4f6f8)';
-      const durationLine = document.createElement('p');
-      durationLine.style.margin = '0 0 7px';
-      durationLine.textContent = 'Masa berlangganan: ' + duration;
-      const monthlyLine = document.createElement('p');
-      monthlyLine.style.margin = '0 0 7px';
-      monthlyLine.textContent = 'Biaya efektif per bulan: ' + rupiah(Math.round(plan.price / plan.durationMonths));
-      const total = document.createElement('div');
-      total.style.cssText = 'font-size:22px;font-weight:800;margin-top:8px';
-      total.textContent = 'Total pembayaran: ' + rupiah(plan.price);
-      billing.append(durationLine, monthlyLine, total);
-      box.append(heading, featureTitle, featureList, limits, billing);
-    }
-
-    function bukaDetailPaketLangganan(planCode) {
-      const plan = subscriptionPlansCache.find(item => String(item.planCode) === String(planCode));
-      if (!plan) return;
-      selectedSubscriptionPlan = plan;
-      tampilkanDetailPaket(plan);
-      document.getElementById('subscriptionCatalogView').style.display = 'none';
-      document.getElementById('subscriptionCheckoutView').style.display = 'block';
-      document.getElementById('subscriptionPaymentMessage').style.display = 'none';
-      document.getElementById('subscriptionsPage').scrollIntoView({behavior:'smooth',block:'start'});
-    }
-
-    function kembaliKeKatalogLangganan() {
-      document.getElementById('subscriptionCheckoutView').style.display = 'none';
-      document.getElementById('subscriptionCatalogView').style.display = 'block';
-    }
-
-    function sinkronPaketLangganan(plans, selectedCode) {
-      const code = String(selectedCode || '').trim();
-      const selected = (plans || []).find(item => String(item.planCode) === code);
-      const button = document.getElementById('btnOpenSubscriptionDetail');
-      if (button) button.disabled = !selected;
-      selectedSubscriptionPlan = selected || null;
-    }
-
-    function aturAksesFiturPaket(planCode) {
-      const code = String(planCode || '').trim().toUpperCase();
-      const sub = sessionData && sessionData.user && sessionData.user.subscription;
-      const active = Boolean(code) && Boolean(sub && sub.status === 'ACTIVE' && String(sub.planCode || '').toUpperCase() === code);
-      const features = active && sub.features ? sub.features : {};
-      const bolehGenerateQr = Boolean(features.generateQR);
-      const bolehScanQr = Boolean(features.scanQR);
-      const qrButton = document.querySelector('[data-product-panel="qrPanel"]');
-      const qrPanel = document.getElementById('qrPanel');
-      if (qrButton) qrButton.style.display = bolehGenerateQr ? '' : 'none';
-      if (qrPanel && !bolehGenerateQr && qrPanel.classList.contains('active')) {
-        document.querySelectorAll('[data-product-panel]').forEach(item => item.classList.toggle('active', item.dataset.productPanel === 'listPanel'));
-        document.querySelectorAll('.productPanel').forEach(panel => panel.classList.toggle('active', panel.id === 'listPanel'));
-      }
-      const methodSelect = document.getElementById('metodeTransaksi');
-      const scanOption = methodSelect && methodSelect.querySelector('option[value="SCAN"]');
-      const scannerCard = document.getElementById('scannerCard');
-      const methodCard = document.getElementById('transactionMethodCard');
-      if (scanOption) scanOption.disabled = !bolehScanQr;
-      if (methodSelect && !bolehScanQr) methodSelect.value = 'MANUAL';
-      if (scannerCard) scannerCard.style.display = bolehScanQr && (!methodSelect || methodSelect.value === 'SCAN') ? '' : 'none';
-      if (methodCard) methodCard.style.display = '';
-      const manualCard = document.getElementById('manualTransactionCard');
-      if (manualCard) manualCard.style.display = methodSelect && methodSelect.value === 'MANUAL' ? '' : 'none';
-      const scanNote = document.getElementById('scanPlanNotice');
-      if (scanNote) scanNote.style.display = bolehScanQr ? 'none' : 'block';
-      return { generateQR: bolehGenerateQr, scanQR: bolehScanQr };
-    }
-
-    function aturAksesQrPaket(planCode) { return aturAksesFiturPaket(planCode).generateQR; }
-
     async function muatLangganan() {
       const statusBox = document.getElementById('subscriptionStatusBox');
-      const preview = document.getElementById('subscriptionPlanPreview');
+      const plansBox = document.getElementById('subscriptionPlans');
+      const select = document.getElementById('subscriptionPlanCode');
       const formWrap = document.getElementById('subscriptionPaymentFormWrap');
       statusBox.textContent = 'Memuat status langganan...';
-      statusBox.className = 'catatan';
-      statusBox.style.display = 'block';
-      preview.innerHTML = '<option value="">Memuat paket...</option>';
-      document.getElementById('subscriptionCheapestHighlight').style.display = 'none';
-      document.getElementById('subscriptionCatalogView').style.display = 'block';
-      document.getElementById('subscriptionCheckoutView').style.display = 'none';
-      selectedSubscriptionPlan = null;
+      plansBox.replaceChildren();
+      select.innerHTML = '<option value="">Memuat paket...</option>';
       try {
         const result = await kirimKeBackend({ action: 'subscription_info', token: sessionData.token });
         if (!result || !result.success) throw new Error(result && result.message || 'Status langganan gagal dimuat.');
         const sub = result.subscription || {};
         const labels = { ACTIVE: 'Aktif', EXPIRED: 'Kedaluwarsa', UNPAID: 'Menunggu pembayaran', NO_SUBSCRIPTION: 'Belum berlangganan', INACTIVE: 'Belum aktif' };
-        statusBox.textContent = 'Status langganan: ' + (labels[sub.status] || sub.status || 'Tidak diketahui') +
-          (sub.planCode ? ' · Paket aktif ' + sub.planCode : '') +
+        statusBox.textContent = 'Status: ' + (labels[sub.status] || sub.status || 'Tidak diketahui') +
+          (sub.planCode ? ' · Paket ' + sub.planCode : '') +
           (sub.startDate ? ' · Mulai ' + sub.startDate : '') +
           (sub.endDate ? ' · Berakhir ' + sub.endDate : '') +
           (sub.message ? ' — ' + sub.message : '');
-        if (sessionData && sessionData.user) { sessionData.user.subscription = Object.assign({}, sessionData.user.subscription || {}, sub, { features: result.planFeatures || (sessionData.user.subscription && sessionData.user.subscription.features) || {} }); }
-        aturAksesFiturPaket(sub.status === 'ACTIVE' ? sub.planCode : '');
-        subscriptionPlansCache = Array.isArray(result.plans) ? result.plans : [];
-        preview.replaceChildren();
-        if (!subscriptionPlansCache.length) {
-          preview.add(new Option('Belum ada paket aktif', ''));
-          document.getElementById('subscriptionCheapestHighlight').textContent = 'Belum ada paket aktif. Pemilik sistem perlu mengaktifkan paket pada sheet Plans.';
-          document.getElementById('subscriptionCheapestHighlight').style.display = 'block';
-          document.getElementById('btnOpenSubscriptionDetail').disabled = true;
+        const plans = Array.isArray(result.plans) ? result.plans : [];
+        select.innerHTML = '';
+        if (!plans.length) {
+          select.innerHTML = '<option value="">Belum ada paket aktif</option>';
+          plansBox.textContent = 'Belum ada paket yang tersedia. Silakan hubungi pemilik sistem.';
         } else {
-          preview.add(new Option('Pilih paket...', ''));
-          subscriptionPlansCache.forEach(plan => {
-            const label = (plan.planName || plan.planCode) + ' — ' + rupiah(plan.price) + ' / ' + angka(plan.durationMonths) + ' bulan';
-            preview.add(new Option(label, plan.planCode));
+          select.add(new Option('Pilih paket...', ''));
+          plans.forEach(plan => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            const title = document.createElement('strong'); title.textContent = (/^(PROFESSIONAL|PRO)(-|$)/.test(String(plan.planCode || '').toUpperCase()) ? 'Pro' : plan.planName) + ' (' + plan.planCode + ')';
+            const durasiLabel = Number(plan.durationMonths) === 12 ? '1 tahun' : plan.durationMonths + ' bulan';
+            const price = document.createElement('p'); price.textContent = rupiah(plan.price) + ' · ' + durasiLabel;
+            const limits = document.createElement('p'); limits.className = 'catatan';
+            const roleLimits = plan.roleLimits || {};
+            const code = String(plan.planCode || '').toUpperCase();
+            let roleText;
+            if (/^(PROFESSIONAL|PRO|ENTERPRISE)(-|$)/.test(code)) {
+              roleText = 'Admin: 2 · Gudang: 10+ · Supervisor: 5+';
+            } else {
+              roleText = ['Admin', 'Gudang', 'Supervisor'].map(role => role + ': ' + (roleLimits[role] === null || roleLimits[role] === undefined ? 'Tanpa batas' : angka(roleLimits[role]))).join(' · ');
+            }
+            let productLimitText;
+            if (/^(PROFESSIONAL|PRO|ENTERPRISE)(-|$)/.test(code)) {
+              productLimitText = '100+ produk';
+            } else if (/^BASIC(-|$)/.test(code)) {
+              productLimitText = (plan.maxProducts === null ? '25' : angka(plan.maxProducts)) + ' produk';
+            } else if (/^ADVANCED(-|$)/.test(code)) {
+              productLimitText = (plan.maxProducts === null ? '75' : angka(plan.maxProducts)) + ' produk';
+            } else {
+              productLimitText = plan.maxProducts === null ? 'Tanpa batas' : angka(plan.maxProducts) + ' produk';
+            }
+            limits.textContent = roleText + ' · Total user: ' + (plan.maxUsers === null ? 'sesuai kuota role' : angka(plan.maxUsers)) + ' · Produk: ' + productLimitText;
+            const choose = document.createElement('button'); choose.type = 'button'; choose.className = 'secondary'; choose.textContent = 'Pilih paket';
+            choose.addEventListener('click', () => { select.value = plan.planCode; select.scrollIntoView({ behavior: 'smooth', block: 'center' }); });
+            card.append(title, price, limits, choose); plansBox.appendChild(card);
+            select.add(new Option((/^(PROFESSIONAL|PRO)(-|$)/.test(String(plan.planCode || '').toUpperCase()) ? 'Pro' : plan.planName) + ' — ' + rupiah(plan.price) + ' / ' + (Number(plan.durationMonths) === 12 ? '1 tahun' : plan.durationMonths + ' bulan'), plan.planCode));
           });
-          const cheapest = subscriptionPlansCache.find(plan => plan.isCheapest) || subscriptionPlansCache.reduce((best, plan) => !best || plan.price / plan.durationMonths < best.price / best.durationMonths ? plan : best, null);
-          tampilkanHighlightPaket(cheapest);
-          preview.onchange = () => sinkronPaketLangganan(subscriptionPlansCache, preview.value);
         }
         const isAdmin = sessionData.user && sessionData.user.role === 'Admin';
-        formWrap.style.display = isAdmin && subscriptionPlansCache.length ? 'block' : 'none';
+        formWrap.style.display = isAdmin && plans.length ? 'block' : 'none';
         if (!isAdmin) statusBox.textContent += ' Pengajuan pembayaran hanya dapat dilakukan oleh Admin perusahaan.';
       } catch (err) {
-        statusBox.textContent = 'Gagal memuat langganan: ' + pesanErrorJaringan(err) +
-          ' Pastikan sheet Plans dan Subscriptions sudah disiapkan, lalu pastikan Apps Script sudah di-deploy dengan versi terbaru.';
-        statusBox.className = 'error';
-        statusBox.style.display = 'block';
-        preview.innerHTML = '<option value="">Paket tidak dapat dimuat</option>';
-        document.getElementById('subscriptionCheapestHighlight').textContent = 'Paket belum dapat dimuat. Periksa koneksi dan konfigurasi langganan.';
-        document.getElementById('subscriptionCheapestHighlight').style.display = 'block';
-        document.getElementById('btnOpenSubscriptionDetail').disabled = true;
-        aturAksesFiturPaket('');
-        formWrap.style.display = 'none';
-        console.error('Gagal memuat data langganan:', err);
+        statusBox.textContent = pesanErrorJaringan(err);
+        formWrap.style.display = sessionData.user && sessionData.user.role === 'Admin' ? 'block' : 'none';
       }
     }
-
-    document.getElementById('btnBackSubscriptionCatalog').addEventListener('click', kembaliKeKatalogLangganan);
-    document.getElementById('btnOpenSubscriptionDetail').addEventListener('click', function() {
-      const code = document.getElementById('subscriptionPlanPreview').value;
-      bukaDetailPaketLangganan(code);
-    });
 
     document.getElementById('subscriptionPaymentForm').addEventListener('submit', async function(event) {
       event.preventDefault();
@@ -1008,10 +544,6 @@
       const message = document.getElementById('subscriptionPaymentMessage');
       button.disabled = true; button.textContent = 'MENGIRIM...';
       message.style.display = 'none';
-      if (!document.getElementById('subscriptionPlanCode').value) {
-        tampilPesan('subscriptionPaymentMessage', 'Pilih paket terlebih dahulu.', 'error');
-        button.disabled = false; button.textContent = 'KIRIM PENGAJUAN'; return;
-      }
       try {
         const result = await kirimKeBackend({
           action: 'subscription_payment_submit', token: sessionData.token,
@@ -1032,44 +564,6 @@
     document.getElementById('filterMonth').addEventListener('change', muatDashboard);
     document.getElementById('filterProduct').addEventListener('change', muatDashboard);
 
-    async function muatStatusLanggananDashboard() {
-      const box = document.getElementById('dashboardSubscriptionStatus');
-      if (!sessionData || !sessionData.token) return;
-      box.textContent = 'Memuat status langganan...';
-      box.className = 'catatan';
-      try {
-        const result = await kirimKeBackend({ action: 'subscription_info', token: sessionData.token });
-        if (!result || !result.success) {
-          if (result && result.code === 'SESSION_INVALID') {
-            sessionData = null; sessionStorage.removeItem(SESSION_KEY); tampilLogin();
-          }
-          throw new Error(result && result.message || 'Status langganan tidak dapat dimuat.');
-        }
-        const sub = result.subscription || {};
-        if (sessionData && sessionData.user) sessionData.user.subscription = Object.assign({}, sessionData.user.subscription || {}, sub, { features: result.planFeatures || {} });
-        aturAksesFiturPaket(sub.status === 'ACTIVE' ? sub.planCode : '');
-        const plans = Array.isArray(result.plans) ? result.plans : [];
-        const plan = plans.find(item => String(item.planCode || '').toUpperCase() === String(sub.planCode || '').toUpperCase());
-        const statusLabels = {
-          ACTIVE: 'AKTIF', EXPIRED: 'KEDALUWARSA', UNPAID: 'MENUNGGU PEMBAYARAN',
-          NO_SUBSCRIPTION: 'BELUM BERLANGGANAN', INACTIVE: 'BELUM AKTIF', SUSPENDED: 'DITANGGUHKAN'
-        };
-        const status = String(sub.status || 'NO_SUBSCRIPTION').toUpperCase();
-        const badge = status === 'ACTIVE' ? '🟢' : status === 'EXPIRED' || status === 'SUSPENDED' ? '🔴' : '🟠';
-        const planLabel = plan ? (plan.planName + ' (' + plan.planCode + ')') : (sub.planCode || 'Belum ada paket');
-        const dates = [];
-        if (sub.startDate) dates.push('Mulai: ' + sub.startDate);
-        if (sub.endDate) dates.push('Berakhir: ' + sub.endDate);
-        box.textContent = badge + ' ' + (statusLabels[status] || status) + '  |  Paket: ' + planLabel +
-          (dates.length ? '  |  ' + dates.join('  |  ') : '') +
-          (sub.message ? '  |  ' + sub.message : '');
-        box.className = status === 'ACTIVE' ? 'success' : (status === 'EXPIRED' || status === 'SUSPENDED' ? 'error' : 'catatan');
-      } catch (err) {
-        box.textContent = 'Status langganan gagal dimuat: ' + pesanErrorJaringan(err);
-        box.className = 'error';
-      }
-    }
-
     async function muatDashboard() {
       if (!sessionData || !sessionData.token) return;
       const message = document.getElementById('dashboardMessage');
@@ -1087,23 +581,6 @@
           throw new Error((result && result.message) || 'Data Monitoring Gudang tidak dapat dimuat.');
         }
         document.getElementById('dashboardCompany').textContent = result.companyName || '';
-        const catalogRows = document.getElementById('monitorProductRows');
-        catalogRows.replaceChildren();
-        const catalog = result.productCatalog || result.products || [];
-        catalog.forEach(product => {
-          const tr = document.createElement('tr');
-          const values = [product.productCode || '-', product.productName || '-', rupiah(product.hpp), rupiah(product.sellingPrice)];
-          values.forEach(value => { const td = document.createElement('td'); td.textContent = value; tr.appendChild(td); });
-          const statusTd = document.createElement('td');
-          const status = String(product.status || 'ACTIVE').toUpperCase();
-          const badge = document.createElement('span');
-          badge.className = 'statusPill ' + (status === 'ACTIVE' ? 'statusActive' : 'statusInactive');
-          badge.textContent = status === 'ACTIVE' ? 'AKTIF' : 'NONAKTIF';
-          statusTd.appendChild(badge); tr.appendChild(statusTd); catalogRows.appendChild(tr);
-        });
-        document.getElementById('monitorProductMessage').textContent = catalog.length
-          ? 'Total ' + angka(catalog.length) + ' produk terdaftar.'
-          : 'Belum ada produk terdaftar.';
         const productSelect = document.getElementById('filterProduct');
         const oldValue = productSelect.value || 'ALL';
         const known = new Set(Array.from(productSelect.options).map(o => o.value));
@@ -1159,59 +636,10 @@
           values.forEach(value => { const td = document.createElement('td'); td.textContent = value; tr.appendChild(td); });
           tbody.appendChild(tr);
         });
-        const hot = result.hotProducts3Days || [];
-        const hotBody = document.getElementById('hotProductsRows'); hotBody.replaceChildren();
-        hot.forEach(item => { const tr=document.createElement('tr'); [item.productName + ' (' + item.productCode + ')', angka(item.qtyOut)].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td)});hotBody.appendChild(tr); });
-        document.getElementById('hotProductsMessage').textContent = hot.length ? 'Berdasarkan jumlah unit keluar dalam 3 hari terakhir.' : 'Belum ada barang keluar dalam 3 hari terakhir.';
-        const dormant = result.noTransactions30Days || [];
-        const dormantBody = document.getElementById('dormantProductsRows'); dormantBody.replaceChildren();
-        dormant.forEach(item => { const tr=document.createElement('tr'); [item.productName + ' (' + item.productCode + ')', item.lastTransaction || 'Tidak ada riwayat'].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td)});dormantBody.appendChild(tr); });
-        document.getElementById('dormantProductsMessage').textContent = dormant.length ? 'Produk aktif tanpa transaksi selama 30 hari terakhir.' : 'Semua produk aktif memiliki transaksi dalam 30 hari terakhir.';
-        message.textContent = 'Dashboard berhasil diperbarui.';
+        message.textContent = 'Monitoring Gudang diperbarui.';
       } catch (err) {
         message.textContent = 'Gagal memuat Monitoring Gudang: ' + pesanErrorJaringan(err);
       }
-    }
-
-    async function muatLaporan() {
-      if (!sessionData || !sessionData.token || !akses.users) return;
-      const message=document.getElementById('reportMessage'); message.textContent='Memuat laporan...';
-      try {
-        const result=await kirimKeBackend({action:'report_data',token:sessionData.token,reportType:document.getElementById('reportType').value,startDate:document.getElementById('reportStart').value,endDate:document.getElementById('reportEnd').value,productCode:document.getElementById('reportProduct').value||'ALL'});
-        if(!result.success) throw new Error(result.message||'Laporan gagal dimuat.');
-        reportRowsData=result.rows||[]; reportHeadersData=result.headers||[];
-        const head=document.getElementById('reportHead'); head.replaceChildren(); const hr=document.createElement('tr'); reportHeadersData.forEach(h=>{const th=document.createElement('th');th.textContent=h;hr.appendChild(th)});head.appendChild(hr);
-        const body=document.getElementById('reportRows');body.replaceChildren();
-        reportRowsData.forEach(row=>{const tr=document.createElement('tr');row.forEach(v=>{const td=document.createElement('td');td.textContent=v==null?'':String(v);tr.appendChild(td)});body.appendChild(tr)});
-        message.textContent='Menampilkan '+angka(reportRowsData.length)+' baris. Maksimal 10 baris terlihat sekaligus; gulir untuk melihat lainnya.';
-        const prod=document.getElementById('reportProduct'); const old=prod.value||'ALL'; const known=new Set(Array.from(prod.options).map(o=>o.value));
-        (result.products||[]).forEach(x=>{if(!known.has(x.productCode)){const op=document.createElement('option');op.value=x.productCode;op.textContent=x.productCode+' — '+x.productName;prod.appendChild(op)}});prod.value=old;
-      } catch(err){message.textContent='Laporan gagal dimuat: '+pesanErrorJaringan(err);}
-    }
-    async function muatRiwayatQr() {
-      const message=document.getElementById('qrHistoryMessage');
-      const body=document.getElementById('qrHistoryRows');
-      message.textContent='Memuat riwayat generate QR...'; body.replaceChildren();
-      try {
-        const result=await kirimKeBackend({action:'qr_history_list',token:sessionData.token});
-        if(!result || !result.success) throw new Error(result && result.message || 'Riwayat QR gagal dimuat.');
-        const items=result.history||[];
-        items.forEach(item=>{
-          const tr=document.createElement('tr');
-          [item.generatedAt,item.productCode+' — '+item.productName,angka(item.quantity),item.generatedBy,item.expiresOn].forEach(value=>{const td=document.createElement('td');td.textContent=value||'-';tr.appendChild(td);});
-          const td=document.createElement('td');
-          if(item.downloadUrl){const a=document.createElement('a');a.href=item.downloadUrl;a.target='_blank';a.rel='noopener';a.textContent='Unduh ZIP';a.style.cssText='display:inline-block;padding:8px 10px;background:var(--primary2);color:#fff;border-radius:8px;text-decoration:none';td.appendChild(a);}else{td.textContent='File tidak tersedia';}
-          tr.appendChild(td);body.appendChild(tr);
-        });
-        message.textContent=items.length?'Menampilkan '+angka(items.length)+' arsip QR yang masih tersedia.':'Belum ada riwayat generate QR yang tersedia.';
-      }catch(err){message.textContent='Riwayat QR gagal dimuat: '+pesanErrorJaringan(err);}
-    }
-
-    function eksporLaporanCSV(){
-      if(!reportRowsData.length){alert('Belum ada data laporan untuk diunduh.');return;}
-      const esc=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
-      const csv='\uFEFF'+[reportHeadersData,...reportRowsData].map(r=>r.map(esc).join(';')).join('\r\n');
-      const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='laporan-my-warehouse-'+document.getElementById('reportType').value+'.csv';a.click();URL.revokeObjectURL(url);
     }
 
     async function muatProduk() {
@@ -1324,8 +752,6 @@
         });
         if (!result || !result.success) throw new Error((result && result.message) || 'QR gagal dibuat.');
         document.getElementById('qrBatchTitle').textContent = result.productCode + ' — ' + result.productName + ' (' + angka(result.quantity) + ' QR)';
-        const previousZipLink=document.getElementById('qrZipDownloadLink'); if(previousZipLink) previousZipLink.remove();
-        if(result.downloadUrl){const a=document.createElement('a');a.id='qrZipDownloadLink';a.href=result.downloadUrl;a.target='_blank';a.rel='noopener';a.textContent='Unduh Arsip ZIP (JPG)';a.style.cssText='display:inline-block;margin:10px 0;padding:10px 14px;background:var(--primary2);color:#fff;border-radius:9px;text-decoration:none';document.getElementById('qrBatchTitle').parentElement.appendChild(a);}
         (result.qrPayloads || []).forEach((payload, index) => {
           const item = document.createElement('div'); item.className = 'qrItem';
           const title = document.createElement('strong'); title.textContent = result.productCode + ' #' + (index + 1); item.appendChild(title);
@@ -1338,7 +764,6 @@
         message.className = 'catatan sukses';
         document.getElementById('btnPrintQr').style.display = (result.qrPayloads || []).length ? 'block' : 'none';
         await muatProduk();
-        await muatRiwayatQr();
       } catch(err) {
         message.textContent = 'Gagal membuat QR: ' + pesanErrorJaringan(err);
         message.className = 'catatan error';
@@ -1444,13 +869,6 @@
     function toggleKategori() {
       const keluar = document.getElementById('jenisTransaksi').value === 'KELUAR';
       document.getElementById('kategoriContainer').style.display = keluar ? 'block' : 'none';
-      const manual = document.getElementById('metodeTransaksi').value === 'MANUAL';
-      document.getElementById('scannerCard').style.display = manual ? 'none' : 'block';
-      document.getElementById('manualTransactionCard').style.display = manual ? 'block' : 'none';
-      if (!manual) {
-        manualUnitPreviewData = null;
-        document.getElementById('manualUnitPreview').style.display = 'none';
-      }
     }
     document.getElementById('jenisTransaksi').addEventListener('change', toggleKategori);
 
@@ -1473,40 +891,6 @@
         });
       } catch (err) { /* Bunyi tidak boleh menghentikan transaksi. */ }
     }
-
-    document.getElementById('manualUnitForm').addEventListener('submit', async function(event){
-      event.preventDefault();
-      const code=document.getElementById('manualUnitCode').value.trim();
-      const message=document.getElementById('manualPreviewMessage');
-      const btn=document.getElementById('btnPreviewManual');
-      manualUnitPreviewData=null;document.getElementById('manualUnitPreview').style.display='none';
-      if(!code){message.textContent='Masukkan kode unit terlebih dahulu.';return;}
-      btn.disabled=true;btn.textContent='MEMERIKSA KODE...';message.textContent='';
-      try{
-        const type=document.getElementById('jenisTransaksi').value;
-        const channel=type==='KELUAR'?document.getElementById('kategori').value:'';
-        const result=await kirimKeBackend({action:'scan_preview',token:sessionData.token,qrPayload:code,transactionType:type,channel:channel});
-        if(!result||!result.success)throw new Error(result&&result.message||'Kode unit tidak dapat diverifikasi.');
-        manualUnitPreviewData={code:code,transactionType:type,channel:channel};
-        const u=result.unit;
-        [['manualProductCode',u.productCode],['manualProductName',u.productName],['manualSerialNumber',u.serialNumber],['manualUnitNumber',u.unitNumber==null?'-':angka(u.unitNumber)],['manualUnitStatus',u.status],['manualUnitHpp',rupiah(u.hpp)],['manualUnitPrice',rupiah(u.sellingPrice)]].forEach(pair=>document.getElementById(pair[0]).textContent=pair[1]);
-        document.getElementById('manualUnitPreview').style.display='block';
-        message.textContent='Unit ditemukan. Periksa rincian sebelum menyimpan transaksi.';message.className='catatan sukses';
-      }catch(err){message.textContent='Kode unit tidak valid: '+pesanErrorJaringan(err);message.className='catatan error';}
-      finally{btn.disabled=false;btn.textContent='TAMPILKAN RINCIAN UNIT';}
-    });
-    document.getElementById('btnSaveManualTransaction').addEventListener('click',async function(){
-      if(!manualUnitPreviewData||memproses)return;
-      const btn=this,data=manualUnitPreviewData,message=document.getElementById('manualTransactionMessage');
-      btn.disabled=true;btn.textContent='MENYIMPAN...';memproses=true;
-      try{
-        const result=await kirimKeBackend({action:'scan',token:sessionData.token,qrPayload:data.code,transactionType:data.transactionType,channel:data.channel,inputMethod:'MANUAL'});
-        if(!result||!result.success)throw new Error(result&&result.message||'Transaksi ditolak backend.');
-        message.textContent=result.message||'Transaksi manual berhasil disimpan.';message.className='catatan sukses';
-        document.getElementById('manualUnitPreview').style.display='none';document.getElementById('manualUnitCode').value='';document.getElementById('manualPreviewMessage').textContent='';manualUnitPreviewData=null;
-      }catch(err){message.textContent='Transaksi manual gagal: '+pesanErrorJaringan(err)+'. Periksa status unit sebelum mencoba kembali.';message.className='catatan error';}
-      finally{memproses=false;btn.disabled=false;btn.textContent='SIMPAN TRANSAKSI';}
-    });
 
     document.getElementById('btnScan').addEventListener('click', mulaiScan);
 
@@ -1553,8 +937,7 @@
           token: sessionData.token,
           qrPayload: qrText,
           transactionType: jenis,
-          channel: channel,
-          inputMethod: 'SCAN'
+          channel: channel
         });
         if (!result || !result.success) {
           if (result && result.code === 'SESSION_INVALID') {
