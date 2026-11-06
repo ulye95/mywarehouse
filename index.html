@@ -389,7 +389,7 @@
         </form>
         <div id="usersMessage" class="catatan" role="status" aria-live="polite" style="margin:12px 0"></div>
         <div class="topline" style="margin:18px 0 10px"><h2 style="margin:0">Daftar User Perusahaan</h2><button id="btnRefreshUsers" type="button" class="secondary smallBtn">↻ Refresh</button></div>
-        <div class="tableWrap"><table><thead><tr><th>Nama</th><th>Email</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="userRows"></tbody></table></div>
+        <div class="tableWrap"><table><thead><tr><th>Nama</th><th>Email</th><th>Role</th><th>Status</th><th>Izin Fitur</th><th>Aksi</th></tr></thead><tbody id="userRows"></tbody></table></div>
       </section>
 
       <section class="card" id="passwordPage" style="display:none">
@@ -555,9 +555,9 @@
       document.getElementById('identitas').textContent = (user.fullName || user.userId || 'Pengguna') + ' · ' + role;
       const permissions = Array.isArray(user.permissions) ? user.permissions : [];
       akses = {
-        monitoring: ['Admin', 'Supervisor'].includes(role) && permissions.includes('DASHBOARD'),
-        transaksi: ['Admin', 'Supervisor', 'Gudang'].includes(role) && permissions.includes('SCAN'),
-        produk: ['Admin', 'Supervisor'].includes(role) && permissions.includes('PRODUCTS'),
+        monitoring: permissions.includes('DASHBOARD'),
+        transaksi: permissions.includes('SCAN'),
+        produk: permissions.includes('PRODUCTS'),
         users: role === 'Admin'
       };
       document.getElementById('homeMenu').style.display = 'none';
@@ -578,7 +578,7 @@
       document.getElementById('navDashboard').style.display = akses.monitoring ? 'flex' : 'none';
       document.getElementById('navProducts').style.display = akses.produk ? 'flex' : 'none';
       document.getElementById('navTransactions').style.display = akses.transaksi ? 'flex' : 'none';
-      document.getElementById('navReports').style.display = akses.users ? 'flex' : 'none';
+      document.getElementById('navReports').style.display = akses.monitoring ? 'flex' : 'none';
       document.getElementById('navUsers').style.display = akses.users ? 'flex' : 'none';
       document.getElementById('navPassword').style.display = 'flex';
       document.getElementById('navSubscription').style.display = 'flex';
@@ -1393,6 +1393,25 @@
           const tr = document.createElement('tr');
           [user.fullName || '-', user.email || '-', user.role || '-'].forEach(value => { const td=document.createElement('td'); td.textContent=value; tr.appendChild(td); });
           const statusTd=document.createElement('td'); const pill=document.createElement('span'); pill.className='statusPill '+(user.status==='ACTIVE'?'statusActive':'statusInactive'); pill.textContent=user.status==='ACTIVE'?'AKTIF':'NONAKTIF'; statusTd.appendChild(pill); tr.appendChild(statusTd);
+          const permissionTd=document.createElement('td');
+          if (user.role === 'Admin') { permissionTd.textContent='Akses penuh'; }
+          else {
+            const current = user.permissions || {};
+            const controls = [ ['DASHBOARD','Dashboard'], ['SCAN','Transaksi'], ['PRODUCTS','Produk'] ];
+            controls.forEach(([key,label]) => {
+              const wrap=document.createElement('label'); wrap.style.display='inline-flex'; wrap.style.alignItems='center'; wrap.style.gap='4px'; wrap.style.margin='3px 8px 3px 0'; wrap.style.fontSize='12px';
+              const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=current[key]===true; cb.dataset.permission=key; cb.disabled=user.status!=='ACTIVE';
+              wrap.appendChild(cb); const text=document.createElement('span'); text.textContent=label; wrap.appendChild(text); permissionTd.appendChild(wrap);
+            });
+            const save=document.createElement('button'); save.type='button'; save.className='userActionBtn'; save.textContent='SIMPAN IZIN'; save.disabled=user.status!=='ACTIVE';
+            save.addEventListener('click', async () => {
+              const permissions={}; permissionTd.querySelectorAll('input[data-permission]').forEach(cb => permissions[cb.dataset.permission]=cb.checked);
+              save.disabled=true; save.textContent='MENYIMPAN...';
+              try { const update=await kirimKeBackend({action:'user_permissions_update',token:sessionData.token,userId:user.userId,permissions}); if (!update || !update.success) throw new Error((update&&update.message)||'Izin gagal disimpan.'); message.textContent=update.message; message.className='catatan sukses'; await muatUsers(); }
+              catch(err) { message.textContent='Gagal menyimpan izin: '+pesanErrorJaringan(err); message.className='catatan error'; save.disabled=false; save.textContent='SIMPAN IZIN'; }
+            }); permissionTd.appendChild(document.createElement('br')); permissionTd.appendChild(save);
+          }
+          tr.appendChild(permissionTd);
           const actionTd=document.createElement('td');
           if (user.role === 'Admin' || user.userId === sessionData.user.userId) { actionTd.textContent='—'; } else {
             const btn=document.createElement('button'); btn.type='button'; btn.className='userActionBtn '+(user.status==='ACTIVE'?'secondary':''); btn.textContent=user.status==='ACTIVE'?'NONAKTIFKAN':'AKTIFKAN';
@@ -1406,7 +1425,7 @@
           }
           tr.appendChild(actionTd); tbody.appendChild(tr);
         });
-        if (!(result.users||[]).length) { const tr=document.createElement('tr'); const td=document.createElement('td'); td.colSpan=5; td.textContent='Belum ada user.'; tr.appendChild(td); tbody.appendChild(tr); }
+        if (!(result.users||[]).length) { const tr=document.createElement('tr'); const td=document.createElement('td'); td.colSpan=6; td.textContent='Belum ada user.'; tr.appendChild(td); tbody.appendChild(tr); }
         if (!message.className.includes('sukses')) message.textContent='Daftar user berhasil dimuat.';
       } catch(err) { message.textContent='Gagal memuat user: '+pesanErrorJaringan(err); message.className='catatan error'; }
     }
