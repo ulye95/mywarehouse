@@ -1314,6 +1314,35 @@
         (result.products||[]).forEach(x=>{if(!known.has(x.productCode)){const op=document.createElement('option');op.value=x.productCode;op.textContent=x.productCode+' — '+x.productName;prod.appendChild(op)}});prod.value=old;
       } catch(err){message.textContent='Laporan gagal dimuat: '+pesanErrorJaringan(err);}
     }
+    async function unduhArsipQr(historyId, fileName, button) {
+      if (!sessionData || !sessionData.token) { alert('Sesi login sudah berakhir. Silakan login kembali.'); return; }
+      const originalText = button ? button.textContent : 'Unduh ZIP';
+      if (button) { button.disabled = true; button.textContent = 'Menyiapkan...'; }
+      try {
+        const result = await kirimKeBackend({action:'qr_history_download', token:sessionData.token, historyId:historyId});
+        if (!result || !result.success || !result.base64) throw new Error(result && result.message || 'Unduhan arsip QR gagal.');
+        const binary = atob(result.base64);
+        const chunks = [];
+        const chunkSize = 1024 * 512;
+        for (let offset = 0; offset < binary.length; offset += chunkSize) {
+          const part = binary.slice(offset, offset + chunkSize);
+          const bytes = new Uint8Array(part.length);
+          for (let i = 0; i < part.length; i++) bytes[i] = part.charCodeAt(i);
+          chunks.push(bytes);
+        }
+        const blob = new Blob(chunks, {type: result.mimeType || 'application/zip'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = result.fileName || fileName || 'arsip-qr.zip';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 30000);
+      } catch (err) {
+        alert('Gagal mengunduh arsip QR: ' + pesanErrorJaringan(err));
+      } finally {
+        if (button) { button.disabled = false; button.textContent = originalText; }
+      }
+    }
+
     async function muatRiwayatQr() {
       const message=document.getElementById('qrHistoryMessage');
       const body=document.getElementById('qrHistoryRows');
@@ -1326,7 +1355,7 @@
           const tr=document.createElement('tr');
           [item.generatedAt,item.productCode+' — '+item.productName,angka(item.quantity),item.generatedBy,item.expiresOn].forEach(value=>{const td=document.createElement('td');td.textContent=value||'-';tr.appendChild(td);});
           const td=document.createElement('td');
-          if(item.downloadUrl){const a=document.createElement('a');a.href=item.downloadUrl;a.target='_blank';a.rel='noopener';a.textContent='Unduh ZIP';a.style.cssText='display:inline-block;padding:8px 10px;background:var(--primary2);color:#fff;border-radius:8px;text-decoration:none';td.appendChild(a);}else{td.textContent='File tidak tersedia';}
+          if(item.historyId){const button=document.createElement('button');button.type='button';button.textContent='Unduh ZIP';button.style.cssText='padding:8px 10px;background:var(--primary2);color:#fff;border:0;border-radius:8px;cursor:pointer';button.addEventListener('click',()=>unduhArsipQr(item.historyId,item.fileName,button));td.appendChild(button);}else{td.textContent='File tidak tersedia';}
           tr.appendChild(td);body.appendChild(tr);
         });
         message.textContent=items.length?'Menampilkan '+angka(items.length)+' arsip QR yang masih tersedia.':'Belum ada riwayat generate QR yang tersedia.';
@@ -1451,7 +1480,7 @@
         if (!result || !result.success) throw new Error((result && result.message) || 'QR gagal dibuat.');
         document.getElementById('qrBatchTitle').textContent = result.productCode + ' — ' + result.productName + ' (' + angka(result.quantity) + ' QR)';
         const previousZipLink=document.getElementById('qrZipDownloadLink'); if(previousZipLink) previousZipLink.remove();
-        if(result.downloadUrl){const a=document.createElement('a');a.id='qrZipDownloadLink';a.href=result.downloadUrl;a.target='_blank';a.rel='noopener';a.textContent='Unduh Arsip ZIP (JPG)';a.style.cssText='display:inline-block;margin:10px 0;padding:10px 14px;background:var(--primary2);color:#fff;border-radius:9px;text-decoration:none';document.getElementById('qrBatchTitle').parentElement.appendChild(a);}
+        if(result.historyId){const button=document.createElement('button');button.type='button';button.id='qrZipDownloadLink';button.textContent='Unduh Arsip ZIP (JPG)';button.style.cssText='display:inline-block;margin:10px 0;padding:10px 14px;background:var(--primary2);color:#fff;border:0;border-radius:9px;cursor:pointer';button.addEventListener('click',()=>unduhArsipQr(result.historyId,result.fileName,button));document.getElementById('qrBatchTitle').parentElement.appendChild(button);}
         (result.qrPayloads || []).forEach((payload, index) => {
           const item = document.createElement('div'); item.className = 'qrItem';
           const title = document.createElement('strong'); title.textContent = result.productCode + ' #' + (index + 1); item.appendChild(title);
