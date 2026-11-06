@@ -160,6 +160,7 @@
       #qrPrintArea .qrItem { border:1px solid #999; }
     }
     @media (min-width:1200px) { .stats {grid-template-columns:repeat(4,minmax(0,1fr));} .card {padding:clamp(18px,1.4vw,28px);} table {font-size:14px;} th,td {padding:11px 10px;} }
+    .dashboardWelcome{padding:18px 20px;margin:0 0 14px;border-radius:14px;background:linear-gradient(120deg,var(--primary),var(--primary2));color:#fff}.dashboardWelcome .companyName{font-size:clamp(24px,4vw,34px);font-weight:800;line-height:1.15;margin:4px 0 7px;overflow-wrap:anywhere}.dashboardWelcome .greeting{font-size:14px;opacity:.95;margin:0}.productActionCell{white-space:nowrap}.productActionCell .userActions{justify-content:flex-start}
     @media (max-width:760px) { main {padding:10px;} .card {padding:14px; border-radius:12px;} .productSubnav {grid-template-columns:repeat(2,minmax(0,1fr));} .productSubnav button {font-size:13px;} .statusEditGrid {grid-template-columns:1fr;} .statusEditGrid button {margin-top:0;} .stats {grid-template-columns:repeat(2,minmax(0,1fr));} .stat .value {font-size:16px;} .filters,.formGrid {grid-template-columns:1fr;} .menuGrid {grid-template-columns:1fr;} .menuChoice {min-height:90px;} .qrGrid {grid-template-columns:repeat(2,minmax(0,1fr));} .pageTitle {align-items:flex-start;} .pageTitle h2 {font-size:17px;} }
     @media (max-width:380px) { .qrGrid {grid-template-columns:1fr;} .stats {grid-template-columns:1fr 1fr;} .catatan {font-size:13px;} input,select,button {font-size:16px;} }
 
@@ -220,7 +221,9 @@
         <button type="button" id="navTransactions"><span class="navIcon">⇄</span><span class="navLabel">Transaksi</span></button>
         <button type="button" id="navReports"><span class="navIcon">▥</span><span class="navLabel">Laporan</span></button>
         <button type="button" id="navUsers"><span class="navIcon">♙</span><span class="navLabel">Kelola User</span></button>
+        <button type="button" id="navSettings"><span class="navIcon">⚙</span><span class="navLabel">Pengaturan Transaksi</span></button>
         <button type="button" id="navPassword"><span class="navIcon">⌑</span><span class="navLabel">Ganti Sandi</span></button>
+        <button type="button" id="navSupport"><span class="navIcon">☏</span><span class="navLabel">Dukungan</span></button>
         <button type="button" id="navSubscription"><span class="navIcon">◷</span><span class="navLabel">Langganan</span></button>
         <div class="navBottom"><button type="button" id="btnThemeToggle" class="themeToggle"><span class="navIcon">◐</span><span class="navLabel">Mode gelap</span></button><button type="button" id="navLogout"><span class="navIcon">↪</span><span class="navLabel">Keluar</span></button></div>
       </nav>
@@ -246,9 +249,17 @@
             <span class="menuIcon">👥</span><span class="menuTitle">Manajemen User</span>
             <span class="menuDesc">Tambah akun dan aktifkan/nonaktifkan user perusahaan</span>
           </button>
+          <button id="btnOpenSettings" type="button" class="menuChoice">
+            <span class="menuIcon">⚙️</span><span class="menuTitle">Pengaturan Transaksi</span>
+            <span class="menuDesc">Tentukan metode transaksi yang diizinkan Admin</span>
+          </button>
           <button id="btnOpenPassword" type="button" class="menuChoice">
             <span class="menuIcon">🔐</span><span class="menuTitle">Ganti Kata Sandi</span>
             <span class="menuDesc">Ubah kata sandi akun Anda sendiri</span>
+          </button>
+          <button id="btnOpenSupport" type="button" class="menuChoice" style="display:none">
+            <span class="menuIcon">💬</span><span class="menuTitle">Dukungan</span>
+            <span class="menuDesc">Hubungi tim dukungan melalui WhatsApp</span>
           </button>
                   <button id="btnOpenSubscriptions" type="button" class="menuChoice">
             <span class="menuIcon">💳</span><span class="menuTitle">Langganan</span>
@@ -257,6 +268,30 @@
         </div>
       </section>
 
+      <section class="card" id="supportPage" style="display:none">
+        <div class="pageTitle"><h2>Dukungan MY WAREHOUSE</h2><button type="button" id="btnBackSupport">← Menu</button></div>
+        <p>Jika mengalami kendala penggunaan sistem atau membutuhkan bantuan, silakan hubungi kontak dukungan MY WAREHOUSE melalui WhatsApp.</p>
+        <div class="card" style="margin-top:14px">
+          <h3>WhatsApp Dukungan</h3>
+          <p style="font-size:20px;font-weight:700">0853-1414-2300</p>
+          <a class="button" style="display:inline-block;text-decoration:none" href="https://wa.me/6285314142300?text=Halo%20Tim%20Dukungan%20MY%20WAREHOUSE%2C%20saya%20membutuhkan%20bantuan." target="_blank" rel="noopener">HUBUNGI VIA WHATSAPP</a>
+        </div>
+      </section>
+
+      <section class="card" id="transactionSettingsPage" style="display:none">
+        <div class="pageTitle"><h2>Pengaturan Metode Transaksi</h2><button type="button" id="btnBackTransactionSettings">← Menu</button></div>
+        <p class="catatan">Pengaturan ini berlaku untuk seluruh pengguna perusahaan. Pembatasan diperiksa kembali oleh server.</p>
+        <form id="transactionSettingsForm">
+          <label for="companyTransactionMode">Metode transaksi yang diizinkan</label>
+          <select id="companyTransactionMode" required>
+            <option value="BOTH">Keduanya — Per Unit QR/Manual dan Stok Kuantitas/Batch</option>
+            <option value="UNIT">Per Unit — QR/Manual saja</option>
+            <option value="BULK">Input Masal — Stok Kuantitas/Batch saja</option>
+          </select>
+          <button id="btnSaveTransactionMode" type="submit">SIMPAN PENGATURAN</button>
+        </form>
+        <div id="transactionSettingsMessage" class="catatan" style="margin-top:12px"></div>
+      </section>
       <section class="card" id="subscriptionsPage" style="display:none">
         <div class="pageTitle"><h2>Langganan MY WAREHOUSE</h2><button id="btnBackSubscriptions" type="button">← Menu</button></div>
         <div id="subscriptionStatusBox" class="catatan" aria-live="polite">Memuat status langganan...</div>
@@ -291,7 +326,7 @@
 
       <section class="card" id="dashboardView">
         <div class="pageTitle"><h2>Dashboard</h2><button id="btnBackMonitoring" type="button">← Menu</button></div>
-        <p id="dashboardCompany" class="catatan"></p>
+        <div class="dashboardWelcome"><p class="greeting" id="dashboardGreeting">Hai, selamat datang!</p><div id="dashboardCompany" class="companyName">Nama Perusahaan</div><p class="greeting">Selamat menggunakan My Warehouse</p></div>
         <div class="topline" style="margin:14px 0 8px"><strong>Ringkasan Gudang</strong><button id="btnRefreshDashboard" type="button" class="secondary">↻ Refresh</button></div>
         <div class="filters">
           <div><label for="filterMonth">Bulan transaksi</label><input id="filterMonth" type="month"></div>
@@ -356,7 +391,7 @@
           <h2>Daftar Produk</h2>
           <p class="catatan">Daftar menjadi tampilan utama. Maksimal 10 baris terlihat sekaligus; gulir di dalam tabel untuk melihat produk lainnya.</p>
           <div class="topline" style="margin:10px 0"><span id="productListMessage" class="catatan">Memuat daftar produk...</span><button id="btnRefreshProducts" type="button" class="secondary smallBtn">↻ Refresh</button></div>
-          <div class="productTableWrap"><table><thead><tr><th>Kode</th><th>Nama Barang</th><th>HPP</th><th>Harga Jual</th><th>Satuan</th><th>Status</th><th>QR Belum Masuk</th><th>Stok</th><th>Terjual</th></tr></thead><tbody id="productRows"></tbody></table></div>
+          <div class="productTableWrap"><table><thead><tr><th>Kode</th><th>Nama Barang</th><th>HPP</th><th>Harga Jual</th><th>Satuan</th><th>Status</th><th>QR Belum Masuk</th><th>Stok</th><th>Terjual</th><th>Aksi</th></tr></thead><tbody id="productRows"></tbody></table></div>
         </section>
         <section id="addPanel" class="productPanel">
         <h2>Tambah Produk</h2>
@@ -417,7 +452,7 @@
         </form>
         <div id="usersMessage" class="catatan" role="status" aria-live="polite" style="margin:12px 0"></div>
         <div class="topline" style="margin:18px 0 10px"><h2 style="margin:0">Daftar User Perusahaan</h2><button id="btnRefreshUsers" type="button" class="secondary smallBtn">↻ Refresh</button></div>
-        <div class="userListCard"><div class="tableWrap"><table class="userTable"><thead><tr><th>Pengguna</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="userRows"></tbody></table></div><p class="userActionHint">✎ Atur hak akses · ⏻ Aktif/nonaktifkan akun · 🗑 Arsipkan akun. Riwayat transaksi tetap tersimpan.</p></div>
+        <div class="userListCard"><div class="tableWrap"><table class="userTable"><thead><tr><th>Pengguna</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="userRows"></tbody></table></div><p class="userActionHint">✎ Atur hak akses · ⏻ Aktif/nonaktifkan akun · 🗑 Hapus akun permanen dengan menyimpan riwayat. Riwayat transaksi tetap tersimpan.</p></div>
       </section>
 
       <section class="card" id="passwordPage" style="display:none">
@@ -534,6 +569,7 @@
     let audioContext = null;
     let sessionData = null;
     let manualUnitPreviewData = null;
+    let companyTransactionMode = 'BOTH';
 
     function tampilPesan(id, teks, jenis = 'info') {
       const el = document.getElementById(id);
@@ -624,7 +660,8 @@
       document.getElementById('btnOpenProducts').style.display = akses.produk ? 'flex' : 'none';
       document.getElementById('btnOpenUsers').style.display = akses.users ? 'flex' : 'none';
       document.getElementById('btnOpenPassword').style.display = 'flex';
-      const visibleMenus = [akses.monitoring, akses.transaksi, akses.produk, akses.users, true, true].filter(Boolean).length;
+      document.getElementById('btnOpenSupport').style.display = akses.users ? 'flex' : 'none';
+      const visibleMenus = [akses.monitoring, akses.transaksi, akses.produk, akses.users, akses.users, true, akses.users, akses.users].filter(Boolean).length;
       document.querySelector('.menuGrid').style.gridTemplateColumns = visibleMenus > 1 ? '1fr 1fr' : '1fr';
       document.getElementById('dashboardView').style.display = akses.monitoring ? 'block' : 'none';
       document.getElementById('scanPage').style.display = 'none';
@@ -632,20 +669,28 @@
       document.getElementById('usersPage').style.display = 'none';
       document.getElementById('passwordPage').style.display = 'none';
       document.getElementById('subscriptionsPage').style.display = 'none';
+      document.getElementById('supportPage').style.display = 'none';
+      document.getElementById('transactionSettingsPage').style.display = 'none';
       document.getElementById('reportPage').style.display = 'none';
       document.getElementById('navDashboard').style.display = akses.monitoring ? 'flex' : 'none';
       document.getElementById('navProducts').style.display = akses.produk ? 'flex' : 'none';
       document.getElementById('navTransactions').style.display = akses.transaksi ? 'flex' : 'none';
       document.getElementById('navReports').style.display = akses.monitoring ? 'flex' : 'none';
       document.getElementById('navUsers').style.display = akses.users ? 'flex' : 'none';
+      document.getElementById('navSettings').style.display = akses.users ? 'flex' : 'none';
+      document.getElementById('btnOpenSettings').style.display = akses.users ? 'flex' : 'none';
       document.getElementById('navPassword').style.display = 'flex';
-      document.getElementById('navSubscription').style.display = 'flex';
+      document.getElementById('navSubscription').style.display = akses.users ? 'flex' : 'none';
+      document.getElementById('btnOpenSubscriptions').style.display = akses.users ? 'flex' : 'none';
+      document.getElementById('navSupport').style.display = akses.users ? 'flex' : 'none';
       if (akses.monitoring) muatDashboard();
       if (!akses.transaksi) {
         berhentiScan();
         sembunyikanPesan('pesan');
       }
       toggleKategori();
+      // Muat pengaturan metode transaksi perusahaan.
+      muatModeTransaksiPerusahaan();
       // Muat hak fitur paket agar kontrol Generate QR dan Scan QR mengikuti langganan aktif.
       muatLangganan();
       // Status langganan hanya ditampilkan pada menu Langganan.
@@ -656,6 +701,9 @@
       if (halaman === 'transaksi' && !akses.transaksi) return;
       if (halaman === 'produk' && !akses.produk) return;
       if (halaman === 'users' && !akses.users) return;
+      if (halaman === 'pengaturanTransaksi' && !akses.users) return;
+      if (halaman === 'langganan' && !akses.users) return;
+      if (halaman === 'dukungan' && !akses.users) return;
       document.getElementById('homeMenu').style.display = 'none';
       document.getElementById('dashboardView').style.display = halaman === 'monitoring' ? 'block' : 'none';
       document.getElementById('scanPage').style.display = halaman === 'transaksi' ? 'block' : 'none';
@@ -663,14 +711,17 @@
       document.getElementById('usersPage').style.display = halaman === 'users' ? 'block' : 'none';
       document.getElementById('passwordPage').style.display = halaman === 'password' ? 'block' : 'none';
       document.getElementById('subscriptionsPage').style.display = halaman === 'langganan' ? 'block' : 'none';
+      document.getElementById('supportPage').style.display = halaman === 'dukungan' ? 'block' : 'none';
       document.getElementById('reportPage').style.display = halaman === 'laporan' ? 'block' : 'none';
+      document.getElementById('transactionSettingsPage').style.display = halaman === 'pengaturanTransaksi' ? 'block' : 'none';
       document.querySelectorAll('.sideNav button').forEach(b => b.classList.remove('active'));
-      const navMap = {monitoring:'navDashboard', produk:'navProducts', transaksi:'navTransactions', laporan:'navReports', users:'navUsers', password:'navPassword', langganan:'navSubscription'};
+      const navMap = {monitoring:'navDashboard', produk:'navProducts', transaksi:'navTransactions', laporan:'navReports', users:'navUsers', password:'navPassword', dukungan:'navSupport', langganan:'navSubscription', pengaturanTransaksi:'navSettings'};
       if (navMap[halaman]) document.getElementById(navMap[halaman]).classList.add('active');
       if (halaman === 'users') muatUsers();
+      if (halaman === 'pengaturanTransaksi') muatPengaturanTransaksi();
       if (halaman === 'langganan') muatLangganan();
       if (halaman === 'monitoring') muatDashboard();
-      if (halaman === 'transaksi') { toggleKategori(); aturModeTransaksi(); }
+      if (halaman === 'transaksi') { muatModeTransaksiPerusahaan(); toggleKategori(); aturModeTransaksi(); }
       if (halaman === 'produk') muatProduk();
       if (halaman === 'laporan') { muatLaporan(); muatRiwayatQr(); }
     }
@@ -683,6 +734,8 @@
       document.getElementById('usersPage').style.display = 'none';
       document.getElementById('passwordPage').style.display = 'none';
       document.getElementById('subscriptionsPage').style.display = 'none';
+      document.getElementById('supportPage').style.display = 'none';
+      document.getElementById('transactionSettingsPage').style.display = 'none';
       document.getElementById('homeMenu').style.display = 'none';
       document.getElementById('dashboardView').style.display = akses.monitoring ? 'block' : 'none';
       if (akses.monitoring) muatDashboard();
@@ -729,8 +782,14 @@
     document.getElementById('navTransactions').addEventListener('click', () => bukaHalaman('transaksi'));
     document.getElementById('navReports').addEventListener('click', () => bukaHalaman('laporan'));
     document.getElementById('navUsers').addEventListener('click', () => bukaHalaman('users'));
+    document.getElementById('navSettings').addEventListener('click', () => bukaHalaman('pengaturanTransaksi'));
+    document.getElementById('btnOpenSettings').addEventListener('click', () => bukaHalaman('pengaturanTransaksi'));
+    document.getElementById('btnBackTransactionSettings').addEventListener('click', () => kembaliKeMenu());
     document.getElementById('navPassword').addEventListener('click', () => bukaHalaman('password'));
     document.getElementById('navSubscription').addEventListener('click', () => bukaHalaman('langganan'));
+    document.getElementById('navSupport').addEventListener('click', () => bukaHalaman('dukungan'));
+    document.getElementById('btnOpenSupport').addEventListener('click', () => bukaHalaman('dukungan'));
+    document.getElementById('btnBackSupport').addEventListener('click', kembaliKeMenu);
     document.getElementById('navLogout').addEventListener('click', () => document.getElementById('btnLogout').click());
     document.getElementById('btnThemeToggle').addEventListener('click', () => { document.body.classList.toggle('dark'); const dark=document.body.classList.contains('dark'); document.getElementById('btnThemeToggle').lastElementChild.textContent=dark?'Mode terang':'Mode gelap'; try{localStorage.setItem('mwTheme',dark?'dark':'light')}catch(e){} });
     try { if(localStorage.getItem('mwTheme')==='dark') document.body.classList.add('dark'); } catch(e){}
@@ -1019,9 +1078,10 @@
         const sub = result.subscription || {};
         const labels = { ACTIVE: 'Aktif', EXPIRED: 'Kedaluwarsa', UNPAID: 'Menunggu pembayaran', NO_SUBSCRIPTION: 'Belum berlangganan', INACTIVE: 'Belum aktif' };
         statusBox.textContent = 'Status langganan: ' + (labels[sub.status] || sub.status || 'Tidak diketahui') +
-          (sub.planCode ? ' · Paket aktif ' + sub.planCode : '') +
+          (sub.planCode ? ' · Paket ' + (sub.isTrial ? 'Trial (Setara Pro)' : sub.planCode) : '') +
           (sub.startDate ? ' · Mulai ' + sub.startDate : '') +
           (sub.endDate ? ' · Berakhir ' + sub.endDate : '') +
+          (sub.isTrial && sub.status === 'ACTIVE' ? ' · Sisa ' + (sub.daysRemaining || 0) + ' hari' : '') +
           (sub.message ? ' — ' + sub.message : '');
         if (sessionData && sessionData.user) { sessionData.user.subscription = Object.assign({}, sessionData.user.subscription || {}, sub, { features: result.planFeatures || (sessionData.user.subscription && sessionData.user.subscription.features) || {} }); }
         aturAksesFiturPaket(sub.status === 'ACTIVE' ? sub.planCode : '');
@@ -1151,6 +1211,7 @@
           throw new Error((result && result.message) || 'Data Monitoring Gudang tidak dapat dimuat.');
         }
         document.getElementById('dashboardCompany').textContent = result.companyName || '';
+        document.getElementById('dashboardGreeting').textContent = 'Hai, ' + (result.companyName || 'Perusahaan') + '!';
         const catalogRows = document.getElementById('monitorProductRows');
         catalogRows.replaceChildren();
         const catalog = result.productCatalog || result.products || [];
@@ -1325,10 +1386,22 @@
           const pill = document.createElement('span');
           const isActive = String(product.status || 'ACTIVE').toUpperCase() === 'ACTIVE';
           pill.className = 'statusPill ' + (isActive ? 'statusActive' : 'statusInactive');
-          pill.textContent = isActive ? 'AKTIF' : 'NONAKTIF'; statusTd.appendChild(pill); tr.appendChild(statusTd);
+          pill.textContent = String(product.status||'').toUpperCase()==='DELETED' ? 'DIARSIPKAN' : (isActive ? 'AKTIF' : 'NONAKTIF'); statusTd.appendChild(pill); tr.appendChild(statusTd);
           [angka(product.qrGenerated), angka(product.stockAvailable), angka(product.sold)].forEach(value => {
             const td = document.createElement('td'); td.textContent = value; tr.appendChild(td);
           });
+          const actionTd=document.createElement('td'); actionTd.className='productActionCell';
+          const actionWrap=document.createElement('div'); actionWrap.className='userActions';
+          const archived=String(product.status||'').toUpperCase()==='DELETED';
+          if(!archived){
+            const toggle=document.createElement('button');toggle.type='button';toggle.className='userIconBtn';toggle.textContent='⏻';toggle.title=isActive?'Nonaktifkan produk':'Aktifkan produk';toggle.setAttribute('aria-label',toggle.title);
+            toggle.addEventListener('click',()=>tampilPopupUser({title:isActive?'Nonaktifkan produk?':'Aktifkan kembali produk?',description:product.productCode+' — '+product.productName,confirmText:isActive?'Nonaktifkan':'Aktifkan',danger:isActive,onConfirm:()=>ubahStatusProduk(product,isActive?'INACTIVE':'ACTIVE')}));actionWrap.appendChild(toggle);
+          }
+          if(sessionData.user&&sessionData.user.role==='Admin'){
+            const del=document.createElement('button');del.type='button';del.className='userIconBtn danger';del.textContent='🗑';del.title='Hapus permanen dengan simpan riwayat';del.setAttribute('aria-label','Hapus permanen dengan simpan riwayat');
+            del.addEventListener('click',()=>tampilPopupUser({title:'Hapus produk secara permanen?',description:'Master produk '+product.productCode+' — '+product.productName+' akan dihapus dari daftar. Snapshot identitas dan data master disimpan di ProductDeletionHistoryPermanent. Catatan transaksi, unit QR, batch, pergerakan stok, dan ActivityLog tidak dihapus.',confirmText:'Hapus permanen',danger:true,onConfirm:()=>hapusProduk(product)}));actionWrap.appendChild(del);
+          }
+          actionTd.appendChild(actionWrap);tr.appendChild(actionTd);
           rows.appendChild(tr);
         });
         if ([...select.options].some(o => o.value === selected)) select.value = selected;
@@ -1448,6 +1521,25 @@
       finally { btn.disabled = false; btn.textContent = 'SIMPAN STATUS'; }
     });
 
+    async function ubahStatusProduk(product,nextStatus){
+      const result=await kirimKeBackend({action:'product_status_update',token:sessionData.token,productCode:product.productCode,status:nextStatus});
+      if(!result||!result.success)throw new Error((result&&result.message)||'Status produk gagal diperbarui.');
+      const msg=document.getElementById('productListMessage');msg.textContent=result.message||'Status produk diperbarui.';msg.className='catatan sukses';await muatProduk();
+    }
+    async function hapusProduk(product){
+      const result=await kirimKeBackend({action:'product_delete',token:sessionData.token,productCode:product.productCode});
+      if(!result||!result.success)throw new Error((result&&result.message)||'Produk gagal diarsipkan.');
+      const msg=document.getElementById('productListMessage');msg.textContent=result.message||'Produk dihapus permanen; riwayat dipertahankan.';msg.className='catatan sukses';await muatProduk();
+    }
+
+    async function muatPengaturanTransaksi(){
+      if(!sessionData||!sessionData.token||!akses.users)return;
+      const msg=document.getElementById('transactionSettingsMessage');msg.textContent='Memuat pengaturan...';
+      try{const r=await kirimKeBackend({action:'transaction_mode_get',token:sessionData.token});if(!r||!r.success)throw new Error(r&&r.message||'Pengaturan gagal dimuat.');document.getElementById('companyTransactionMode').value=r.mode||'BOTH';msg.textContent='Pengaturan saat ini: '+(r.mode==='UNIT'?'Per Unit saja':r.mode==='BULK'?'Input Masal saja':'Keduanya')+'.';}
+      catch(e){msg.textContent='Gagal memuat pengaturan: '+pesanErrorJaringan(e);msg.className='catatan error';}
+    }
+    document.getElementById('transactionSettingsForm').addEventListener('submit',async e=>{e.preventDefault();const btn=document.getElementById('btnSaveTransactionMode'),msg=document.getElementById('transactionSettingsMessage');btn.disabled=true;btn.textContent='MENYIMPAN...';try{const r=await kirimKeBackend({action:'transaction_mode_update',token:sessionData.token,mode:document.getElementById('companyTransactionMode').value});if(!r||!r.success)throw new Error(r&&r.message||'Pengaturan gagal disimpan.');msg.textContent=r.message+' Pengguna perlu memuat ulang halaman transaksi agar tampilan mengikuti pengaturan.';msg.className='catatan sukses';}catch(err){msg.textContent='Gagal menyimpan: '+pesanErrorJaringan(err);msg.className='catatan error';}finally{btn.disabled=false;btn.textContent='SIMPAN PENGATURAN';}});
+
     function tutupPopupUser(){ const el=document.getElementById('mwUserModal'); if(el) el.remove(); }
     function tampilPopupUser({title,description,content,confirmText='Simpan',danger=false,onConfirm}){
       tutupPopupUser();
@@ -1546,6 +1638,12 @@
       tampilLogin();
     });
 
+    async function muatModeTransaksiPerusahaan(){
+      if(!sessionData||!sessionData.token)return;
+      try{const r=await kirimKeBackend({action:'transaction_mode_public_get',token:sessionData.token});if(r&&r.success){companyTransactionMode=r.mode||'BOTH';aturModeTransaksi();}}
+      catch(e){companyTransactionMode='BOTH';}
+    }
+
     function toggleKategori() {
       const keluar = document.getElementById('jenisTransaksi').value === 'KELUAR';
       document.getElementById('kategoriContainer').style.display = keluar ? 'block' : 'none';
@@ -1560,7 +1658,10 @@
     document.getElementById('jenisTransaksi').addEventListener('change', toggleKategori);
 
     function aturModeTransaksi(){
-      const bulk=document.getElementById('transactionMode').value==='BULK';
+      const modeSelect=document.getElementById('transactionMode');
+      Array.from(modeSelect.options).forEach(o=>{o.disabled=(companyTransactionMode==='UNIT'&&o.value==='BULK')||(companyTransactionMode==='BULK'&&o.value==='UNIT');});
+      if(companyTransactionMode==='UNIT')modeSelect.value='UNIT';else if(companyTransactionMode==='BULK')modeSelect.value='BULK';
+      const bulk=modeSelect.value==='BULK';
       document.getElementById('kategoriContainer').style.display=!bulk&&document.getElementById('jenisTransaksi').value==='KELUAR'?'block':'none';
       document.getElementById('transactionMethodCard').style.display=bulk?'none':'block';
       document.getElementById('scannerCard').style.display=!bulk&&document.getElementById('metodeTransaksi').value==='SCAN'?'block':'none';
