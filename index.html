@@ -57,7 +57,7 @@
     .monitorTableWrap tbody tr { height:42px; }
     #monitorProductRows tr { height:42px; }
     .monitorSectionTitle { margin-top:22px; }
-    .productSubnav { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:16px 0; }
+    .productSubnav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:16px 0; }
     .productSubnav button { margin:0; min-height:48px; padding:10px 8px; font-size:14px; }
     .productSubnav button.active { background:#8f1117; outline:2px solid #f3b6b8; }
     .productPanel { display:none; }
@@ -87,6 +87,10 @@
     body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .2s,color .2s}
     header.brandHeader{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:18px;background:var(--surface);color:var(--primary);text-align:left;padding:12px clamp(18px,3vw,42px);border-bottom:1px solid var(--line);font-size:inherit;letter-spacing:-1.8px;min-height:86px;box-shadow:0 3px 14px rgba(31,49,42,.04)}
     .brandIdentity{min-width:0;flex:1}
+    .headerAccountInfo{border-left:1px solid var(--line);padding-left:22px;min-width:190px;display:flex;flex-direction:column;gap:4px;letter-spacing:0;text-align:left}
+    .headerAccountLabel{font-size:10px;font-weight:800;letter-spacing:1.2px;color:var(--muted)}
+    #identitas{font-size:13px;color:var(--text);line-height:1.4;font-weight:700;overflow-wrap:anywhere}
+    @media(max-width:600px){header.brandHeader{flex-wrap:wrap}.headerAccountInfo{flex:1 0 100%;border-left:0;border-top:1px solid var(--line);padding:9px 0 0;min-width:0;}}
     .brandMain{font-weight:900;font-size:clamp(25px,3.3vw,43px);line-height:1;letter-spacing:-1.5px}
     .brandSub{text-align:right;font-weight:600;font-size:clamp(12px,1.4vw,19px);letter-spacing:.2px;margin-top:3px}
     body.dark{--bg:#151e1b;--surface:#202c27;--surface2:#26352e;--text:#e6eee8;--muted:#aab9af;--line:#35453d;--primary:#dce9df;--primary2:#91b2a0;--accent:#c5a77a;--shadow:0 8px 28px rgba(0,0,0,.18)}
@@ -197,6 +201,7 @@
   <header class="brandHeader">
     <button type="button" id="btnNavToggle" class="navToggle noPrint" aria-label="Buka atau tutup menu" aria-expanded="true" title="Buka atau tutup menu">☰</button>
     <div class="brandIdentity"><div class="brandMain">MY WAREHOUSE</div><div class="brandSub">by CIPTA DUA PUTRA</div></div>
+    <div class="headerAccountInfo" aria-label="Informasi akun aktif"><span class="headerAccountLabel">AKUN LOGIN</span><strong id="identitas"></strong></div>
   </header>
   <main>
     <section class="card" id="loginView">
@@ -227,7 +232,6 @@
         <button type="button" id="navSubscription"><span class="navIcon">◷</span><span class="navLabel">Langganan</span></button>
         <div class="navBottom"><button type="button" id="btnThemeToggle" class="themeToggle"><span class="navIcon">◐</span><span class="navLabel">Mode gelap</span></button><button type="button" id="navLogout"><span class="navIcon">↪</span><span class="navLabel">Keluar</span></button></div>
       </nav>
-      <section class="card" id="identityCard"><div class="topline"><div><h2 style="margin:0">Selamat datang di MY WAREHOUSE</h2><p id="identitas" class="catatan"></p></div><button id="btnLogout" type="button" class="secondary smallBtn noPrint">Keluar</button></div></section>
 
       <section class="card" id="homeMenu">
         <h2>Pilih Menu</h2>
@@ -326,10 +330,10 @@
 
       <section class="card" id="dashboardView">
         <div class="pageTitle"><h2>Dashboard</h2><button id="btnBackMonitoring" type="button">← Menu</button></div>
-        <div class="dashboardWelcome"><p class="greeting" id="dashboardGreeting">Hai, selamat datang!</p><div id="dashboardCompany" class="companyName">Nama Perusahaan</div><p class="greeting">Selamat menggunakan My Warehouse</p></div>
+        <div class="dashboardWelcome"><p class="greeting" id="dashboardGreeting">Hai!</p><div id="dashboardCompany" class="companyName">Nama Perusahaan</div><p class="greeting">Selamat menggunakan My Warehouse</p></div>
         <div class="topline" style="margin:14px 0 8px"><strong>Ringkasan Gudang</strong><button id="btnRefreshDashboard" type="button" class="secondary">↻ Refresh</button></div>
         <div class="filters">
-          <div><label for="filterMonth">Bulan transaksi</label><input id="filterMonth" type="month"></div>
+          <div><label for="filterMonth">Bulan transaksi</label><select id="filterMonth"><option value="ALL">Semua Bulan</option></select></div>
           <div><label for="filterProduct">Filter produk</label><select id="filterProduct"><option value="ALL">Semua Produk</option></select></div>
         </div>
         <div class="stats" style="margin-top:14px">
@@ -385,7 +389,6 @@
           <button type="button" class="active" data-product-panel="listPanel">📋 Daftar Produk</button>
           <button type="button" data-product-panel="addPanel">➕ Tambah Produk</button>
           <button type="button" data-product-panel="qrPanel">▦ Buat QR Barang</button>
-          <button type="button" data-product-panel="statusPanel">⚙️ Status Produk</button>
         </nav>
         <section id="listPanel" class="productPanel active">
           <h2>Daftar Produk</h2>
@@ -425,17 +428,7 @@
         </div>
         </section>
 
-        <section id="statusPanel" class="productPanel">
-          <h2>Status Produk</h2>
-          <p class="catatan">Produk nonaktif tetap tersimpan dalam riwayat dan tidak dapat dibuatkan QR baru atau dipilih untuk transaksi baru. Mengaktifkan kembali produk dapat dilakukan dari panel ini.</p>
-          <form id="statusForm">
-            <label for="statusProduct">Pilih Produk</label><select id="statusProduct" required><option value="">Pilih produk...</option></select>
-            <div id="currentProductStatus" class="catatan" style="margin:10px 0">Pilih produk untuk melihat status saat ini.</div>
-            <label for="newProductStatus">Status Baru</label><select id="newProductStatus" required><option value="ACTIVE">Aktif</option><option value="INACTIVE">Nonaktif</option></select>
-            <button id="btnSaveStatus" type="submit">SIMPAN STATUS</button>
-          </form>
-          <div id="statusMessage" class="catatan" role="status" aria-live="polite" style="margin-top:10px"></div>
-        </section>
+
       </section>
 
       <section class="card" id="usersPage" style="display:none">
@@ -790,7 +783,7 @@
     document.getElementById('navSupport').addEventListener('click', () => bukaHalaman('dukungan'));
     document.getElementById('btnOpenSupport').addEventListener('click', () => bukaHalaman('dukungan'));
     document.getElementById('btnBackSupport').addEventListener('click', kembaliKeMenu);
-    document.getElementById('navLogout').addEventListener('click', () => document.getElementById('btnLogout').click());
+    document.getElementById('navLogout').addEventListener('click', logoutAkun);
     document.getElementById('btnThemeToggle').addEventListener('click', () => { document.body.classList.toggle('dark'); const dark=document.body.classList.contains('dark'); document.getElementById('btnThemeToggle').lastElementChild.textContent=dark?'Mode terang':'Mode gelap'; try{localStorage.setItem('mwTheme',dark?'dark':'light')}catch(e){} });
     try { if(localStorage.getItem('mwTheme')==='dark') document.body.classList.add('dark'); } catch(e){}
     document.getElementById('btnLoadReport').addEventListener('click', muatLaporan);
@@ -1211,7 +1204,13 @@
           throw new Error((result && result.message) || 'Data Monitoring Gudang tidak dapat dimuat.');
         }
         document.getElementById('dashboardCompany').textContent = result.companyName || '';
-        document.getElementById('dashboardGreeting').textContent = 'Hai, ' + (result.companyName || 'Perusahaan') + '!';
+        document.getElementById('dashboardGreeting').textContent = 'Hai!';
+        const monthSelect = document.getElementById('filterMonth');
+        const selectedMonth = monthSelect.value || 'ALL';
+        monthSelect.replaceChildren();
+        const allMonthsOption = document.createElement('option'); allMonthsOption.value = 'ALL'; allMonthsOption.textContent = 'Semua Bulan'; monthSelect.appendChild(allMonthsOption);
+        (result.availableMonths || []).forEach(key => { const opt = document.createElement('option'); opt.value = key; const parts = key.split('-'); const date = new Date(Number(parts[0]), Number(parts[1]) - 1, 1); opt.textContent = date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' }); monthSelect.appendChild(opt); });
+        monthSelect.value = Array.from(monthSelect.options).some(o => o.value === selectedMonth) ? selectedMonth : 'ALL';
         const catalogRows = document.getElementById('monitorProductRows');
         catalogRows.replaceChildren();
         const catalog = result.productCatalog || result.products || [];
@@ -1358,14 +1357,9 @@
         rows.replaceChildren();
         const select = document.getElementById('qrProduct');
         const selected = select.value;
-        const statusSelect = document.getElementById('statusProduct');
-        const selectedStatusProduct = statusSelect.value;
         select.replaceChildren();
-        statusSelect.replaceChildren();
         const first = document.createElement('option');
         first.value = ''; first.textContent = 'Pilih produk...'; select.appendChild(first);
-        const firstStatus = document.createElement('option');
-        firstStatus.value = ''; firstStatus.textContent = 'Pilih produk...'; statusSelect.appendChild(firstStatus);
         (result.products || []).forEach(product => {
           const option = document.createElement('option');
           option.value = product.productCode;
@@ -1373,11 +1367,6 @@
           option.disabled = String(product.status || 'ACTIVE').toUpperCase() !== 'ACTIVE';
           if (option.disabled) option.textContent += ' (NONAKTIF)';
           select.appendChild(option);
-          const statusOption = document.createElement('option');
-          statusOption.value = product.productCode;
-          statusOption.textContent = product.productCode + ' — ' + product.productName + ' (' + (String(product.status).toUpperCase() === 'ACTIVE' ? 'Aktif' : 'Nonaktif') + ')';
-          statusOption.dataset.status = String(product.status || 'ACTIVE').toUpperCase();
-          statusSelect.appendChild(statusOption);
           const tr = document.createElement('tr');
           [product.productCode, product.productName, rupiah(product.hpp), rupiah(product.sellingPrice), product.unit || '-'].forEach(value => {
             const td = document.createElement('td'); td.textContent = value == null ? '-' : value; tr.appendChild(td);
@@ -1405,8 +1394,6 @@
           rows.appendChild(tr);
         });
         if ([...select.options].some(o => o.value === selected)) select.value = selected;
-        if ([...statusSelect.options].some(o => o.value === selectedStatusProduct)) statusSelect.value = selectedStatusProduct;
-        updateCurrentProductStatus();
         listMessage.textContent = 'Jumlah produk: ' + angka((result.products || []).length) + '.';
       } catch (err) {
         listMessage.textContent = 'Gagal memuat produk: ' + pesanErrorJaringan(err);
@@ -1494,32 +1481,6 @@
       document.querySelectorAll('.productPanel').forEach(panel => panel.classList.toggle('active', panel.id === button.dataset.productPanel));
       if (button.dataset.productPanel === 'listPanel') muatProduk();
     }));
-
-    function updateCurrentProductStatus() {
-      const select = document.getElementById('statusProduct');
-      const option = select.options[select.selectedIndex];
-      const status = option && option.value ? String(option.dataset.status || 'ACTIVE').toUpperCase() : '';
-      const info = document.getElementById('currentProductStatus');
-      info.textContent = status ? ('Status saat ini: ' + (status === 'ACTIVE' ? 'AKTIF' : 'NONAKTIF')) : 'Pilih produk untuk melihat status saat ini.';
-      if (status) document.getElementById('newProductStatus').value = status;
-    }
-    document.getElementById('statusProduct').addEventListener('change', updateCurrentProductStatus);
-    document.getElementById('statusForm').addEventListener('submit', async function(event) {
-      event.preventDefault();
-      if (!akses.produk || !sessionData || !sessionData.token) return;
-      const btn = document.getElementById('btnSaveStatus');
-      const message = document.getElementById('statusMessage');
-      btn.disabled = true; btn.textContent = 'MENYIMPAN...'; message.textContent = '';
-      try {
-        const result = await kirimKeBackend({action:'product_status_update', token:sessionData.token,
-          productCode:document.getElementById('statusProduct').value,
-          status:document.getElementById('newProductStatus').value});
-        if (!result || !result.success) throw new Error((result && result.message) || 'Status produk gagal diperbarui.');
-        message.textContent = result.message || 'Status produk berhasil diperbarui.'; message.className = 'catatan sukses';
-        await muatProduk();
-      } catch(err) { message.textContent = 'Gagal mengubah status: ' + pesanErrorJaringan(err); message.className = 'catatan error'; }
-      finally { btn.disabled = false; btn.textContent = 'SIMPAN STATUS'; }
-    });
 
     async function ubahStatusProduk(product,nextStatus){
       const result=await kirimKeBackend({action:'product_status_update',token:sessionData.token,productCode:product.productCode,status:nextStatus});
@@ -1629,14 +1590,14 @@
       finally { btn.disabled=false; btn.textContent='GANTI KATA SANDI'; }
     });
 
-    document.getElementById('btnLogout').addEventListener('click', async function () {
+    async function logoutAkun() {
       await berhentiScan();
       sessionData = null;
       sessionStorage.removeItem(SESSION_KEY);
       sembunyikanPesan('pesan');
       sembunyikanPesan('pesanLogin');
       tampilLogin();
-    });
+    }
 
     async function muatModeTransaksiPerusahaan(){
       if(!sessionData||!sessionData.token)return;
