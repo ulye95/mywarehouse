@@ -163,6 +163,10 @@
     @media (max-width:760px) { main {padding:10px;} .card {padding:14px; border-radius:12px;} .productSubnav {grid-template-columns:repeat(2,minmax(0,1fr));} .productSubnav button {font-size:13px;} .statusEditGrid {grid-template-columns:1fr;} .statusEditGrid button {margin-top:0;} .stats {grid-template-columns:repeat(2,minmax(0,1fr));} .stat .value {font-size:16px;} .filters,.formGrid {grid-template-columns:1fr;} .menuGrid {grid-template-columns:1fr;} .menuChoice {min-height:90px;} .qrGrid {grid-template-columns:repeat(2,minmax(0,1fr));} .pageTitle {align-items:flex-start;} .pageTitle h2 {font-size:17px;} }
     @media (max-width:380px) { .qrGrid {grid-template-columns:1fr;} .stats {grid-template-columns:1fr 1fr;} .catatan {font-size:13px;} input,select,button {font-size:16px;} }
 
+
+    .bulkFormGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.bulkSummary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}.bulkSummary>div{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px}.bulkSummary small{display:block;color:var(--muted);font-size:11px}.bulkSummary strong{display:block;margin-top:5px;font-size:17px;color:var(--primary)}.bulkHistoryWrap{overflow:auto;margin-top:14px}.bulkHistoryWrap table{min-width:720px}.bulkModeNotice{padding:12px;border:1px solid var(--line);background:var(--surface2);border-radius:12px;color:var(--muted);font-size:13px;margin:10px 0}.bulkTransactionActions{display:flex;gap:10px;flex-wrap:wrap}.bulkTransactionActions button{flex:1;min-width:140px}
+    @media(max-width:760px){.bulkFormGrid{grid-template-columns:1fr}.bulkSummary{grid-template-columns:1fr 1fr}.bulkSummary>div:last-child{grid-column:1/-1}}
+
     /* Manajemen user: tabel ringkas dan aksi berbasis ikon */
     #usersPage .userListCard{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:14px}
     #usersPage .userTable{min-width:760px}
@@ -311,9 +315,9 @@
         <div id="monitorProductMessage" class="catatan">Memuat data barang...</div>
         <div class="monitorTableWrap"><table><thead><tr><th>Kode Barang</th><th>Nama Barang</th><th>HPP/Pcs</th><th>Harga Jual/Pcs</th><th>Status</th></tr></thead><tbody id="monitorProductRows"></tbody></table></div>
         <h2 class="monitorSectionTitle">Monitoring Stok per Produk</h2>
-        <p class="catatan">Stok tersedia dihitung dari unit dengan status IN_STOCK. Nilai stok menggunakan HPP produk. Gulir untuk melihat baris lainnya.</p>
+        <p class="catatan">Stok QR dan stok kuantitas ditampilkan terpisah. Total stok merupakan gabungan keduanya; nilai stok kuantitas menggunakan HPP batch FIFO.</p>
         <div id="stockMessage" class="catatan">Memuat stok produk...</div>
-        <div class="monitorTableWrap"><table><thead><tr><th>Kode</th><th>Nama Produk</th><th>Stok Tersedia</th><th>Nilai Stok (HPP)</th><th>Kondisi</th></tr></thead><tbody id="stockRows"></tbody></table></div>
+        <div class="monitorTableWrap"><table><thead><tr><th>Kode</th><th>Nama Produk</th><th>Stok QR</th><th>Stok Kuantitas</th><th>Total Stok</th><th>Nilai Stok (HPP)</th><th>Kondisi</th></tr></thead><tbody id="stockRows"></tbody></table></div>
         <h2 class="monitorSectionTitle">Riwayat Transaksi Terbaru</h2>
         <p class="catatan">Menampilkan maksimal 10 baris; gulir untuk melihat transaksi lainnya.</p>
         <div id="dashboardMessage" class="catatan">Memuat data...</div>
@@ -445,6 +449,13 @@
         </div>
       </section>
 
+      <section class="card" id="transactionModeCard">
+        <h2>Metode Pengelolaan Stok</h2>
+        <label for="transactionMode">Pilih jenis transaksi</label>
+        <select id="transactionMode"><option value="UNIT">QR / Unit Barang</option><option value="BULK">Stok Kuantitas / Batch</option></select>
+        <p class="catatan">QR/Unit digunakan untuk stok per unit fisik. Stok Kuantitas digunakan untuk barang yang dicatat berdasarkan jumlah tanpa QR, dengan HPP per batch dan metode FIFO.</p>
+      </section>
+
       <section class="card" id="transactionMethodCard">
         <h2>Metode Transaksi</h2>
         <p id="scanPlanNotice" class="catatan" style="display:none">Paket Anda tidak mencakup Scan QR. Gunakan Input Kode Unit Manual untuk transaksi.</p>
@@ -481,6 +492,29 @@
           <button type="button" id="btnSaveManualTransaction">SIMPAN TRANSAKSI</button>
         </div>
         <div id="manualTransactionMessage" role="status" class="catatan" style="margin-top:12px"></div>
+      </section>
+
+      <section class="card" id="bulkTransactionCard" style="display:none">
+        <div class="pageTitle"><h2>Transaksi Stok Kuantitas</h2><button type="button" id="btnRefreshBulk" class="secondary smallBtn">↻ Refresh</button></div>
+        <div class="bulkModeNotice">Modul ini terpisah dari stok QR. Barang masuk akan membuat batch HPP baru. Barang keluar akan mengambil stok dari batch paling lama terlebih dahulu (FIFO).</div>
+        <form id="bulkTransactionForm">
+          <label for="bulkProduct">Pilih Produk</label><select id="bulkProduct" required><option value="">Memuat produk...</option></select>
+          <div class="bulkFormGrid">
+            <div><label for="bulkQuantity">Jumlah Barang</label><input id="bulkQuantity" type="number" min="1" max="100000" step="1" placeholder="Contoh: 25" required></div>
+            <div id="bulkHppWrap"><label for="bulkUnitHpp">HPP per Unit (Rp)</label><input id="bulkUnitHpp" type="number" min="0" step="1" placeholder="HPP pembelian per unit"></div>
+            <div id="bulkCategoryWrap" style="display:none"><label for="bulkCategory">Channel Barang Keluar</label><select id="bulkCategory"><option value="MARKETPLACE">Marketplace</option><option value="OFFLINE">Offline</option><option value="DAMAGED">Rusak</option></select></div>
+            <div style="grid-column:1/-1"><label for="bulkNotes">Catatan (opsional)</label><input id="bulkNotes" maxlength="500" placeholder="Nomor nota, supplier, atau keterangan transaksi"></div>
+          </div>
+          <button id="btnSaveBulkTransaction" type="submit">SIMPAN TRANSAKSI KUANTITAS</button>
+        </form>
+        <div id="bulkTransactionMessage" class="catatan" role="status" aria-live="polite" style="margin-top:12px"></div>
+        <div id="bulkLastResult" style="display:none" class="bulkSummary">
+          <div><small>Jumlah transaksi</small><strong id="bulkResultQty">-</strong></div>
+          <div><small>Nilai HPP</small><strong id="bulkResultHpp">-</strong></div>
+          <div><small>Sisa stok kuantitas</small><strong id="bulkResultStock">-</strong></div>
+        </div>
+        <div class="topline" style="margin-top:18px"><h3 style="margin:0">Riwayat Stok Kuantitas</h3></div>
+        <div class="bulkHistoryWrap"><table><thead><tr><th>Waktu</th><th>Produk</th><th>Jenis</th><th>Qty</th><th>HPP</th><th>Pengguna</th></tr></thead><tbody id="bulkHistoryRows"><tr><td colspan="6">Belum ada data.</td></tr></tbody></table></div>
       </section>
 
     </section>
@@ -636,7 +670,7 @@
       if (halaman === 'users') muatUsers();
       if (halaman === 'langganan') muatLangganan();
       if (halaman === 'monitoring') muatDashboard();
-      if (halaman === 'transaksi') toggleKategori();
+      if (halaman === 'transaksi') { toggleKategori(); aturModeTransaksi(); }
       if (halaman === 'produk') muatProduk();
       if (halaman === 'laporan') { muatLaporan(); muatRiwayatQr(); }
     }
@@ -702,9 +736,15 @@
     try { if(localStorage.getItem('mwTheme')==='dark') document.body.classList.add('dark'); } catch(e){}
     document.getElementById('btnLoadReport').addEventListener('click', muatLaporan);
     document.getElementById('btnRefreshQrHistory').addEventListener('click', muatRiwayatQr);
-    document.getElementById('jenisTransaksi').addEventListener('change', function(){ toggleKategori(); manualUnitPreviewData=null; document.getElementById('manualUnitPreview').style.display='none'; document.getElementById('manualPreviewMessage').textContent=''; });
+    document.getElementById('jenisTransaksi').addEventListener('change', function(){ toggleKategori(); aturModeTransaksi(); aturFieldBulk(); manualUnitPreviewData=null; document.getElementById('manualUnitPreview').style.display='none'; document.getElementById('manualPreviewMessage').textContent=''; });
     document.getElementById('kategori').addEventListener('change', function(){ manualUnitPreviewData=null; document.getElementById('manualUnitPreview').style.display='none'; document.getElementById('manualPreviewMessage').textContent='Kategori berubah. Periksa ulang kode unit sebelum menyimpan.'; });
-    document.getElementById('metodeTransaksi').addEventListener('change', async function(){ if (kameraAktif) await berhentiScan(); toggleKategori(); const sub=sessionData&&sessionData.user&&sessionData.user.subscription; aturAksesFiturPaket(sub&&sub.status==='ACTIVE'?sub.planCode:''); });
+    document.getElementById('metodeTransaksi').addEventListener('change', async function(){ if (kameraAktif) await berhentiScan(); toggleKategori(); aturModeTransaksi(); const sub=sessionData&&sessionData.user&&sessionData.user.subscription; aturAksesFiturPaket(sub&&sub.status==='ACTIVE'?sub.planCode:''); });
+    document.getElementById('transactionMode').addEventListener('change', async function(){ if(kameraAktif) await berhentiScan(); aturModeTransaksi(); });
+    document.getElementById('bulkProduct').addEventListener('change', muatRiwayatBulk);
+    document.getElementById('bulkQuantity').addEventListener('input', aturFieldBulk);
+    document.getElementById('jenisTransaksi').addEventListener('change', aturFieldBulk);
+    document.getElementById('btnRefreshBulk').addEventListener('click', muatDataBulk);
+    document.getElementById('bulkTransactionForm').addEventListener('submit', simpanTransaksiBulk);
     document.getElementById('btnExportExcel').addEventListener('click', eksporLaporanCSV);
     document.getElementById('btnExportPdf').addEventListener('click', () => window.print());
 
@@ -1155,6 +1195,8 @@
           const cells = [
             item.productCode || '-',
             item.productName || '-',
+            angka(item.stockQR || 0),
+            angka(item.stockBulk || 0),
             angka(stock),
             rupiah(item.stockValueHPP)
           ];
@@ -1516,6 +1558,75 @@
       }
     }
     document.getElementById('jenisTransaksi').addEventListener('change', toggleKategori);
+
+    function aturModeTransaksi(){
+      const bulk=document.getElementById('transactionMode').value==='BULK';
+      document.getElementById('kategoriContainer').style.display=!bulk&&document.getElementById('jenisTransaksi').value==='KELUAR'?'block':'none';
+      document.getElementById('transactionMethodCard').style.display=bulk?'none':'block';
+      document.getElementById('scannerCard').style.display=!bulk&&document.getElementById('metodeTransaksi').value==='SCAN'?'block':'none';
+      document.getElementById('manualTransactionCard').style.display=!bulk&&document.getElementById('metodeTransaksi').value==='MANUAL'?'block':'none';
+      document.getElementById('bulkTransactionCard').style.display=bulk?'block':'none';
+      if(bulk) muatDataBulk();
+    }
+    function aturFieldBulk(){
+      const masuk=document.getElementById('jenisTransaksi').value==='MASUK';
+      document.getElementById('bulkHppWrap').style.display=masuk?'block':'none';
+      document.getElementById('bulkUnitHpp').required=masuk;
+      document.getElementById('bulkCategoryWrap').style.display=masuk?'none':'block';
+    }
+    async function muatDataBulk(){
+      if(!sessionData||!sessionData.token)return;
+      const select=document.getElementById('bulkProduct');
+      select.innerHTML='<option value="">Memuat produk...</option>';
+      try{
+        const result=await kirimKeBackend({action:'bulk_stock_products',token:sessionData.token});
+        if(!result||!result.success)throw new Error(result&&result.message||'Produk gagal dimuat.');
+        const selected=select.value;
+        select.innerHTML='<option value="">Pilih produk...</option>';
+        (result.products||[]).forEach(p=>{const option=document.createElement('option');option.value=p.productId;option.textContent=p.productCode+' — '+p.productName+' (Stok kuantitas: '+angka(p.bulkStock||0)+' '+(p.unit||'')+')';select.appendChild(option);});
+        if(selected)select.value=selected;
+        aturFieldBulk();
+        await muatRiwayatBulk();
+      }catch(err){select.innerHTML='<option value="">Gagal memuat produk</option>';tampilPesan('bulkTransactionMessage','Gagal memuat produk: '+pesanErrorJaringan(err),'error');}
+    }
+    async function muatRiwayatBulk(){
+      if(!sessionData||!sessionData.token)return;
+      const body=document.getElementById('bulkHistoryRows');body.innerHTML='<tr><td colspan="6">Memuat riwayat...</td></tr>';
+      try{
+        const result=await kirimKeBackend({action:'bulk_stock_history',token:sessionData.token,productId:document.getElementById('bulkProduct').value||'ALL'});
+        if(!result||!result.success)throw new Error(result&&result.message||'Riwayat gagal dimuat.');
+        body.innerHTML='';
+        (result.movements||[]).forEach(m=>{const tr=document.createElement('tr');const date=m.timestamp?new Date(m.timestamp).toLocaleString('id-ID'):'-';[date,m.productCode+' — '+m.productName,m.transactionType==='MASUK'?'Masuk':'Keluar',angka(m.quantity),rupiah(m.hppValue),m.userName||'-'].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.appendChild(td)});body.appendChild(tr)});
+        if(!body.children.length)body.innerHTML='<tr><td colspan="6">Belum ada riwayat stok kuantitas.</td></tr>';
+      }catch(err){body.innerHTML='<tr><td colspan="6">Riwayat gagal dimuat: '+pesanErrorJaringan(err)+'</td></tr>';}
+    }
+    async function simpanTransaksiBulk(event){
+      event.preventDefault();if(memproses)return;
+      const type=document.getElementById('jenisTransaksi').value;
+      const productId=document.getElementById('bulkProduct').value;
+      const quantity=Number(document.getElementById('bulkQuantity').value);
+      const unitHpp=Number(document.getElementById('bulkUnitHpp').value);
+      const message=document.getElementById('bulkTransactionMessage');
+      if(!productId){tampilPesan('bulkTransactionMessage','Pilih produk terlebih dahulu.','error');return;}
+      if(!Number.isSafeInteger(quantity)||quantity<1||quantity>100000){tampilPesan('bulkTransactionMessage','Jumlah harus bilangan bulat 1 sampai 100.000.','error');return;}
+      if(type==='MASUK'&&(!Number.isFinite(unitHpp)||unitHpp<0)){tampilPesan('bulkTransactionMessage','Masukkan HPP per unit yang valid.','error');return;}
+      if(type==='KELUAR'&&!confirm('Simpan barang keluar sebanyak '+angka(quantity)+' unit? Stok akan dikurangi menggunakan FIFO.'))return;
+      const btn=document.getElementById('btnSaveBulkTransaction');btn.disabled=true;btn.textContent='MENYIMPAN...';memproses=true;
+      try{
+        const result=await kirimKeBackend({action:'bulk_stock_transaction',token:sessionData.token,transactionType:type,productId:productId,quantity:quantity,unitHpp:unitHpp,category:document.getElementById('bulkCategory').value,notes:document.getElementById('bulkNotes').value.trim()});
+        if(!result||!result.success)throw new Error(result&&result.message||'Transaksi ditolak backend.');
+        const tx=result.transaction||{};
+        document.getElementById('bulkLastResult').style.display='grid';
+        document.getElementById('bulkResultQty').textContent=angka(tx.quantity||quantity);
+        document.getElementById('bulkResultHpp').textContent=rupiah(tx.hppValue||0);
+        document.getElementById('bulkResultStock').textContent=angka(tx.remainingStock||0);
+        message.textContent=result.message+' Referensi: '+(tx.referenceId||'-');message.className='catatan sukses';
+        document.getElementById('bulkQuantity').value='';document.getElementById('bulkUnitHpp').value='';document.getElementById('bulkNotes').value='';
+        await muatDataBulk();
+        if(akses.monitoring)muatDashboard();
+      }catch(err){message.textContent='Transaksi gagal: '+pesanErrorJaringan(err);message.className='catatan error';}
+      finally{memproses=false;btn.disabled=false;btn.textContent='SIMPAN TRANSAKSI KUANTITAS';}
+    }
 
     function bunyiBerhasil() {
       try {
