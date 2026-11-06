@@ -162,6 +162,30 @@
     @media (min-width:1200px) { .stats {grid-template-columns:repeat(4,minmax(0,1fr));} .card {padding:clamp(18px,1.4vw,28px);} table {font-size:14px;} th,td {padding:11px 10px;} }
     @media (max-width:760px) { main {padding:10px;} .card {padding:14px; border-radius:12px;} .productSubnav {grid-template-columns:repeat(2,minmax(0,1fr));} .productSubnav button {font-size:13px;} .statusEditGrid {grid-template-columns:1fr;} .statusEditGrid button {margin-top:0;} .stats {grid-template-columns:repeat(2,minmax(0,1fr));} .stat .value {font-size:16px;} .filters,.formGrid {grid-template-columns:1fr;} .menuGrid {grid-template-columns:1fr;} .menuChoice {min-height:90px;} .qrGrid {grid-template-columns:repeat(2,minmax(0,1fr));} .pageTitle {align-items:flex-start;} .pageTitle h2 {font-size:17px;} }
     @media (max-width:380px) { .qrGrid {grid-template-columns:1fr;} .stats {grid-template-columns:1fr 1fr;} .catatan {font-size:13px;} input,select,button {font-size:16px;} }
+
+    /* Manajemen user: tabel ringkas dan aksi berbasis ikon */
+    #usersPage .userListCard{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:14px}
+    #usersPage .userTable{min-width:760px}
+    #usersPage .userTable th{font-size:11px;text-transform:uppercase;letter-spacing:.55px}
+    #usersPage .userTable td{padding:12px 9px;vertical-align:middle}
+    .userIdentity{display:flex;flex-direction:column;gap:3px;white-space:normal;min-width:150px}
+    .userIdentity strong{font-size:13px;color:var(--text)}.userIdentity small{font-size:11px;color:var(--muted)}
+    .userRoleTag{display:inline-flex;padding:5px 9px;border-radius:20px;background:var(--surface2);border:1px solid var(--line);font-size:11px;font-weight:700}
+    .userActions{display:flex;gap:7px;align-items:center}
+    .userIconBtn{width:36px;height:36px;min-height:36px;padding:0;margin:0;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;background:var(--surface2);color:var(--primary);border:1px solid var(--line)}
+    .userIconBtn:hover{background:var(--line);filter:none}.userIconBtn.danger{color:#b64e49}.userIconBtn:disabled{opacity:.35;cursor:not-allowed}
+    .userActionHint{font-size:11px;color:var(--muted);margin-top:9px}
+    .mwModalBackdrop{position:fixed;inset:0;background:rgba(12,20,17,.58);z-index:1000;display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px)}
+    .mwModal{width:min(100%,480px);max-height:min(88vh,720px);overflow:auto;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 24px 80px rgba(0,0,0,.28)}
+    .mwModalHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}.mwModalHead h3{margin:0;font-size:18px}
+    .mwModalClose{width:34px;height:34px;min-height:34px;padding:0;margin:0;background:var(--surface2);color:var(--text);border:1px solid var(--line);font-size:18px}
+    .mwModalActions{display:flex;justify-content:flex-end;gap:9px;margin-top:22px}.mwModalActions button{width:auto;min-width:104px;margin:0;padding:10px 14px}
+    .mwModalActions .cancel{background:var(--surface2);color:var(--text);border:1px solid var(--line)}
+    .mwPermissionGrid{display:grid;gap:10px;margin-top:18px}.mwPermissionOption{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface2)}
+    .mwPermissionOption input{width:18px;min-height:18px;height:18px;margin:0}.mwPermissionOption span{font-size:13px;font-weight:650}
+    .mwModalNote{font-size:12px;line-height:1.5;color:var(--muted);margin-top:8px}
+    @media(max-width:600px){#usersPage .userTable{min-width:680px}.mwModal{padding:18px}.mwModalActions button{flex:1}}
+
   </style>
 </head>
 <body>
@@ -389,7 +413,7 @@
         </form>
         <div id="usersMessage" class="catatan" role="status" aria-live="polite" style="margin:12px 0"></div>
         <div class="topline" style="margin:18px 0 10px"><h2 style="margin:0">Daftar User Perusahaan</h2><button id="btnRefreshUsers" type="button" class="secondary smallBtn">↻ Refresh</button></div>
-        <div class="tableWrap"><table><thead><tr><th>Nama</th><th>Email</th><th>Role</th><th>Status</th><th>Izin Fitur</th><th>Aksi</th></tr></thead><tbody id="userRows"></tbody></table></div>
+        <div class="userListCard"><div class="tableWrap"><table class="userTable"><thead><tr><th>Pengguna</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="userRows"></tbody></table></div><p class="userActionHint">✎ Atur hak akses · ⏻ Aktif/nonaktifkan akun · 🗑 Arsipkan akun. Riwayat transaksi tetap tersimpan.</p></div>
       </section>
 
       <section class="card" id="passwordPage" style="display:none">
@@ -1382,6 +1406,48 @@
       finally { btn.disabled = false; btn.textContent = 'SIMPAN STATUS'; }
     });
 
+    function tutupPopupUser(){ const el=document.getElementById('mwUserModal'); if(el) el.remove(); }
+    function tampilPopupUser({title,description,content,confirmText='Simpan',danger=false,onConfirm}){
+      tutupPopupUser();
+      const backdrop=document.createElement('div'); backdrop.id='mwUserModal'; backdrop.className='mwModalBackdrop';
+      const modal=document.createElement('div'); modal.className='mwModal'; modal.setAttribute('role','dialog'); modal.setAttribute('aria-modal','true');
+      const head=document.createElement('div'); head.className='mwModalHead';
+      const titleWrap=document.createElement('div'); const h=document.createElement('h3'); h.textContent=title; titleWrap.appendChild(h);
+      const desc=document.createElement('p'); desc.className='mwModalNote'; desc.textContent=description||''; titleWrap.appendChild(desc);
+      const close=document.createElement('button'); close.type='button'; close.className='mwModalClose'; close.textContent='×'; close.setAttribute('aria-label','Tutup'); close.addEventListener('click',tutupPopupUser);
+      head.append(titleWrap,close); modal.appendChild(head); if(content) modal.appendChild(content);
+      const actions=document.createElement('div'); actions.className='mwModalActions';
+      const cancel=document.createElement('button'); cancel.type='button'; cancel.className='cancel'; cancel.textContent='Batal'; cancel.addEventListener('click',tutupPopupUser);
+      const ok=document.createElement('button'); ok.type='button'; ok.textContent=confirmText; if(danger) ok.style.background='#b64e49';
+      ok.addEventListener('click',async()=>{ok.disabled=true;ok.textContent='Memproses...';try{await onConfirm();tutupPopupUser();}catch(err){ok.disabled=false;ok.textContent=confirmText;const errEl=modal.querySelector('.mwModalError')||document.createElement('p');errEl.className='mwModalError catatan error';errEl.textContent=pesanErrorJaringan(err);if(!errEl.parentNode)modal.appendChild(errEl);}});
+      actions.append(cancel,ok);modal.appendChild(actions);backdrop.appendChild(modal);
+      backdrop.addEventListener('click',e=>{if(e.target===backdrop)tutupPopupUser();});
+      document.addEventListener('keydown',function esc(e){if(e.key==='Escape'){tutupPopupUser();document.removeEventListener('keydown',esc);}});
+      document.body.appendChild(backdrop);close.focus();
+    }
+    async function simpanIzinUser(user,permissions){
+      const update=await kirimKeBackend({action:'user_permissions_update',token:sessionData.token,userId:user.userId,permissions});
+      if(!update||!update.success) throw new Error((update&&update.message)||'Izin gagal disimpan.');
+      const message=document.getElementById('usersMessage');message.textContent=update.message||'Hak akses berhasil diperbarui.';message.className='catatan sukses';await muatUsers();
+    }
+    function bukaPopupIzin(user){
+      const current=user.permissions||{};const content=document.createElement('div');content.className='mwPermissionGrid';const checks={};
+      [['DASHBOARD','Dashboard','Melihat ringkasan dan monitoring gudang'],['SCAN','Transaksi','Mencatat barang masuk dan barang keluar'],['PRODUCTS','Manajemen Produk','Mengelola data produk dan QR unit']].forEach(([key,label,desc])=>{
+        const row=document.createElement('label');row.className='mwPermissionOption';const cb=document.createElement('input');cb.type='checkbox';cb.checked=current[key]===true;checks[key]=cb;
+        const wrap=document.createElement('span');wrap.textContent=label+' — '+desc;row.append(cb,wrap);content.appendChild(row);
+      });
+      tampilPopupUser({title:'Atur hak akses',description:user.fullName+' · '+user.role,content,confirmText:'Simpan perubahan',onConfirm:()=>simpanIzinUser(user,{DASHBOARD:checks.DASHBOARD.checked,SCAN:checks.SCAN.checked,PRODUCTS:checks.PRODUCTS.checked})});
+    }
+    async function ubahStatusUser(user,nextStatus){
+      const update=await kirimKeBackend({action:'user_status_update',token:sessionData.token,userId:user.userId,status:nextStatus});
+      if(!update||!update.success)throw new Error((update&&update.message)||'Status akun gagal diperbarui.');
+      const message=document.getElementById('usersMessage');message.textContent=update.message||'Status akun diperbarui.';message.className='catatan sukses';await muatUsers();
+    }
+    async function hapusUser(user){
+      const update=await kirimKeBackend({action:'user_delete',token:sessionData.token,userId:user.userId});
+      if(!update||!update.success) throw new Error((update&&update.message)||'Akun gagal dihapus.');
+      const message=document.getElementById('usersMessage');message.textContent=update.message||'Akun berhasil dihapus.';message.className='catatan sukses';await muatUsers();
+    }
     async function muatUsers() {
       if (!sessionData || !sessionData.token || !akses.users) return;
       const message = document.getElementById('usersMessage'); message.textContent = 'Memuat daftar user...'; message.className = 'catatan';
@@ -1390,42 +1456,20 @@
         if (!result || !result.success) { if (result && result.code === 'SESSION_INVALID') { sessionData=null; sessionStorage.removeItem(SESSION_KEY); tampilLogin(); } throw new Error((result && result.message) || 'Daftar user gagal dimuat.'); }
         const tbody = document.getElementById('userRows'); tbody.replaceChildren();
         (result.users || []).forEach(user => {
-          const tr = document.createElement('tr');
-          [user.fullName || '-', user.email || '-', user.role || '-'].forEach(value => { const td=document.createElement('td'); td.textContent=value; tr.appendChild(td); });
-          const statusTd=document.createElement('td'); const pill=document.createElement('span'); pill.className='statusPill '+(user.status==='ACTIVE'?'statusActive':'statusInactive'); pill.textContent=user.status==='ACTIVE'?'AKTIF':'NONAKTIF'; statusTd.appendChild(pill); tr.appendChild(statusTd);
-          const permissionTd=document.createElement('td');
-          if (user.role === 'Admin') { permissionTd.textContent='Akses penuh'; }
-          else {
-            const current = user.permissions || {};
-            const controls = [ ['DASHBOARD','Dashboard'], ['SCAN','Transaksi'], ['PRODUCTS','Produk'] ];
-            controls.forEach(([key,label]) => {
-              const wrap=document.createElement('label'); wrap.style.display='inline-flex'; wrap.style.alignItems='center'; wrap.style.gap='4px'; wrap.style.margin='3px 8px 3px 0'; wrap.style.fontSize='12px';
-              const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=current[key]===true; cb.dataset.permission=key; cb.disabled=user.status!=='ACTIVE';
-              wrap.appendChild(cb); const text=document.createElement('span'); text.textContent=label; wrap.appendChild(text); permissionTd.appendChild(wrap);
-            });
-            const save=document.createElement('button'); save.type='button'; save.className='userActionBtn'; save.textContent='SIMPAN IZIN'; save.disabled=user.status!=='ACTIVE';
-            save.addEventListener('click', async () => {
-              const permissions={}; permissionTd.querySelectorAll('input[data-permission]').forEach(cb => permissions[cb.dataset.permission]=cb.checked);
-              save.disabled=true; save.textContent='MENYIMPAN...';
-              try { const update=await kirimKeBackend({action:'user_permissions_update',token:sessionData.token,userId:user.userId,permissions}); if (!update || !update.success) throw new Error((update&&update.message)||'Izin gagal disimpan.'); message.textContent=update.message; message.className='catatan sukses'; await muatUsers(); }
-              catch(err) { message.textContent='Gagal menyimpan izin: '+pesanErrorJaringan(err); message.className='catatan error'; save.disabled=false; save.textContent='SIMPAN IZIN'; }
-            }); permissionTd.appendChild(document.createElement('br')); permissionTd.appendChild(save);
-          }
-          tr.appendChild(permissionTd);
-          const actionTd=document.createElement('td');
-          if (user.role === 'Admin' || user.userId === sessionData.user.userId) { actionTd.textContent='—'; } else {
-            const btn=document.createElement('button'); btn.type='button'; btn.className='userActionBtn '+(user.status==='ACTIVE'?'secondary':''); btn.textContent=user.status==='ACTIVE'?'NONAKTIFKAN':'AKTIFKAN';
-            btn.addEventListener('click', async () => {
-              const nextStatus=user.status==='ACTIVE'?'INACTIVE':'ACTIVE';
-              if (!confirm((nextStatus==='INACTIVE'?'Nonaktifkan':'Aktifkan kembali')+' akun '+user.fullName+'?')) return;
-              btn.disabled=true;
-              try { const update=await kirimKeBackend({action:'user_status_update',token:sessionData.token,userId:user.userId,status:nextStatus}); if (!update || !update.success) throw new Error((update && update.message)||'Status user gagal diperbarui.'); message.textContent=update.message; message.className='catatan sukses'; await muatUsers(); }
-              catch(err) { message.textContent='Gagal mengubah status: '+pesanErrorJaringan(err); message.className='catatan error'; btn.disabled=false; }
-            }); actionTd.appendChild(btn);
-          }
-          tr.appendChild(actionTd); tbody.appendChild(tr);
+          const tr=document.createElement('tr');
+          const identity=document.createElement('td');const identityWrap=document.createElement('div');identityWrap.className='userIdentity';const name=document.createElement('strong');name.textContent=user.fullName||'-';const email=document.createElement('small');email.textContent=user.email||'-';identityWrap.append(name,email);identity.appendChild(identityWrap);tr.appendChild(identity);
+          const roleTd=document.createElement('td');const role=document.createElement('span');role.className='userRoleTag';role.textContent=user.role||'-';roleTd.appendChild(role);tr.appendChild(roleTd);
+          const statusTd=document.createElement('td');const pill=document.createElement('span');pill.className='statusPill '+(user.status==='ACTIVE'?'statusActive':user.status==='DELETED'?'statusInactive':'statusInactive');pill.textContent=user.status==='ACTIVE'?'AKTIF':user.status==='DELETED'?'DIARSIPKAN':'NONAKTIF';statusTd.appendChild(pill);tr.appendChild(statusTd);
+          const actionTd=document.createElement('td');const actions=document.createElement('div');actions.className='userActions';
+          const isSelf=user.userId===sessionData.user.userId;const isAdmin=user.role==='Admin';const archived=user.status==='DELETED';
+          if(!isSelf&&!isAdmin&&!archived){
+            const edit=document.createElement('button');edit.type='button';edit.className='userIconBtn';edit.textContent='✎';edit.title='Atur hak akses';edit.setAttribute('aria-label','Atur hak akses');edit.addEventListener('click',()=>bukaPopupIzin(user));actions.appendChild(edit);
+            const toggle=document.createElement('button');toggle.type='button';toggle.className='userIconBtn';toggle.textContent=user.status==='ACTIVE'?'⏻':'⏻';toggle.title=user.status==='ACTIVE'?'Nonaktifkan akun':'Aktifkan kembali akun';toggle.setAttribute('aria-label',toggle.title);toggle.addEventListener('click',()=>{const next=user.status==='ACTIVE'?'INACTIVE':'ACTIVE';tampilPopupUser({title:next==='ACTIVE'?'Aktifkan kembali akun?':'Nonaktifkan akun?',description:'Akun '+user.fullName+' akan '+(next==='ACTIVE'?'dapat login kembali.':'tidak dapat login sampai diaktifkan kembali.'),confirmText:next==='ACTIVE'?'Aktifkan akun':'Nonaktifkan',danger:next==='INACTIVE',onConfirm:()=>ubahStatusUser(user,next)});});actions.appendChild(toggle);
+            const del=document.createElement('button');del.type='button';del.className='userIconBtn danger';del.textContent='🗑';del.title='Hapus akun permanen';del.setAttribute('aria-label','Hapus akun permanen');del.addEventListener('click',()=>tampilPopupUser({title:'Hapus akun secara permanen?',description:'Akun '+user.fullName+' dan hak aksesnya akan dihapus dari daftar pengguna. Riwayat transaksi dan aktivitas tetap tersimpan dengan identitas historis. Tindakan ini tidak dapat dibatalkan.',confirmText:'Hapus permanen',danger:true,onConfirm:()=>hapusUser(user)}));actions.appendChild(del);
+          } else {const dash=document.createElement('span');dash.className='catatan';dash.textContent=isSelf?'Akun Anda':isAdmin?'Admin utama':'Akun diarsipkan';actions.appendChild(dash);}
+          actionTd.appendChild(actions);tr.appendChild(actionTd);tbody.appendChild(tr);
         });
-        if (!(result.users||[]).length) { const tr=document.createElement('tr'); const td=document.createElement('td'); td.colSpan=6; td.textContent='Belum ada user.'; tr.appendChild(td); tbody.appendChild(tr); }
+        if (!(result.users||[]).length) { const tr=document.createElement('tr'); const td=document.createElement('td'); td.colSpan=4; td.textContent='Belum ada user.'; tr.appendChild(td); tbody.appendChild(tr); }
         if (!message.className.includes('sukses')) message.textContent='Daftar user berhasil dimuat.';
       } catch(err) { message.textContent='Gagal memuat user: '+pesanErrorJaringan(err); message.className='catatan error'; }
     }
